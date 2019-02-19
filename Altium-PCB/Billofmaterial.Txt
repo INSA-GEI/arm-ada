@@ -1,0 +1,27 @@
+
+Farnell
+Connecteurs STM32F3-Discovery : ref 166-7528 (CES-125-01-T-D) : 2.64 Euros
+Connecteurs Ecran LCD femelle: ref 166-8103 (SLW-112-01-G-S) :  1.93 Euros
+Connecteurs Ecran LCD male: ref 203-5399 (TSW-112-06-T-S) :  0.763 euros
+Connecteur debug : ref 186-5279 (20021121-00010C4LF) : 0.84 Euros
+Quartz
+Ampli audio
+Haut Parleur
+Potentiometres
+Bouton potentiometre
+Bouton
+Bouton 5 direction
+Led
+RAM
+Connecteur Mini USB
+
+
+Radiospares
+Vis PCB : ref 482-8262 : 1.674 Euros (100)
+Vis LCD : ref 482-7887 : 2.799 Euros (100)
+Entretoises PVC: Ref 265-2170 : 6.309 Euros (100)
+Connecteur MicroSD: ref 772-6787 : 0.731 Euros
+Boitier : ref  493-6183 : 4.527 Euros
+STM32F102C4T6A : ref 723-8956 : 2.223 Euros
+Ecran LCD : ref 740-6008 : 31.185 Euros
+STM32F3-Discovery : ref 769-2091 : 10.044 Euros

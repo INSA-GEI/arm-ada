@@ -1,0 +1,30 @@
+*.uvguix.*
+*.crf
+*.d
+*.o
+*.lst
+*.dep
+*.map
+*.ali
+*.elf
+*.log
+b~*
+*.hex
+*.a
+arm-ada-deploiement/compilateur/gcc-arm-none-eabi-6-2017-q3-update
+sw4stm32/.metadata/.plugins/org.eclipse.core.resources/.history
+sw4stm32/.metadata/.plugins/org.eclipse.core.resources/.projects/System/.indexes
+*.lib
+*.*~
+*~
+export/*.xz
+export/arm-ada
+export/arm-ada_home*.tar.xz
+export/index.html
+"Altium-PCB/Project Logs for Ada4Arm"
+"Altium-PCB/Project Outputs for Ada4Arm"
+Altium-PCB/__Previews
+Altium-PCB/History
+*.iex
+*#
+
