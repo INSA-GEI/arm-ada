@@ -4,12 +4,15 @@ package Simon is
    -- GESTION SEQUENCE
    -- ###############################
  
-   type T_Direction is (Haut_Droit, Haut_Gauche, Bas_Droit, Bas_Gauche, Immobile, Autre); 
+   type T_Direction is (Haut_Droit, Haut_Gauche, Bas_Droit, Bas_Gauche, Immobile); 
 
    type T_Sequence is array (Positive range <>) of T_Direction;
    
    -- Dessine ou Efface un pave 
    procedure DessinerPave (P : T_Direction ; Efface : Boolean);
+   
+   -- Efface tous les paves
+   procedure EffaceTout ;
    
    -- Attend jusqu'a l'appui de la touche A
    -- que l'utilisateur saisisse la taille du vecteur

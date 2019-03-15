@@ -51,7 +51,7 @@ cp -Rv ../exemples ./arm-ada
 
 echo "Compilation des outils"
 cd ../tools
-msbuild tools.sln
+xbuild tools.sln
 cd ../export
 
 echo " Copie des outils"

@@ -26,7 +26,7 @@ begin
        	EffacerEcran ;
        	Longueur := SaisirLongueurSequence ;
        
-	   	declare 
+	declare 
 	  		MaSeq : T_Sequence (1..Longueur);
        	begin
 	   		AfficherSimon;
@@ -35,7 +35,7 @@ begin
 	  
 	  		Touche:= Immobile;
 			RetourAuCentre:=True;
-			DerniereDirection:=Autre;
+			DerniereDirection:=Immobile;
 
 	  		while not Perdu and PositionSeqGlobale <= MaSeq'Last loop
 	     		AfficherSequence(MaSeq(MaSeq'First..PositionSeqGlobale));
@@ -82,18 +82,18 @@ begin
 
 					EcrireEcran(1,2,T_Direction'Image(DerniereDirection));
 
-					if RetourAuCentre = True and DerniereDirection/=Autre then
+					if RetourAuCentre = True then --and DerniereDirection/=Autre then
 			 			if MaSeq(PositionSeqLocale) /= DerniereDirection then
 			    			Perdu := True ;
 			 			else
 			    			PositionSeqLocale :=  positionseqlocale +1 ;
 			 			end if ; 
 
-						DerniereDirection:=Autre;
+						DerniereDirection:=Immobile;
 					end if;	
 	     		end loop;
 	     
-		 		PetitePause ;
+		        PetitePause ;
 	     		EffaceTout ;
 	     		Positionseqglobale := Positionseqglobale +1 ;
 	  		end loop;
