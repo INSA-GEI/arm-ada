@@ -1,110 +1,74 @@
 with Simon ;
 use Simon ;
 
-procedure missionsimon is
-   	Longueur : Integer ;
-   	PositionSeqGlobale : Integer ;
-   	PositionSeqLocale : Integer ;
-   	Perdu : Boolean := False ;
-   	RetourAuCentre : Boolean := False ;
-    
-	Touche: T_Direction:= Immobile;
-	DerniereDirection : T_Direction;
-
-   	procedure EffaceTout is
-   	begin
-      	DessinerPave (Haut_Gauche, True) ;
-      	DessinerPave (Bas_Gauche, True) ;
-      	DessinerPave (Haut_Droit, True) ;
-      	DessinerPave (Bas_Droit, True) ;
-   	end EffaceTout;
+procedure missionSimon is
+      
+  
+   LongueurSequence : Integer ;
+   PositionSeqGlobale : Integer ;
+   PositionSeqLocale : Integer ;
+   Perdu : Boolean := False ;
+   
+   Touche: T_Direction:= Immobile;
+   
+   RetourAuCentre : Boolean := False;
    
 begin
-   	while True loop 
-       	Perdu := False ;
+   while True loop 
+      
+      EffacerEcran ;
+      LongueurSequence := SaisirLongueurSequence ;
+      
+      declare 
+	 MaSeq : T_Sequence (1..LongueurSequence);
+      begin
+	 AfficherSimon;
+	 GenererSequence(MaSeq);
+	 
+	 -- initialisation des variables du jeu
+	 PositionSeqGlobale := MaSeq'First ;	 	 
+	 RetourAuCentre:=True;
+	 Perdu := False ;
 
-       	EffacerEcran ;
-       	Longueur := SaisirLongueurSequence ;
-       
-	declare 
-	  		MaSeq : T_Sequence (1..Longueur);
-       	begin
-	   		AfficherSimon;
-	  		GenererSequence(MaSeq);
-	  		PositionSeqGlobale := MaSeq'First ;	 
-	  
-	  		Touche:= Immobile;
-			RetourAuCentre:=True;
-			DerniereDirection:=Immobile;
+	 while not Perdu and PositionSeqGlobale <= MaSeq'Last loop
+	    
+	    AfficherSequence(MaSeq(MaSeq'First..PositionSeqGlobale));
+	    
+	    positionSeqlocale:= MaSeq'First ;
+	    
+	    while not Perdu and PositionSeqLocale <= PositionSeqGlobale loop
+	       
+	       Touche:=DetecterDirection;
 
-	  		while not Perdu and PositionSeqGlobale <= MaSeq'Last loop
-	     		AfficherSequence(MaSeq(MaSeq'First..PositionSeqGlobale));
-	     		positionseqlocale:= MaSeq'First ;
-	     
-		 		while not Perdu and PositionSeqLocale <= PositionSeqGlobale loop
-					Touche:=DetecterDirection;
-
-					case Touche is
-		   			when Haut_Gauche =>		     
-						if RetourAuCentre = True then
-				  			RetourAuCentre :=False;
-			      			DessinerPave (Haut_Gauche, False);
-							DerniereDirection := Touche;
-						end if;
-
-		   			when Bas_Gauche =>  
-						if RetourAuCentre = True then
-				  			RetourAuCentre :=False;
-			      			DessinerPave (Bas_Gauche, False);
-							DerniereDirection := Touche;
-						end if;
- 
-		   			when Haut_Droit => 
-						if RetourAuCentre = True then
-				  			RetourAuCentre :=False;
-			      			DessinerPave (Haut_Droit, False);
-							DerniereDirection := Touche;
-						end if;
-		   
-		   			when Bas_Droit =>  
-						if RetourAuCentre = True then
-				  			RetourAuCentre :=False;
-			      			DessinerPave (Bas_Droit, False);
-							DerniereDirection := Touche;
-						end if;
-		   
-		   			when Immobile =>  
-		      			RetourAuCentre := True ;
-		      			EffaceTout;
-					when others =>
-								null;
-					end case;	
-
-					EcrireEcran(1,2,T_Direction'Image(DerniereDirection));
-
-					if RetourAuCentre = True then --and DerniereDirection/=Autre then
-			 			if MaSeq(PositionSeqLocale) /= DerniereDirection then
-			    			Perdu := True ;
-			 			else
-			    			PositionSeqLocale :=  positionseqlocale +1 ;
-			 			end if ; 
-
-						DerniereDirection:=Immobile;
-					end if;	
-	     		end loop;
-	     
-		        PetitePause ;
-	     		EffaceTout ;
-	     		Positionseqglobale := Positionseqglobale +1 ;
-	  		end loop;
-	  
-	 		EffaceEcranFinDuJeu;
-	 		if Perdu then
-				AfficherGameOver;
-	 		else
-				AfficherGagne;
-	 		end if;
-
+	       case Touche is		      
+		  when Immobile =>  
+		     RetourAuCentre := True ;
+		     EffaceTout;
+		  when others =>		     
+		     if RetourAuCentre = True then
+			RetourAuCentre := False;
+			DessinerPave (Touche, False);
+			if MaSeq(PositionSeqLocale) /= Touche then
+			   Perdu := True ;
+			else
+			   PositionSeqLocale :=  positionseqlocale +1 ;
+			end if ;
+		     end if;
+	       end case;
+	       
+	    end loop;
+	    
+	    PetitePause ;
+	    EffaceTout ;
+	    PositionSeqGlobale := PositionSeqGlobale +1 ;
+	 end loop;
+	 
+	 EffaceEcranFinDuJeu;
+	 if Perdu then
+	    AfficherGameOver;
+	 else
+	    AfficherGagne;
+	 end if;
       end ;
-   	end loop;
-end missionsimon ;
+   end loop;
+end missionSimon ;
