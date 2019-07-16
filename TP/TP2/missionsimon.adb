@@ -2,8 +2,6 @@ with Simon ;
 use Simon ;
 
 procedure missionSimon is
-      
-  
    LongueurSequence : Integer ;
    PositionSeqGlobale : Integer ;
    PositionSeqLocale : Integer ;
@@ -12,7 +10,7 @@ procedure missionSimon is
    Touche: T_Direction:= Immobile;
    
    RetourAuCentre : Boolean := False;
-   
+
 begin
    while True loop 
       
@@ -61,14 +59,15 @@ begin
 	    PetitePause ;
 	    EffaceTout ;
 	    PositionSeqGlobale := PositionSeqGlobale +1 ;
-	 end loop;
+	  end loop;
 	 
-	 EffaceEcranFinDuJeu;
-	 if Perdu then
+	  EffaceEcranFinDuJeu;
+	  if Perdu then
 	    AfficherGameOver;
-	 else
+	  else
 	    AfficherGagne;
-	 end if;
+	  end if;
       end ;
-   end loop;
+  end loop;
+
 end missionSimon ;

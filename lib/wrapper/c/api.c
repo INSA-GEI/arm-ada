@@ -40,10 +40,16 @@ volatile uint32_t result;
 	/* Si le system a une version d'ABI inferieur à notre appli, elle ne peut pas s'executer -> mise a jour du system necessaire */
 	if (ABI_Table->version<ABI_VERSION) return INVALID_ABI;
 	
-	/* Resize heap */
-	result = __get_bss_end();
-	//C_malloc_Init(result);
-	sbrk_buffer=(char*)result;
+	if (ABI_Table->version<0xF0) {
+		/* Resize heap */
+		result = __get_bss_end();
+		//C_malloc_Init(result);
+		sbrk_buffer=(char*)result;
+	}
+	else
+	{
+		sbrk_buffer=(char*)(0xC0000000+0x300000);
+	}
 	return 0;
 }
 

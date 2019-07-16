@@ -18,7 +18,7 @@
 #include "api.h"
 
 char *sbrk_buffer;
-char *sbrk_UpperBound=(char*)0x20009000;
+char *sbrk_UpperBound=(char*)0xC0000000 + 0x400000;
 char sprintf_buf[128];
 
 //char write_buffer[1000];

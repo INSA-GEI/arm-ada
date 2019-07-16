@@ -115,7 +115,7 @@ procedure Tetris is
         DrawTetromino(pos_x, pos_y, orientation, tetromino);
       end if;
 
-      --PlayBGM; 
+      PlayBGM; 
     end if;
   end UpdateScoreAndPit;
 
@@ -149,7 +149,7 @@ begin
     if Timeevent = True then
       Timeevent := False; 
       GravityKey := Gravity;
-      --PlayBGM;
+      PlayBGM;
     end if;
 
     keyList:=GetAllKeys;

@@ -45,9 +45,14 @@ package body Simon is
 
    begin
       if Efface then
-	 SetPenColor(White);
-	 DrawFillRectangle(0, 0, 
-			   319,239);
+	 --SetPenColor(White);
+	 --DrawFillRectangle(0, 0, 
+	 --		   319,239);
+    DrawimagefromSRAM((320-simonBg.Width)/2, 
+                        (240-simonBg.Height)/2, 
+                        simonBg.Width, 
+                        simonBg.Height, 
+                        0);
       else	 
 	 status:=SYNTH_NoteOn(0, C3);
 	 DrawimagefromSRAM(165, 35, 
@@ -61,9 +66,14 @@ package body Simon is
       status: SYNTH_STATUS;
    begin
       if Efface then
-	 SetPenColor(White);
-	 DrawFillRectangle(0, 0, 
-			   319,239);
+	 --SetPenColor(White);
+	 --DrawFillRectangle(0, 0, 
+	 --		   319,239);
+    DrawimagefromSRAM((320-simonBg.Width)/2, 
+                        (240-simonBg.Height)/2, 
+                        simonBg.Width, 
+                        simonBg.Height, 
+                        0);
       else	 
 	 status:=SYNTH_NoteOn(0, A3);
 	 DrawimagefromSRAM(72, 127, 
@@ -77,9 +87,14 @@ package body Simon is
       status: SYNTH_STATUS;
    begin
       if Efface then
-	 SetPenColor(White);
-	 DrawFillRectangle(0, 0, 
-			   319,239);
+	 --SetPenColor(White);
+	 --DrawFillRectangle(0, 0, 
+	 --		   319,239);
+    DrawimagefromSRAM((320-simonBg.Width)/2, 
+                        (240-simonBg.Height)/2, 
+                        simonBg.Width, 
+                        simonBg.Height, 
+                        0);
       else	 
 	 status:=SYNTH_NoteOn(0, C4);
 	 DrawimagefromSRAM(165, 127, 
@@ -93,9 +108,14 @@ package body Simon is
       status: SYNTH_STATUS;
    begin
       if Efface then
-	 SetPenColor(White);
-	 DrawFillRectangle(0, 0, 
-			   319,239);
+	 --SetPenColor(White);
+	 --DrawFillRectangle(0, 0, 
+	 --		   319,239);
+    DrawimagefromSRAM((320-simonBg.Width)/2, 
+                        (240-simonBg.Height)/2, 
+                        simonBg.Width, 
+                        simonBg.Height, 
+                        0);
       else	 
 	 status:=SYNTH_NoteOn(0, A4);
 	 DrawimagefromSRAM(74, 35, 
@@ -216,7 +236,6 @@ package body Simon is
       TempsEcoule := 0;
    end Mettreazerotimer ;
    
-   
    function DetecterDirection return T_Direction is
       Resultat : T_Direction ;
       TempsEntree : integer  := TempsEcoule ;
@@ -259,12 +278,7 @@ package body Simon is
       
       return Resultat ;
    end DetecterDirection ;
-   
-   
-   
-   
-   
-   
+      
    procedure DessinerPave (P: T_Direction; Efface : Boolean) is
    begin
       case P is
@@ -333,8 +347,8 @@ package body Simon is
 
    procedure AfficherSimon is
    begin     
-      SetLayerDisplayMode(Display_Mode_Transparency);
-      SetLayer(Layer_2);
+      --SetLayerDisplayMode(Display_Mode_Transparency);
+      --SetLayer(Layer_2);
       
       ClearScreen(White);
 
@@ -345,12 +359,12 @@ package body Simon is
                         simonBg.Height, 
                         0);
 
-      SetLayer(Layer_1);
-      SetLayerTransparency(Transparency_100,Transparency_100);
-      SetTransparentColorforBTE(White);
-      ClearScreen (White);
+      --SetLayer(Layer_1);
+      --SetLayerTransparency(Transparency_100,Transparency_100);
+      --SetTransparentColorforBTE(White);
+      --ClearScreen (White);
 
-      Sprites(T_Bleue):=0;
+      Sprites(T_Bleue):=(simonBg.Width*simonBg.Height);
       UnpackimagetoSRAM(Touche_Bleue,Sprites(T_Bleue));
       Sprites(T_Rouge):=Sprites(T_Bleue)+(Touche_Bleue.Width*Touche_Bleue.Height);
       UnpackimagetoSRAM(Touche_Rouge,Sprites(T_Rouge));
@@ -362,9 +376,9 @@ package body Simon is
 
    procedure EffaceEcranFinDuJeu is
    begin
-      SetLayer(Layer_2);
-      ClearScreen(White);
-      SetLayer(Layer_1);
+      --SetLayer(Layer_2);
+      --ClearScreen(White);
+      --SetLayer(Layer_1);
       ClearScreen(White);
    end EffaceEcranFinDuJeu;
 
@@ -374,8 +388,8 @@ package body Simon is
 
       i: INTEGER;
    begin
-      SetLayer(Layer_1);
-      ClearScreen(Black);
+      --SetLayer(Layer_1);
+      --ClearScreen(Black);
 
       UnpackimagetoSRAM(GameOver,0);
       DrawimagefromSRAM((320-GameOver.Width)/2, 
@@ -416,7 +430,7 @@ package body Simon is
       status: SYNTH_STATUS;
       stat_MELODY: MELODY_STATUS;
    begin
-      SetLayer(Layer_1);
+      --SetLayer(Layer_1);
       
       Sprites(1):=0;
       UnpackimagetoSRAM(Fire1,Sprites(1));

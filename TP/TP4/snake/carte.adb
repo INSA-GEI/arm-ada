@@ -3,8 +3,8 @@ use  Insa , Insa.Keys , Insa.Timer , Insa.Graphics , Insa.Sensors ;
 
 package body Carte is
    
-   SeuilEstOuest : constant Integer := 200 ;
-   SeuilNordSud : constant Integer := 200 ;
+   SeuilEstOuest : constant Integer := 30 ;
+   SeuilNordSud : constant Integer := 30 ;
    
    procedure TraiterPeriodique is
    begin 
@@ -43,6 +43,10 @@ package body Carte is
    begin
       EstOuest := Obtenirvaleursaccelero(1);
       NordSud := Obtenirvaleursaccelero(2);
+	
+      --EcrireEcran(1,1,"X: " & Integer'Image(EstOuest) & "  ");
+      --EcrireEcran(1,2,"Y: " & Integer'Image(NordSud) & "  ");
+
       if abs(EstOuest) > abs(NordSud) then
 	 if EstOuest > SeuilEstOuest then
 	    Resultat := Ouest ;
@@ -59,7 +63,9 @@ package body Carte is
 	 
        while  TempsEcoule - TempsEntree < 1 loop
 	  null ;
-       end loop ;	 
+       end loop ;
+
+      --EcrireEcran(1,3,"R: " & T_Direction'Image(Resultat) & "     ");
       return Resultat ;
    end DetecterDirection ;
     

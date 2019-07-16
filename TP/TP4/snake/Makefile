@@ -27,6 +27,7 @@ OPTIONS = -gdwarf-2 -O0 --function-sections -march=armv7e-m -mthumb -mthumb-inte
 
 all: $(TARGET)
 	arm-none-eabi-objcopy -O ihex $(TARGET) $(PROJECT_NAME).hex
+	arm-none-eabi-objcopy -O binary $(TARGET) application.bin
 	arm-none-eabi-size $(TARGET)
 
 # Say how to compile Ada programs.
@@ -50,10 +51,13 @@ $(TARGET): $(DEP_ADA) $(DEP_ALI) $(DEP_ASM) $(DEP_C) $(ARM_ADA_PATH)/lib/linker-
 	arm-none-eabi-gcc -gdwarf-2 -march=armv7e-m -mthumb -mthumb-interwork -mfloat-abi=hard -mfpu=fpv4-sp-d16 -Wl,-Map="ada-program.map" -Wl,--gc-section -T $(ARM_ADA_PATH)/lib/linker-script-insa.ld -o $(TARGET) *.o $(LIBWRAPPER_PATH)/retarget.o -nostartfiles -nodefaultlibs -L $(LIBWRAPPER_PATH) -L $(LIBINSA_PATH) -L $(LIBGNAT_PATH) -lgnat -lc -ladainsa -lwrapper
 
 clean:
-	rm -f  $(PROJECT_NAME).o $(PROJECT_NAME).ali b~* $(TARGET) $(PROJECT_NAME).hex ada-program.map *.log
+	rm -f  $(PROJECT_NAME).o $(PROJECT_NAME).ali b~* $(TARGET) $(PROJECT_NAME).hex application.bin ada-program.map *.log
 
 install:
 	flashprog $(PROJECT_NAME).hex
+
+install-new:
+	JLinkExe -device STM32F746NG -CommanderScript flash_app.jlink
 
 solution:
 	flashprog solution.hex

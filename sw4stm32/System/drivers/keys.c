@@ -96,6 +96,8 @@ KEY_STATE KEYS_GetState(KEY_ID key)
 	case KEY_SYSTEM:
 		pin = KEY_SYSTEM_PIN;
 		break;
+	default:
+	    pin = KEY_SYSTEM_PIN;
 	}
 
 	if (key == KEY_SYSTEM) 

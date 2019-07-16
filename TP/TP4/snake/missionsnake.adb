@@ -53,13 +53,13 @@ procedure missionsnake is
    begin
       case D is
 	 when Sud =>
-	    Nouvelletete :=((S.Serpent.PosX+1) mod 11, S.Serpent.PosY);
+	    Nouvelletete :=((S.Serpent.PosX+1) mod 12, S.Serpent.PosY);
 	 when Nord =>  
-	    Nouvelletete :=((S.Serpent.PosX-1) mod 11,S.Serpent.PosY);
+	    Nouvelletete :=((S.Serpent.PosX-1) mod 12,S.Serpent.PosY);
 	 when Est => 
-	    Nouvelletete :=(S.Serpent.PosX,(S.Serpent.PosY+1) mod 15);
+	    Nouvelletete :=(S.Serpent.PosX,(S.Serpent.PosY+1) mod 16);
 	 when Ouest => 
-	    Nouvelletete :=(S.Serpent.PosX,(S.Serpent.PosY-1) mod 15);
+	    Nouvelletete :=(S.Serpent.PosX,(S.Serpent.PosY-1) mod 16);
 	 when others =>
 	    null;
       end case ;

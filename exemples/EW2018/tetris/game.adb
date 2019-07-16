@@ -138,7 +138,7 @@ package body Game is
   
     if BGM_Started =false then
       BGM_Started := true;
-      status:=SYNTH_SetMainVolume(100);
+      status:=SYNTH_SetMainVolume(50);
 
       i:=0;
 		  while (i<4) loop
