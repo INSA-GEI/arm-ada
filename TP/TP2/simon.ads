@@ -1,3 +1,6 @@
+with Insa.Audio.Synthesizer;
+use Insa.Audio.Synthesizer;
+
 package Simon is
    
    -- ###############################
@@ -65,5 +68,28 @@ package Simon is
 
    -- effacement de l'ecran à la fin du jeu
    procedure EffaceEcranFinDuJeu;
+
+   	Sinus : aliased constant SYNTH_WAVE :=
+	(
+		128, 142, 156, 171, 184, 197, 209, 219, 229, 237, 244, 249, 253,
+		255, 255, 254, 251, 247, 241, 233, 224, 214, 203, 190, 177, 164,
+		149, 135, 121, 107, 92, 79, 66, 53, 42, 32, 23, 15, 9, 5, 2, 1,
+		1, 3, 7, 12, 19, 27, 37, 47, 59, 72, 85, 100, 114
+	);
+
+	Sinus_Access : SYNTH_WAVE_ACCESS := Sinus'Access;
+
+	Sinus_Instr: aliased constant SYNTH_INSTRUMENT := (
+		0,
+		NATURAL(0.4/TickAudio),
+		TickAudio/0.01,
+		TickAudio/0.005,
+		0.5,
+		TickAudio/0.1,
+		Sinus_Access
+	);
+
+	Sinus_Instr_Access : SYNTH_INSTRUMENT_ACCESS := Sinus_Instr'Access;
+   
 end Simon ;
 

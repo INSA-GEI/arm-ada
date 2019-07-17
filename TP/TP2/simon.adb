@@ -54,8 +54,9 @@ package body Simon is
                         simonBg.Height, 
                         0);
       else	 
-	 status:=SYNTH_NoteOn(0, C3);
-	 DrawimagefromSRAM(165, 35, 
+      status:= SYNTH_SetInstrument(0, Guitar_Access);
+	   status:=SYNTH_NoteOn(0, C3);
+	   DrawimagefromSRAM(165, 35, 
 			   Touche_Bleue.Width, 
 			   Touche_Bleue.Height, 
 			   Sprites(T_Bleue));
@@ -75,7 +76,8 @@ package body Simon is
                         simonBg.Height, 
                         0);
       else	 
-	 status:=SYNTH_NoteOn(0, A3);
+	 status:= SYNTH_SetInstrument(0, Guitar_Access);
+    status:=SYNTH_NoteOn(0, A3);
 	 DrawimagefromSRAM(72, 127, 
 			   Touche_Rouge.Width, 
 			   Touche_Rouge.Height, 
@@ -96,7 +98,8 @@ package body Simon is
                         simonBg.Height, 
                         0);
       else	 
-	 status:=SYNTH_NoteOn(0, C4);
+	 status:= SYNTH_SetInstrument(0, Guitar_Access);
+    status:=SYNTH_NoteOn(0, C4);
 	 DrawimagefromSRAM(165, 127, 
 			   Touche_Verte.Width, 
 			   Touche_Verte.Height, 
@@ -117,7 +120,8 @@ package body Simon is
                         simonBg.Height, 
                         0);
       else	 
-	 status:=SYNTH_NoteOn(0, A4);
+	 status:= SYNTH_SetInstrument(0, Guitar_Access);
+    status:=SYNTH_NoteOn(0, A4);
 	 DrawimagefromSRAM(74, 35, 
 			   Touche_Jaune.Width, 
 			   Touche_Jaune.Height, 
@@ -335,11 +339,11 @@ package body Simon is
 	 raise CONSTRAINT_ERROR;
       end if;
 
-      status:=SYNTH_SetMainVolume(100);
+      status:=SYNTH_SetMainVolume(200);
       i:=0;
 
       while i<4 loop
-	 status:=SYNTH_SetVolume(i, 100);
+	 status:=SYNTH_SetVolume(i, 255);
 	 status:=SYNTH_SetInstrument(i, Guitar_Access);
 	 i:=i+1;
       end loop;
@@ -399,11 +403,11 @@ package body Simon is
                         0);
 
       if SYNTH_Start =SYNTH_SUCCESS then
-	 status:=SYNTH_SetMainVolume(100);
+	 status:=SYNTH_SetMainVolume(200);
 
 	 i:=0;
 	 while (i<4) loop
-	    status:= SYNTH_SetVolume(i, 100);               -- Reglage du volume par canal
+	    status:= SYNTH_SetVolume(i, 255);               -- Reglage du volume par canal
 	    status:= SYNTH_SetInstrument(i, Guitar_Access);	-- Parametrage de l'instrument à utiliser par canal
 
 	    i:=i+1;
@@ -445,12 +449,12 @@ package body Simon is
       ReprendreTimer;
 
       if SYNTH_Start =SYNTH_SUCCESS then
-	 status:=SYNTH_SetMainVolume(100);
+	 status:=SYNTH_SetMainVolume(200);
 
 	 i:=0;
 	 while (i<4) loop
-	    status:= SYNTH_SetVolume(i, 100);               -- Reglage du volume par canal
-	    status:= SYNTH_SetInstrument(i, Guitar_Access);	-- Parametrage de l'instrument à utiliser par canal
+	    status:= SYNTH_SetVolume(i, 255);               -- Reglage du volume par canal
+	    status:= SYNTH_SetInstrument(i, Sinus_Instr_Access);	-- Parametrage de l'instrument à utiliser par canal
 
 	    i:=i+1;
 	 end loop;
