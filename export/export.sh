@@ -140,38 +140,56 @@ echo "configuration des TP"
 
 echo "Preparation des TP"
 cd arm-ada/TP/TP1
+make clean
+rm -rf *.o *.ali
 make ressources
 make
+make new
 make export
 make doc
 
 cd ../TP2
+make clean
+rm -rf *.o *.ali
 make ressources
 make
+make new
 make export
 make doc
 
 cd ../TP3/dicho
+make clean
+rm -rf *.o *.ali
 make ressources
 make
+make new
 make export
 make doc
 
 cd ../../TP3/koch
+make clean
+rm -rf *.o *.ali
 make ressources
 make
+make new
 make export
 make doc
 
 cd ../../TP4/magneto
+make clean
+rm -rf *.o *.ali
 make ressources
 make
+make new
 make export
 make doc
 
 cd ../../TP4/snake
+make clean
+rm -rf *.o *.ali
 make ressources
 make
+make new
 make export
 make doc
 

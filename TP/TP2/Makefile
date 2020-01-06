@@ -18,6 +18,7 @@ RESSOURCES_NAME = ressources
 #############################################################################################################################
 
 ARM_ADA_COMPILER_PATH = /usr/local/insa/arm-ada
+STLINK_PROGRAMMER_PATH = /usr/local/insa/STM32CubeProgrammer/bin
 ARM_ADA_PATH = $(HOME)/arm-ada
 
 LIBGNAT_PATH = $(ARM_ADA_COMPILER_PATH)/compilateur/gcc-arm-none-eabi/lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv4-sp/hard/adalib
@@ -33,7 +34,7 @@ all: $(TARGET)
 	arm-none-eabi-size $(TARGET)
 
 new: $(TARGET_NEW)
-	arm-none-eabi-objcopy -O binary $(TARGET_NEW) $(PROJECT_NAME_NEW).bin
+	arm-none-eabi-objcopy -O ihex $(TARGET_NEW) $(PROJECT_NAME_NEW).hex
 	arm-none-eabi-size $(TARGET_NEW)
 
 # Say how to compile Ada programs.
@@ -62,7 +63,7 @@ $(TARGET_NEW): $(DEP_ADA) $(DEP_ALI) $(DEP_ASM) $(DEP_C) $(ARM_ADA_PATH)/lib/lin
 	arm-none-eabi-gcc -gdwarf-2 -march=armv7e-m -mthumb -mthumb-interwork -mfloat-abi=hard -mfpu=fpv4-sp-d16 -Wl,-Map="ada-program.map" -Wl,--gc-section -T $(ARM_ADA_PATH)/lib/linker-script-arm-ada-new.ld -o $(TARGET_NEW) *.o $(LIBWRAPPER_PATH)/retarget.o -nostartfiles -nodefaultlibs -L $(LIBWRAPPER_PATH) -L $(LIBINSA_PATH) -L $(LIBGNAT_PATH) -lgnat -lc -ladainsa -lwrapper
 
 clean:
-	rm -f  $(PROJECT_NAME).o $(PROJECT_NAME).ali b~* $(TARGET) $(TARGET_NEW) $(PROJECT_NAME).hex $(PROJECT_NAME_NEW).bin ada-program.map *.log
+	rm -f  $(PROJECT_NAME).o $(PROJECT_NAME).ali b~* $(TARGET) $(TARGET_NEW) $(PROJECT_NAME).hex $(PROJECT_NAME_NEW).hex ada-program.map *.log
 
 install:
 	flashprog $(PROJECT_NAME).hex
@@ -71,10 +72,10 @@ solution:
 	flashprog solution.hex
 
 install-new:
-	JLinkExe -device STM32F746NG -CommanderScript flash_app.jlink
+	$(STLINK_PROGRAMMER_PATH)/STM32_Programmer_CLI -c port=SWD -d $(PROJECT_NAME_NEW).hex -rst
 
 solution-new:
-	JLinkExe -device STM32F746NG -CommanderScript flash_solution.jlink
+	$(STLINK_PROGRAMMER_PATH)/STM32_Programmer_CLI -c port=SWD -d solution-new.hex -rst
 
 doc:
 	a2ps -R -o doc.ps simon.ads
@@ -88,6 +89,6 @@ endif
 
 export:
 	mv $(PROJECT_NAME).hex solution.hex
-	mv $(PROJECT_NAME_NEW).bin solution.bin
-	rm -f simon.adb $(PROJECT_NAME).o $(PROJECT_NAME).ali b~* $(TARGET) $(PROJECT_NAME).hex ada-program.map *.log
+	mv $(PROJECT_NAME_NEW).hex solution-new.hex
+	rm -f simon.adb $(PROJECT_NAME).o $(PROJECT_NAME).ali b~* $(TARGET) $(PROJECT_NAME_NEW).hex $(PROJECT_NAME).hex *.bin *.elf ada-program.map *.log
 	mv $(PROJECT_NAME).adb.tp $(PROJECT_NAME).adb
