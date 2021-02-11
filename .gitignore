@@ -28,3 +28,4 @@ Altium-PCB/History
 *.iex
 *#
 
+simulateur/__pycache__
