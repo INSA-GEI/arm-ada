@@ -43,9 +43,9 @@
     <property name="geometry">
      <rect>
       <x>90</x>
-      <y>160</y>
-      <width>31</width>
-      <height>41</height>
+      <y>165</y>
+      <width>36</width>
+      <height>36</height>
      </rect>
     </property>
     <property name="text">
@@ -58,10 +58,10 @@
    <widget class="QPushButton" name="buttonLeft">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>200</y>
-      <width>41</width>
-      <height>41</height>
+      <x>53</x>
+      <y>202</y>
+      <width>36</width>
+      <height>36</height>
      </rect>
     </property>
     <property name="text">
@@ -74,10 +74,10 @@
    <widget class="QPushButton" name="buttonRight">
     <property name="geometry">
      <rect>
-      <x>120</x>
-      <y>200</y>
-      <width>41</width>
-      <height>41</height>
+      <x>126</x>
+      <y>202</y>
+      <width>36</width>
+      <height>36</height>
      </rect>
     </property>
     <property name="text">
@@ -92,8 +92,8 @@
      <rect>
       <x>90</x>
       <y>240</y>
-      <width>31</width>
-      <height>31</height>
+      <width>36</width>
+      <height>36</height>
      </rect>
     </property>
     <property name="text">
@@ -106,10 +106,10 @@
    <widget class="QPushButton" name="buttonB">
     <property name="geometry">
      <rect>
-      <x>920</x>
-      <y>260</y>
-      <width>61</width>
-      <height>61</height>
+      <x>922</x>
+      <y>264</y>
+      <width>62</width>
+      <height>62</height>
      </rect>
     </property>
     <property name="text">
@@ -122,10 +122,10 @@
    <widget class="QPushButton" name="buttonA">
     <property name="geometry">
      <rect>
-      <x>840</x>
+      <x>838</x>
       <y>250</y>
-      <width>51</width>
-      <height>61</height>
+      <width>62</width>
+      <height>62</height>
      </rect>
     </property>
     <property name="text">
@@ -138,10 +138,10 @@
    <widget class="QPushButton" name="buttonX">
     <property name="geometry">
      <rect>
-      <x>840</x>
-      <y>170</y>
-      <width>61</width>
-      <height>51</height>
+      <x>838</x>
+      <y>164</y>
+      <width>62</width>
+      <height>62</height>
      </rect>
     </property>
     <property name="text">
@@ -154,10 +154,10 @@
    <widget class="QPushButton" name="buttonY">
     <property name="geometry">
      <rect>
-      <x>920</x>
-      <y>180</y>
-      <width>61</width>
-      <height>61</height>
+      <x>922</x>
+      <y>178</y>
+      <width>62</width>
+      <height>62</height>
      </rect>
     </property>
     <property name="text">
@@ -171,9 +171,9 @@
     <property name="geometry">
      <rect>
       <x>920</x>
-      <y>90</y>
-      <width>21</width>
-      <height>21</height>
+      <y>92</y>
+      <width>22</width>
+      <height>22</height>
      </rect>
     </property>
     <property name="text">
@@ -207,7 +207,17 @@
     </property>
     <addaction name="actionA_propos_de"/>
    </widget>
+   <widget class="QMenu" name="menuPeripheriques">
+    <property name="title">
+     <string>&amp;Peripheriques</string>
+    </property>
+    <addaction name="actionPotentiometres"/>
+    <addaction name="actionAccelerometre"/>
+    <addaction name="actionGyroscope"/>
+    <addaction name="actionMagnetometre"/>
+   </widget>
    <addaction name="menuFichier"/>
+   <addaction name="menuPeripheriques"/>
    <addaction name="menuAide"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -224,6 +234,26 @@
   <action name="actionA_propos_de">
    <property name="text">
     <string>A &amp;propos de ...</string>
+   </property>
+  </action>
+  <action name="actionPotentiometres">
+   <property name="text">
+    <string>Pot&amp;entiometres</string>
+   </property>
+  </action>
+  <action name="actionAccelerometre">
+   <property name="text">
+    <string>A&amp;ccelerometre</string>
+   </property>
+  </action>
+  <action name="actionGyroscope">
+   <property name="text">
+    <string>&amp;Gyroscope</string>
+   </property>
+  </action>
+  <action name="actionMagnetometre">
+   <property name="text">
+    <string>&amp;Magnetometre</string>
    </property>
   </action>
  </widget>
