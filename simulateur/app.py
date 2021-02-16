@@ -2,32 +2,56 @@
 
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
+from PyQt5.QtWidgets import QMessageBox
 
 from main_window_ui import Ui_MainWindow
 
 from socket_worker import SocketWorker
 from cmd_processor import CmdProcessor
 from components.display import Display
+from components.keys import Keys
+
+keyDict = { QtCore.Qt.Key_A: Keys.Key_A, 
+            QtCore.Qt.Key_B: Keys.Key_B,
+            QtCore.Qt.Key_C: Keys.Key_C,
+            QtCore.Qt.Key_X: Keys.Key_X,
+            QtCore.Qt.Key_Y: Keys.Key_Y,
+            QtCore.Qt.Key_Up: Keys.Key_Up,
+            QtCore.Qt.Key_Down: Keys.Key_Down,
+            QtCore.Qt.Key_Left: Keys.Key_Left,
+            QtCore.Qt.Key_Right: Keys.Key_Right,
+            QtCore.Qt.Key_R: Keys.Key_Reset }
+
+textKeyDict = { 'A': Keys.Key_A, 
+                'B': Keys.Key_B,
+                'C': Keys.Key_C,
+                'X': Keys.Key_X,
+                'Y': Keys.Key_Y,
+                'UP': Keys.Key_Up,
+                'DOWN': Keys.Key_Down,
+                'LEFT': Keys.Key_Left,
+                'RIGHT': Keys.Key_Right,
+                'RESET': Keys.Key_Reset }
 
 class Window(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)
 
-        canvas = QtGui.QPixmap(self.drawingArea.geometry().width(), self.drawingArea.geometry().height())
-        self.drawingArea.setPixmap(canvas)
         self.socketThread = QtCore.QThread()
         self.socketWorker = SocketWorker("/home/dimercur/armada.sock")
         self.socketWorker.moveToThread(self.socketThread)
-        self.socketThread.started.connect(self.socketWorker.run)
-        self.socketWorker.error.connect(self.socketError)
+        
+        self.cmp_display = Display(self.centralwidget)
+        self.cmp_display.setGeometry(271,92,480,272)
+        self.cmp_display.setObjectName("cmp_display")
+        self.cmp_display.drawFillRectangle(0,0,480,272)
+
+        self.cmp_keys = Keys()
 
         self.cmdProcessor = CmdProcessor(self.socketWorker)
-        self.cmp_display = Display(self.drawingArea)
         self.socketWorker.openSocket()
         self.socketThread.start()
-
-        self.draw_something()
 
         self.connectSignalsSlots()
 
@@ -36,158 +60,95 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def connectSignalsSlots(self):
         # Connect buttons
-        self.buttonUp.clicked.connect(self.buttonUpClicked)
-        self.buttonLeft.clicked.connect(self.buttonLeftClicked)
-        self.buttonRight.clicked.connect(self.buttonRightClicked)
-        self.buttonDown.clicked.connect(self.buttonDownClicked)
-        #self.buttonA.clicked.connect(self.buttonAClicked)
-        self.buttonA.pressed.connect(self.buttonAPressed)
-        self.buttonA.released.connect(self.buttonAReleased)
-        #self.buttonB.pressed.connect(self.keyPressEvent,QtCore.Qt.Key_B)
-        #self.buttonB.released.connect(self.keyReleaseEvent,QtCore.Qt.Key_B)
+        self.buttonUp.pressed.connect(lambda key=QtCore.Qt.Key_Up: self.buttonPressEvent(key))
+        self.buttonLeft.pressed.connect(lambda key=QtCore.Qt.Key_Left: self.buttonPressEvent(key))
+        self.buttonRight.pressed.connect(lambda key=QtCore.Qt.Key_Right: self.buttonPressEvent(key))
+        self.buttonDown.pressed.connect(lambda key=QtCore.Qt.Key_Down: self.buttonPressEvent(key))
+        self.buttonA.pressed.connect(lambda key=QtCore.Qt.Key_A: self.buttonPressEvent(key))
         self.buttonB.pressed.connect(lambda key=QtCore.Qt.Key_B: self.buttonPressEvent(key))
+        self.buttonX.pressed.connect(lambda key=QtCore.Qt.Key_X: self.buttonPressEvent(key))
+        self.buttonY.pressed.connect(lambda key=QtCore.Qt.Key_Y: self.buttonPressEvent(key))
+        self.buttonReset.pressed.connect(lambda key=QtCore.Qt.Key_R: self.buttonPressEvent(key))
+
+        self.buttonUp.released.connect(lambda key=QtCore.Qt.Key_Up: self.buttonReleaseEvent(key))
+        self.buttonLeft.released.connect(lambda key=QtCore.Qt.Key_Left: self.buttonReleaseEvent(key))
+        self.buttonRight.released.connect(lambda key=QtCore.Qt.Key_Right: self.buttonReleaseEvent(key))
+        self.buttonDown.released.connect(lambda key=QtCore.Qt.Key_Down: self.buttonReleaseEvent(key))
+        self.buttonA.released.connect(lambda key=QtCore.Qt.Key_A: self.buttonReleaseEvent(key))
         self.buttonB.released.connect(lambda key=QtCore.Qt.Key_B: self.buttonReleaseEvent(key))
+        self.buttonX.released.connect(lambda key=QtCore.Qt.Key_X: self.buttonReleaseEvent(key))
+        self.buttonY.released.connect(lambda key=QtCore.Qt.Key_Y: self.buttonReleaseEvent(key))
+        self.buttonReset.released.connect(lambda key=QtCore.Qt.Key_R: self.buttonReleaseEvent(key))
+
         # Connect menus
         self.actionQuitter.triggered.connect(self.close)
-        #self.action_Find_Replace.triggered.connect(self.findAndReplace)
-        #self.action_About.triggered.connect(self.about)
+        self.actionA_propos_de.triggered.connect(self.about)
+        self.actionOuvrir.triggered.connect(self.open)
 
-        # Connect components
-        self.cmdProcessor.drawText.connect(self.cmp_display.drawtext)
+        # Connect command processor events
+        self.cmdProcessor.drawText.connect(self.cmp_display.drawText)
+        self.cmdProcessor.getKeyState.connect(self.cp_GetKeyState)
+        self.cmdProcessor.getAllKeys.connect(self.cp_GetAllKeys)
 
-    def draw_something(self):
-        painter = QtGui.QPainter(self.drawingArea.pixmap()) 
-        geom = self.drawingArea.geometry()
-
-        painter.fillRect(0,0, geom.width(), geom.height(), QtCore.Qt.white)
+        # Connect socket events
+        self.socketWorker.stateChanged.connect(self.socketEvent)
+        self.socketThread.started.connect(self.socketWorker.run)
+        self.socketWorker.stateChanged.connect(self.socketEvent)
         
-        painter.drawLine(0, 0, geom.width(), geom.height())
-        painter.end()
-
     def keyPressEvent(self, e):
         self.buttonPressEvent(e.key())
-        # if e.key() == QtCore.Qt.Key_A: 
-        #     self.cmdProcessor.sendKeyPressed("A")
-        # elif e.key() == QtCore.Qt.Key_B:
-        #     self.cmdProcessor.sendKeyPressed("B")
-        # elif e.key() == QtCore.Qt.Key_C:
-        #     self.cmdProcessor.sendKeyPressed("C")
-        # elif e.key() == QtCore.Qt.Key_X:
-        #     self.cmdProcessor.sendKeyPressed("X")
-        # elif e.key() == QtCore.Qt.Key_Y:
-        #     self.cmdProcessor.sendKeyPressed("Y")
-        # elif e.key() == QtCore.Qt.Key_Up:
-        #     self.cmdProcessor.sendKeyPressed("Up")
-        # elif e.key() == QtCore.Qt.Key_Down:
-        #     self.cmdProcessor.sendKeyPressed("Down")
-        # elif e.key() == QtCore.Qt.Key_Left:
-        #     self.cmdProcessor.sendKeyPressed("Left")
-        # elif e.key() == QtCore.Qt.Key_Right:
-        #     self.cmdProcessor.sendKeyPressed("Right")
-        # elif e.key() == QtCore.Qt.Key_R:
-        #     self.cmdProcessor.sendKeyPressed("Reset")
 
     def keyReleaseEvent(self, e):
         self.buttonReleaseEvent(e.key())
-        # if e.key() == QtCore.Qt.Key_A: 
-        #     self.cmdProcessor.sendKeyReleased("A")
-        # elif e.key() == QtCore.Qt.Key_B:
-        #     self.cmdProcessor.sendKeyReleased("B")
-        # elif e.key() == QtCore.Qt.Key_C:
-        #     self.cmdProcessor.sendKeyReleased("C")
-        # elif e.key() == QtCore.Qt.Key_X:
-        #     self.cmdProcessor.sendKeyReleased("X")
-        # elif e.key() == QtCore.Qt.Key_Y:
-        #     self.cmdProcessor.sendKeyReleased("Y")
-        # elif e.key() == QtCore.Qt.Key_Up:
-        #     self.cmdProcessor.sendKeyReleased("Up")
-        # elif e.key() == QtCore.Qt.Key_Down:
-        #     self.cmdProcessor.sendKeyReleased("Down")
-        # elif e.key() == QtCore.Qt.Key_Left:
-        #     self.cmdProcessor.sendKeyReleased("Left")
-        # elif e.key() == QtCore.Qt.Key_Right:
-        #     self.cmdProcessor.sendKeyReleased("Right")
-        # elif e.key() == QtCore.Qt.Key_R:
-        #     self.cmdProcessor.sendKeyReleased("Reset")
 
     def buttonPressEvent(self,key):
-        if key == QtCore.Qt.Key_A: 
-            self.cmdProcessor.sendKeyPressed("A")
-        elif key == QtCore.Qt.Key_B:
-            self.cmdProcessor.sendKeyPressed("B")
-        elif key == QtCore.Qt.Key_C:
-            self.cmdProcessor.sendKeyPressed("C")
-        elif key == QtCore.Qt.Key_X:
-            self.cmdProcessor.sendKeyPressed("X")
-        elif key == QtCore.Qt.Key_Y:
-            self.cmdProcessor.sendKeyPressed("Y")
-        elif key == QtCore.Qt.Key_Up:
-            self.cmdProcessor.sendKeyPressed("Up")
-        elif key == QtCore.Qt.Key_Down:
-            self.cmdProcessor.sendKeyPressed("Down")
-        elif key == QtCore.Qt.Key_Left:
-            self.cmdProcessor.sendKeyPressed("Left")
-        elif key == QtCore.Qt.Key_Right:
-            self.cmdProcessor.sendKeyPressed("Right")
-        elif key == QtCore.Qt.Key_R:
-            self.cmdProcessor.sendKeyPressed("Reset")
+        if key in keyDict:
+            self.cmp_keys.setKeyPressed(keyDict[key])
 
     def buttonReleaseEvent(self,key):
-        if key == QtCore.Qt.Key_A: 
-            self.cmdProcessor.sendKeyReleased("A")
-        elif key == QtCore.Qt.Key_B:
-            self.cmdProcessor.sendKeyReleased("B")
-        elif key == QtCore.Qt.Key_C:
-            self.cmdProcessor.sendKeyReleased("C")
-        elif key == QtCore.Qt.Key_X:
-            self.cmdProcessor.sendKeyReleased("X")
-        elif key == QtCore.Qt.Key_Y:
-            self.cmdProcessor.sendKeyReleased("Y")
-        elif key == QtCore.Qt.Key_Up:
-            self.cmdProcessor.sendKeyReleased("Up")
-        elif key == QtCore.Qt.Key_Down:
-            self.cmdProcessor.sendKeyReleased("Down")
-        elif key == QtCore.Qt.Key_Left:
-            self.cmdProcessor.sendKeyReleased("Left")
-        elif key == QtCore.Qt.Key_Right:
-            self.cmdProcessor.sendKeyReleased("Right")
-        elif key == QtCore.Qt.Key_R:
-            self.cmdProcessor.sendKeyReleased("Reset")
+        if key in keyDict:
+            self.cmp_keys.setKeyReleased(keyDict[key])
 
-    def buttonUpClicked(self):
-        print("button up event")
+    def cp_GetKeyState(self, key):
+        if key in textKeyDict:
+            if self.cmp_keys.isKeyPressed(textKeyDict[key]):
+                self.cmdProcessor.sendKeyState(key, 1)
+            else:
+                self.cmdProcessor.sendKeyState(key, 0)
+        else:
+            raise
 
-    def buttonLeftClicked(self):
-        print("button left event")
+    def cp_GetAllKeys(self):
+        allkeys = self.cmp_keys.getState()
+        self.cmdProcessor.sendAllKeys(allkeys)
 
-    def buttonRightClicked(self):
-        print("button right event")
+    def close(self):
+        self.socketWorker.closeSocket()
+    
+        self.socketThread.quit()
+        self.socketThread.deleteLater() 
+        app.exit()
 
-    def buttonDownClicked(self):
-        print("button down event")
+    def about(self):
+        QMessageBox.information(self,"A propos de","Arm-Ada simulator\nVersion 1.0\n\nCopyright INSA-GEI 2021", QMessageBox.Ok)
+    
+    def open(self):
+        QMessageBox.critical(self,"Error","Function not implemented", QMessageBox.Ok)
 
-    def buttonAPressed(self):
-        print("button A event")
-        self.cmdProcessor.sendKeyPressed("A")
+    def socketEvent(self,evt):
+        print("Socket event received: "+ evt)
 
-    def buttonAReleased(self):
-        print("button A released ")
-        self.cmdProcessor.sendKeyReleased("A")
-
-    def buttonBClicked(self):
-        print("button B event")
-
-    def socketError(self,err):
-        print("Network error received: "+err)
-        if err=="finished":
+        if evt=="connected":
+            print ("socket connected")
+            
+        elif evt=="disconnected":
+            print ("socket disconnected")
+        elif evt=="finished":
             print ("closing socket and finishing thread")
             self.socketWorker.closeSocket()
     
             self.socketThread.quit()
             self.socketThread.deleteLater() 
-
-    def socketCmd(self,cmd):
-        print("Network cmd received: "+cmd) 
         
 app = QtWidgets.QApplication(sys.argv)
 window = Window()

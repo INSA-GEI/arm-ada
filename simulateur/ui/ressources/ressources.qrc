@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="images">
+    <file>facade-GB-480x272.png</file>
     <file>background.png</file>
   </qresource>
 </RCC>

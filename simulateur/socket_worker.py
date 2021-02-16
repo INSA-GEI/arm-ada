@@ -7,15 +7,16 @@ import os
 
 class SocketWorker(QObject):
     dataReceived = pyqtSignal(str)
-    error = pyqtSignal(str)
+    stateChanged = pyqtSignal(str)
+
     server_address = './armada_socket'
     client_address = ""
+    connected = False
 
     def __init__(self, socketName):
         super(SocketWorker, self).__init__()
         # Store constructor arguments (re-used for processing)
         self.server_address = socketName
-        #self.signals = WorkerSignals()
         print ("SocketWorker object created with socket file : " + str(self.server_address))
 
     def openSocket(self):
@@ -27,7 +28,6 @@ class SocketWorker(QObject):
                 raise
         
         # Create a UDS socket
-     
         self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         
         # Bind the socket to the port
@@ -37,6 +37,8 @@ class SocketWorker(QObject):
     def closeSocket(self):
         print ("Closing socket")
         self.sock.close()
+        self.connected = False
+        self.stateChanged.emit("disconnected")
 
     def run(self):
         """network main loop."""
@@ -49,26 +51,28 @@ class SocketWorker(QObject):
             self.connection, self.client_address = self.sock.accept()
             try:
                 print ('connection from' + str(self.client_address))
+                self.connected = True
+                self.stateChanged.emit("connected")
 
                 # Receive the data in small chunks and retransmit it
                 while True:
                     data = self.connection.recv(640*480*2)
                     print ('received "%s"' % data)
                     if data:
-                        #print ('sending data back to the client')
-                        #self.connection.send("cmd received: ".encode("utf_8"))
-                        #self.connection.sendall(data)
                         self.dataReceived.emit(data.decode("utf_8").rstrip())
                         
-                    else:
-                        print ('no more data from' % self.client_address)
-                        break
+                    #else:
+                    #    print ('no more data from' % self.client_address)
+                    #    break
             
             finally:
                 # Clean up the connection
                 self.connection.close()
+                self.connected = False
+                self.stateChanged.emit("disconnected")
 
-        self.error.emit("finished")
+        self.stateChanged.emit("finished")
 
     def sendData(self,s):
-        self.connection.send(s.encode("utf_8"))
+        if self.connected == True:
+            self.connection.send(s.encode("utf_8"))

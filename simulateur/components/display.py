@@ -1,24 +1,44 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-#from ... import cmd_processor
+class Display(QtWidgets.QLabel):
 
-class Display():
-
-    #def __init__(self, cmdProcessor: cmd_processor.CmdProcessor, drawingArea: QtWidgets.QLabel):
-    def __init__(self, drawingArea: QtWidgets.QLabel):
-        super(Display, self).__init__()
+    def __init__(self,parentWidget):
+        super(Display, self).__init__(parentWidget)
         # Store constructor arguments (re-used for processing)
-        #self.cmdProcessor = cmdProcessor
-        self.drawingArea = drawingArea
-        self.pixmap = self.drawingArea.pixmap()
-        self.drawingGeom = self.drawingArea.geometry()
-        
-        #self.cmdProcessor.drawText.connect(self.drawtext)
+        self.textColor = QtGui.QColor(0,0,0)
+        self.fgColor = QtGui.QColor(255,255,255)
+        self.bgColor = QtGui.QColor(0,0,0)
+        self.resizeWidget(self.geometry())
 
-    def drawtext(self, x, y, s):
-        print ("drawText received: " +str((x, y, s)))
-        
-        painter = QtGui.QPainter(self.pixmap) 
+    def resizeWidget (self, geom: QtCore.QRect):
+        self.canvas = QtGui.QPixmap(self.geometry().width(), self.geometry().height())       
+        self.setPixmap(self.canvas)
+
+    def setGeometry(self, a0: QtCore.QRect) -> None:
+        super(Display, self).setGeometry(a0)
+        self.resizeWidget(self.geometry())
+
+    def setGeometry(self, ax: int, ay: int, aw: int, ah: int) -> None:
+        super(Display, self).setGeometry(ax, ay, aw, ah)
+        self.resizeWidget(self.geometry())
+
+    def setFGColor(self,r,g,b):
+        self.fgColor = QtGui.QColor(r,g,b)
+
+    def setBGColor(self,r,g,b):
+        self.bgColor = QtGui.QColor(r,g,b)
+
+    def setTextColor(self,r,g,b):
+        self.textColor = QtGui.QColor(r,g,b)
+
+    def drawFillRectangle(self,x,y,w,h):
+        painter = QtGui.QPainter(self.pixmap())
+        painter.fillRect(x,y, w, h, self.fgColor)
+        painter.end()
+        self.update()
+
+    def drawText(self, x, y, s):
+        painter = QtGui.QPainter(self.pixmap()) 
         painter.drawText(10,10,s)
         painter.end()
-        self.drawingArea.update()
+        self.update()
