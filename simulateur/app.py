@@ -10,6 +10,8 @@ from socket_worker import SocketWorker
 from cmd_processor import CmdProcessor
 from components.display import Display
 from components.keys import Keys
+from components.knobs import KnobsDialog
+from components.imu import Accelerometer, Gyroscope, Magnetometer
 
 keyDict = { QtCore.Qt.Key_A: Keys.Key_A, 
             QtCore.Qt.Key_B: Keys.Key_B,
@@ -33,6 +35,8 @@ textKeyDict = { 'A': Keys.Key_A,
                 'RIGHT': Keys.Key_Right,
                 'RESET': Keys.Key_Reset }
 
+legacyMode = False
+
 class Window(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -41,19 +45,42 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.socketThread = QtCore.QThread()
         self.socketWorker = SocketWorker("/home/dimercur/armada.sock")
         self.socketWorker.moveToThread(self.socketThread)
-        
+
         self.cmp_display = Display(self.centralwidget)
-        self.cmp_display.setGeometry(271,92,480,272)
         self.cmp_display.setObjectName("cmp_display")
-        self.cmp_display.drawFillRectangle(0,0,480,272)
+
+        if legacyMode == True: 
+            # Legacy mode enabled: screen size is 320x240
+            self.cmp_display.setGeometry(351,108,320,240)
+            self.cmp_display.drawFillRectangle(0,0,319,239)
+        else: 
+            # Normal mode enabled: screen size is 480x272
+            self.cmp_display.setGeometry(271,92,480,272)
+            self.cmp_display.drawFillRectangle(0,0,479,271)
 
         self.cmp_keys = Keys()
+        self.cmp_knobs = KnobsDialog(self)
+        self.cmp_accelerometer = Accelerometer(self)
+        self.cmp_gyroscope = Gyroscope(self)
+        self.cmp_magnetometer = Magnetometer(self)
 
         self.cmdProcessor = CmdProcessor(self.socketWorker)
-        self.socketWorker.openSocket()
-        self.socketThread.start()
+
+        if legacyMode == True:
+            # Legacy mode enabled
+            # Calibrate sensors for legacy system
+            self.cmp_accelerometer.setXRange(-1000,1000)
+            self.cmp_accelerometer.setXRange(-1000,1000)
+            self.cmp_accelerometer.setXRange(-1000,1000)
+        else:
+            # Normal mode enabled
+            # Disable knobs
+            self.actionPotentiometres.setDisabled(True)
 
         self.connectSignalsSlots()
+
+        self.socketWorker.openSocket()
+        self.socketThread.start()
 
     def __del__(self):
         self.socketError("finished")
@@ -84,11 +111,20 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionQuitter.triggered.connect(self.close)
         self.actionA_propos_de.triggered.connect(self.about)
         self.actionOuvrir.triggered.connect(self.open)
+        self.actionPotentiometres.triggered.connect(self.showPotentiometres)
+        self.actionAccelerometre.triggered.connect(self.showAccelerometer)
+        self.actionGyroscope.triggered.connect(self.showGyroscope)
+        self.actionMagnetometre.triggered.connect(self.showMagnetometer)
 
         # Connect command processor events
         self.cmdProcessor.drawText.connect(self.cmp_display.drawText)
         self.cmdProcessor.getKeyState.connect(self.cp_GetKeyState)
         self.cmdProcessor.getAllKeys.connect(self.cp_GetAllKeys)
+        self.cmdProcessor.setTextColor.connect(self.cmp_display.setTextColor)
+        self.cmdProcessor.setFgColor.connect(self.cmp_display.setFgColor)
+        self.cmdProcessor.setBgColor.connect(self.cmp_display.setBgColor)
+        self.cmdProcessor.drawRect.connect(self.cmp_display.drawRectangle)
+        self.cmdProcessor.drawFillRect.connect(self.cmp_display.drawFillRectangle)
 
         # Connect socket events
         self.socketWorker.stateChanged.connect(self.socketEvent)
@@ -135,6 +171,18 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
     def open(self):
         QMessageBox.critical(self,"Error","Function not implemented", QMessageBox.Ok)
 
+    def showPotentiometres(self):
+        self.cmp_knobs.show()
+
+    def showAccelerometer(self):
+        self.cmp_accelerometer.show()
+
+    def showGyroscope(self):
+        self.cmp_gyroscope.show()
+
+    def showMagnetometer(self):
+        self.cmp_magnetometer.show()
+
     def socketEvent(self,evt):
         print("Socket event received: "+ evt)
 
@@ -150,8 +198,12 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.socketThread.quit()
             self.socketThread.deleteLater() 
         
+if len(sys.argv) > 1:
+    if sys.argv[1] == "legacy":
+        print ("enabling legacy mode")
+        legacyMode = True
+
 app = QtWidgets.QApplication(sys.argv)
 window = Window()
 window.show()
 app.exec_()
-

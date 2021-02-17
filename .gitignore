@@ -29,3 +29,5 @@ Altium-PCB/History
 *#
 
 simulateur/__pycache__
+simulateur/components/__pycache__
+

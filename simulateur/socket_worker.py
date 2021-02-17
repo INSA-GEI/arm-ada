@@ -17,7 +17,7 @@ class SocketWorker(QObject):
         super(SocketWorker, self).__init__()
         # Store constructor arguments (re-used for processing)
         self.server_address = socketName
-        print ("SocketWorker object created with socket file : " + str(self.server_address))
+        # print ("SocketWorker object created with socket file : " + str(self.server_address))
 
     def openSocket(self):
         # Make sure the socket does not already exist
@@ -31,7 +31,7 @@ class SocketWorker(QObject):
         self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         
         # Bind the socket to the port
-        print ('starting up on %s' % self.server_address)
+        # print ('starting up on %s' % self.server_address)
         self.sock.bind(self.server_address)
 
     def closeSocket(self):
@@ -42,12 +42,14 @@ class SocketWorker(QObject):
 
     def run(self):
         """network main loop."""
+        print ("SocketThread running")
         # Listen for incoming connections
         self.sock.listen(1)
+        print ('Listening on sock')
 
         while True:
         # Wait for a connection
-            print ('waiting for a connection')
+            print ('waiting for a connection (on socket %s)' % self.server_address)
             self.connection, self.client_address = self.sock.accept()
             try:
                 print ('connection from' + str(self.client_address))

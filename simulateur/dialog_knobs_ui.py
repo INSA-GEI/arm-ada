@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'ui/dialog_potentiometers.ui'
+# Form implementation generated from reading ui file 'ui/dialog_knobs.ui'
 #
 # Created by: PyQt5 UI code generator 5.14.1
 #

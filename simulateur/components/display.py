@@ -14,18 +14,14 @@ class Display(QtWidgets.QLabel):
         self.canvas = QtGui.QPixmap(self.geometry().width(), self.geometry().height())       
         self.setPixmap(self.canvas)
 
-    def setGeometry(self, a0: QtCore.QRect) -> None:
-        super(Display, self).setGeometry(a0)
-        self.resizeWidget(self.geometry())
-
     def setGeometry(self, ax: int, ay: int, aw: int, ah: int) -> None:
         super(Display, self).setGeometry(ax, ay, aw, ah)
         self.resizeWidget(self.geometry())
 
-    def setFGColor(self,r,g,b):
+    def setFgColor(self,r,g,b):
         self.fgColor = QtGui.QColor(r,g,b)
 
-    def setBGColor(self,r,g,b):
+    def setBgColor(self,r,g,b):
         self.bgColor = QtGui.QColor(r,g,b)
 
     def setTextColor(self,r,g,b):
@@ -37,8 +33,26 @@ class Display(QtWidgets.QLabel):
         painter.end()
         self.update()
 
+    def drawRectangle(self,x,y,w,h):
+        painter = QtGui.QPainter(self.pixmap())
+        painter.setPen(self.fgColor)
+        painter.drawRect(x,y, w, h)
+        painter.end()
+        self.update()
+
     def drawText(self, x, y, s):
         painter = QtGui.QPainter(self.pixmap()) 
-        painter.drawText(10,10,s)
+        #fontdatabase = QtGui.QFontDatabase()
+        #for f in fontdatabase.families():
+        #    print ("Font familiy: %s" % f)
+        
+        #cfont = QtGui.QFont('Ubuntu Mono', -1, QtGui.QFont.Monospace)
+        cfont = QtGui.QFont('Monospace', -1, QtGui.QFont.Monospace)
+        cfont.setPointSizeF(10)
+        
+        painter.setFont(cfont)
+        painter.setPen(self.textColor)
+
+        painter.drawText(x*8,10+(y*15),s)
         painter.end()
         self.update()
