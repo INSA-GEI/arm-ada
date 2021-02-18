@@ -13,6 +13,8 @@ from components.keys import Keys
 from components.knobs import KnobsDialog
 from components.imu import Accelerometer, Gyroscope, Magnetometer
 
+from tests.tests import Tests
+
 keyDict = { QtCore.Qt.Key_A: Keys.Key_A, 
             QtCore.Qt.Key_B: Keys.Key_B,
             QtCore.Qt.Key_C: Keys.Key_C,
@@ -115,13 +117,13 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionAccelerometre.triggered.connect(self.showAccelerometer)
         self.actionGyroscope.triggered.connect(self.showGyroscope)
         self.actionMagnetometre.triggered.connect(self.showMagnetometer)
+        self.actionTests.triggered.connect(self.showTests)
 
         # Connect command processor events
         self.cmdProcessor.drawText.connect(self.cmp_display.drawText)
         self.cmdProcessor.getKeyState.connect(self.cp_GetKeyState)
         self.cmdProcessor.getAllKeys.connect(self.cp_GetAllKeys)
         self.cmdProcessor.setTextColor.connect(self.cmp_display.setTextColor)
-        self.cmdProcessor.setFgColor.connect(self.cmp_display.setFgColor)
         self.cmdProcessor.setBgColor.connect(self.cmp_display.setBgColor)
         self.cmdProcessor.drawRect.connect(self.cmp_display.drawRectangle)
         self.cmdProcessor.drawFillRect.connect(self.cmp_display.drawFillRectangle)
@@ -183,6 +185,10 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
     def showMagnetometer(self):
         self.cmp_magnetometer.show()
 
+    def showTests(self):
+        self.tests = Tests(self)
+        self.tests.show()
+
     def socketEvent(self,evt):
         print("Socket event received: "+ evt)
 
@@ -197,7 +203,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
     
             self.socketThread.quit()
             self.socketThread.deleteLater() 
-        
+
 if len(sys.argv) > 1:
     if sys.argv[1] == "legacy":
         print ("enabling legacy mode")

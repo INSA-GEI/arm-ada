@@ -3,7 +3,6 @@ from socket_worker import *
 
 class CmdProcessor(QObject):
     setTextColor = pyqtSignal(int,int,int) # R: int, G: int, B: int
-    setFgColor = pyqtSignal(int,int,int) # R: int, G: int, B: int
     setBgColor = pyqtSignal(int,int,int) # R: int, G: int, B: int
     drawText = pyqtSignal(int,int,str) # x: int, y: int, text: str
     drawRect = pyqtSignal(int,int,int, int) # x: int, y: int, w: int, h: int
@@ -32,11 +31,6 @@ class CmdProcessor(QObject):
             slist = substr.split(',')
             print ("setTextColor params:\nR: "+ slist[0] + "\nG: " + slist[1] + "\nB: " + slist[2])
             self.setTextColor.emit(int(slist[0]),int(slist[1]),int(slist[2]))
-        elif s.find("SETFGCOLOR=") != -1:
-            substr = s[len("SETFGCOLOR="):]
-            slist = substr.split(',')
-            print ("setFgColor params:\nR: "+ slist[0] + "\nG: " + slist[1] + "\nB: " + slist[2])
-            self.setFgColor.emit(int(slist[0]),int(slist[1]),int(slist[2]))
         elif s.find("SETBGCOLOR=") != -1:
             substr = s[len("SETBGCOLOR="):]
             slist = substr.split(',')

@@ -205,6 +205,7 @@
     <property name="title">
      <string>&amp;Aide</string>
     </property>
+    <addaction name="actionTests"/>
     <addaction name="actionA_propos_de"/>
    </widget>
    <widget class="QMenu" name="menuPeripheriques">
@@ -254,6 +255,11 @@
   <action name="actionMagnetometre">
    <property name="text">
     <string>&amp;Magnetometre</string>
+   </property>
+  </action>
+  <action name="actionTests">
+   <property name="text">
+    <string>Tests...</string>
    </property>
   </action>
  </widget>

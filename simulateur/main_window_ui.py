@@ -94,9 +94,12 @@ class Ui_MainWindow(object):
         self.actionGyroscope.setObjectName("actionGyroscope")
         self.actionMagnetometre = QtWidgets.QAction(MainWindow)
         self.actionMagnetometre.setObjectName("actionMagnetometre")
+        self.actionTests = QtWidgets.QAction(MainWindow)
+        self.actionTests.setObjectName("actionTests")
         self.menuFichier.addAction(self.actionOuvrir)
         self.menuFichier.addSeparator()
         self.menuFichier.addAction(self.actionQuitter)
+        self.menuAide.addAction(self.actionTests)
         self.menuAide.addAction(self.actionA_propos_de)
         self.menuPeripheriques.addAction(self.actionPotentiometres)
         self.menuPeripheriques.addAction(self.actionAccelerometre)
@@ -123,4 +126,5 @@ class Ui_MainWindow(object):
         self.actionAccelerometre.setText(_translate("MainWindow", "A&ccelerometre"))
         self.actionGyroscope.setText(_translate("MainWindow", "&Gyroscope"))
         self.actionMagnetometre.setText(_translate("MainWindow", "&Magnetometre"))
+        self.actionTests.setText(_translate("MainWindow", "Tests..."))
 import ressources_rc

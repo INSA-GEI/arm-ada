@@ -30,4 +30,4 @@ Altium-PCB/History
 
 simulateur/__pycache__
 simulateur/components/__pycache__
-
+simulateur/tests/__pycache__
