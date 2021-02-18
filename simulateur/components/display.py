@@ -1,12 +1,14 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 class Display(QtWidgets.QLabel):
+    fgColor = QtGui.QColor(255,255,255)
+    bgColor = QtGui.QColor(0,0,0)
+    canvas = None
+
+    Sram = []
 
     def __init__(self,parentWidget):
         super(Display, self).__init__(parentWidget)
-        # Store constructor arguments (re-used for processing)
-        self.fgColor = QtGui.QColor(255,255,255)
-        self.bgColor = QtGui.QColor(0,0,0)
 
         self.resizeWidget(self.geometry())
 
@@ -42,8 +44,6 @@ class Display(QtWidgets.QLabel):
 
     def putPixel(self, x,y,r,g,b):
         painter=self.__openDrawingContext()
-        # pen = QtGui.QPen(QtGui.QBrush(QtGui.QColor(r,g,b)),1.0)
-        # painter.setPen(pen)
         painter.setPen(QtGui.QColor(r,g,b))
         painter.drawPoint(x,y)
         self.__closeDrawingContext()
@@ -104,6 +104,18 @@ class Display(QtWidgets.QLabel):
         painter.drawEllipse(QtCore.QPoint(x,y),r,r)
  
         self.__closeDrawingContext()
+    
+    def drawImage (self, x, y, w, h, img):
+        pass
+
+    def drawImageFromSRAM (self, x, y, w, h, index):
+        pass
+
+    def writeByteInSRAM (self, offset, byte):
+        pass
+
+    def readByteInSRAM (self, offset):
+        pass
     
 
     
