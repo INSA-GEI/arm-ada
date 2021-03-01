@@ -1,11 +1,12 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+from base64 import b64decode
 
 class Display(QtWidgets.QLabel):
     fgColor = QtGui.QColor(255,255,255)
     bgColor = QtGui.QColor(0,0,0)
     canvas = None
 
-    Sram = []
+    Sram = bytearray(2*1024*1024)
 
     def __init__(self,parentWidget):
         super(Display, self).__init__(parentWidget)
@@ -105,17 +106,35 @@ class Display(QtWidgets.QLabel):
  
         self.__closeDrawingContext()
     
-    def drawImage (self, x, y, w, h, img):
-        pass
+    def drawImage (self, x, y, w, h, img:bytes):
+        painter=self.__openDrawingContext()
+        qimage = QtGui.QImage(img, w,h, QtGui.QImage.Format_RGB16)
+        
+        painter.drawImage(QtCore.QPoint(x,y),qimage)
+        self.__closeDrawingContext()
 
     def drawImageFromSRAM (self, x, y, w, h, index):
-        pass
+        painter=self.__openDrawingContext()
+        qimage = QtGui.QImage(self.Sram[index:index+(w*h*2)], w, h, QtGui.QImage.Format_RGB16)
+        
+        painter.drawImage(QtCore.QPoint(x,y),qimage)
+        self.__closeDrawingContext()
 
-    def writeByteInSRAM (self, offset, byte):
-        pass
+    def writeByteInSRAM (self, offset, byte:bytes):
+        self.Sram[offset:offset] = [byte]
+
+    def writeByteArrayInSRAM (self, offset, byte:bytes):
+        # print ("Longueur de SRAM avant: " + str(len(self.Sram)))
+        self.Sram[offset:(offset+len(byte)-1)] = byte[0:len(byte)-1]
+        # print ("Longueur de SRAM apres: " + str(len(self.Sram)))
 
     def readByteInSRAM (self, offset):
-        pass
+        return self.Sram[offset]
+
+    def drawImageFromBase64 (self, x,y,w,h,s):
+        data= b64decode(s)
+        self.drawImage(x,y,w,h,data)
+
     
 
     
