@@ -12,11 +12,12 @@ package body Insa.Keys is
    function GetKeyState(key: KEY_ID) return KEY_STATE is
       
       -- Wrapper to corresponding OS function
-      function Wrapper_GetKeyState (key: KEY_ID) return KEY_STATE;
-      pragma Import (C, Wrapper_GetKeyState, "KEYS_GetState");
+      -- function Wrapper_GetKeyState (key: KEY_ID) return KEY_STATE;
+      -- pragma Import (C, Wrapper_GetKeyState, "KEYS_GetState");
       
    begin
-      return Wrapper_GetKeyState(Key);
+      -- return Wrapper_GetKeyState(Key);
+      return Key_Released;
    end GetKeyState;
    
    -- GetAllKeys
@@ -41,11 +42,12 @@ package body Insa.Keys is
    function GetPotentiometerValue(pot: POTENTIOMETER_ID) return POTENTIOMETER_VALUE is
       
       -- Wrapper to corresponding OS function
-      function Wrapper_GetPotentiometerValue(pot: POTENTIOMETER_ID) return POTENTIOMETER_VALUE;
-      pragma Import (C, Wrapper_GetPotentiometerValue, "POT_GetValue");
+      -- function Wrapper_GetPotentiometerValue(pot: POTENTIOMETER_ID) return POTENTIOMETER_VALUE;
+      -- pragma Import (C, Wrapper_GetPotentiometerValue, "POT_GetValue");
       
    begin
-      return Wrapper_GetPotentiometerValue(Pot);
+      -- return Wrapper_GetPotentiometerValue(Pot);
+      return 0;
    end GetPotentiometerValue;
    
 end Insa.Keys;

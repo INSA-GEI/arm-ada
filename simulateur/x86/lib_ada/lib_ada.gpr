@@ -1,11 +1,20 @@
 library project Lib_Ada is
 
-   for Languages use ("Ada");
+   for Languages use ("Ada", "C");
    for Library_Name use "adainsa";
    for Source_Dirs use ("src");
    for Object_Dir use "obj";
    for Library_Dir use "./";
    for Library_Kind use "static";
+
+   package Builder is
+      for Switches ("ada") use ("-g", "-j4", "-C");
+   end Builder;
+
+   package Compiler is
+      for Switches ("ada") use ("-g", "-ffunction-sections", "-fdata-sections");
+      for Switches ("c") use ("-g", "-ffunction-sections", "-fdata-sections");
+   end Compiler;
 
 end Lib_Ada;
 

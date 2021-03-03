@@ -12,24 +12,17 @@ package body Insa is
    -- GetOSVersion
    -- Return current version as Major.Minor
    procedure GetOSVersion(Major: out INTEGER; Minor: out INTEGER) is
-      procedure Wrapper_GetOSVersion(Major_Ver: VERSION; Minor_Ver: VERSION);
-      pragma Import (C, Wrapper_GetOSVersion, "API_GetOSVersion");
-      
-      Maj,Min: Version;
    begin
-      Wrapper_GetOSVersion(Maj, Min);
-      
-      Major:=Maj.all;
-      Minor:=Min.all;
+      Major:=2;
+      Minor:=14;
    end GetOSVersion;
    
    -- SysDelay
    -- Wait during 'Time' millisecondes
    procedure SysDelay(Time: Positive) is
-      procedure Wrapper_SysDelay(Time: Positive);
-      pragma Import (C, Wrapper_SysDelay, "C_Delay");
+      TimeToWait: Duration:=Duration(Time)/Duration(1000);
    begin
-      Wrapper_SysDelay(Time);
+      delay TimeToWait;
    end SysDelay;
    
 end Insa;
