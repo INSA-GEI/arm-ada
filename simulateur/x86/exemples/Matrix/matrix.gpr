@@ -5,6 +5,7 @@ project Matrix is
    for Source_Dirs use ("src");
    for Object_Dir use "obj";
    for Main use ("matrix.adb");
+   for Runtime ("ada") use "native";
 
    package Builder is
       for Switches ("ada") use ("-g", "-C", "-j4");
@@ -15,10 +16,8 @@ project Matrix is
    end Compiler;
 
    package Linker is
-      for Switches ("ada") use ("-g", "-Wl,--gc-sections");
+      for Switches ("ada") use ("-g", "-Wl,--gc-sections", "-lpthread");
    end Linker;
-
-   for Runtime ("ada") use "native";
 
 end Matrix;
 

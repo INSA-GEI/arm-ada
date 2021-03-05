@@ -131,7 +131,6 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # Connect socket events
         self.socketWorker.stateChanged.connect(self.socketEvent)
         self.socketThread.started.connect(self.socketWorker.run)
-        self.socketWorker.stateChanged.connect(self.socketEvent)
         
     def keyPressEvent(self, e):
         self.buttonPressEvent(e.key())

@@ -22,6 +22,23 @@ class Display(QtWidgets.QLabel):
         self.__currentContext = None
         self.update()
 
+    def __convertColor(self,r,g,b):
+        rCorrected = r*255/7
+        gCorrected = g*255/7
+        bCorrected = b*255/3
+
+        if rCorrected > 255.0:
+            rCorrected = 255.0
+
+        if gCorrected > 255.0: 
+            gCorrected = 255.0
+
+        if bCorrected > 255.0: 
+            bCorrected = 255.0
+
+        color = QtGui.QColor(int(rCorrected),int(gCorrected),int(bCorrected))
+        return color
+
     def resizeWidget (self, geom: QtCore.QRect):
         self.canvas = QtGui.QPixmap(self.geometry().width(), self.geometry().height())       
         self.setPixmap(self.canvas)
@@ -31,21 +48,23 @@ class Display(QtWidgets.QLabel):
         self.resizeWidget(self.geometry())
 
     def setBgColor(self,r,g,b):
-        self.bgColor = QtGui.QColor(r,g,b)
+        self.bgColor = self.__convertColor(r,g,b)
 
     def setTextColor(self,r,g,b):
-        self.fgColor = QtGui.QColor(r,g,b)
+        self.fgColor = self.__convertColor(r,g,b)
 
     def clearScreen(self, r,g,b):
         painter=self.__openDrawingContext()
         width = self.geometry().width()
         height = self.geometry().height()
-        painter.fillRect(0,0,width,height, QtGui.QColor(r,g,b))
+    
+        painter.fillRect(0,0,width,height, self.__convertColor(r,g,b))
         self.__closeDrawingContext()
 
     def putPixel(self, x,y,r,g,b):
         painter=self.__openDrawingContext()
-        painter.setPen(QtGui.QColor(r,g,b))
+        
+        painter.setPen(self.__convertColor(r,g,b))
         painter.drawPoint(x,y)
         self.__closeDrawingContext()
 
@@ -58,12 +77,12 @@ class Display(QtWidgets.QLabel):
         #cfont = QtGui.QFont('Ubuntu Mono', -1, QtGui.QFont.Monospace)
         cfont = QtGui.QFont('Monospace', -1, QtGui.QFont.Monospace)
         cfont.setPointSizeF(10)
-        
-        painter.setFont(cfont)
-        painter.setPen(self.fgColor)
 
-        # painter.drawText(x*8,10+(y*15),s)
-        painter.drawText(x,y,s)
+        painter.setFont(cfont)
+        painter.fillRect((x*8),(y*15),len(s)*8, 15, self.bgColor)
+        painter.setPen(self.fgColor)
+        
+        painter.drawText((x*8),10+(y*15),s)
         self.__closeDrawingContext()
 
     def drawLine(self,x1,y1,x2,y2):

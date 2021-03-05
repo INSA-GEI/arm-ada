@@ -7,11 +7,16 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Exceptions;  use Ada.Exceptions;
 with Ada.Strings;
 with GNAT.Source_Info;
-with Ada.Real_Time; use Ada.Real_Time;
+with GNAT.Exception_Traces;
+
+with Ada.Finalization;
+
+with INSA.Simulator.Tasks;
+--  with System.Task_Primitives.Operations;
 
 package body Insa.Simulator is
 
-   SocketNotInitialized                                          : Boolean := True;
+   SocketOpenFlag                                                : Boolean := False;
    
    STATUS_NO_ERROR                                               : constant Integer := 0;
    STATUS_SOCKET_CREATION_ERROR                                  : constant Integer := -1;
@@ -26,30 +31,32 @@ package body Insa.Simulator is
    type ReceiveBufferAccess is access all ReceiveBufferType;
    
    ReceiveBuffer                                                 : ReceiveBufferType;
-   ReceiverTaskRun                                               : Boolean:=False;
+      
+   type PtrFinalizeObject_Type is access all FinalizeObject;      -- global access type
+   FinalizeFlagPtr                                               : PtrFinalizeObject_Type;
    
-   task ReceiverTask is
-      pragma Priority (-1);
-      entry Start;
-   end ReceiverTask;
-   
-   procedure Test is
-      procedure Test_Wrp;
-      pragma Import (C, Test_Wrp, "test");
+   procedure Finalize  (E                                        : in out FinalizeObject) is  -- override operation
    begin
-      Test_Wrp;
-   end Test;
+            
+      Ada.Text_IO.Put_Line ("[sim] Close socket");
+      Close;
+      
+      Tasks.StopSocketListenerTask;
+      E.Flag:=False;
+   end Finalize;
    
-   procedure Init is
-      function Init_Wrp return Integer;
-      pragma Import (C, Init_Wrp, "socket_init");
+   procedure Open is
+      function Open_Wrp return Integer;
+      pragma Import (C, Open_Wrp, "socket_init");
       
       RetVal                                                     : Integer;
    begin
-      RetVal := Init_Wrp;
+      if SocketOpenFlag = False then
+         RetVal := Open_Wrp;
+      end if;
       
       if RetVal /= STATUS_NO_ERROR then
-         SocketNotInitialized := True;
+         SocketOpenFlag := False;
          
          if RetVal = STATUS_SOCKET_CREATION_ERROR then
             raise SocketException with GNAT.Source_Info.File & " : " & Integer'Image(GNAT.Source_Info.Line) & " Socket creation failed. Code (" & Integer'Image(RetVal) & ")";
@@ -59,13 +66,15 @@ package body Insa.Simulator is
             raise SocketException with GNAT.Source_Info.File & " : " & Integer'Image(GNAT.Source_Info.Line) & " Unknown error during socket intialization. Code (" & Integer'Image(RetVal) & ")";
          end if;
       else
-         SocketNotInitialized := False;
+         SocketOpenFlag := True;
       end if;
-      
-      Ada.Text_IO.Put_Line("Launch ReceiverTask");
-      ReceiverTask.Start;
-      Ada.Text_IO.Put_Line("ReceiverTask launched");
-   end Init;
+    
+   end Open;
+   
+   function IsSocketOpen return Boolean is
+   begin
+      return SocketOpenFlag;
+   end IsSocketOpen;
    
    procedure Close is
       function Close_Wrp return Integer;
@@ -73,7 +82,10 @@ package body Insa.Simulator is
       
       RetVal                                                     : Integer;
    begin
-      RetVal := Close_Wrp;
+      if SocketOpenFlag then
+         RetVal := Close_Wrp;
+         SocketOpenFlag := False;
+      end if;
       
       if RetVal /= STATUS_NO_ERROR then
          if RetVal = STATUS_CLOSE_ERROR then
@@ -90,15 +102,17 @@ package body Insa.Simulator is
       
       RetVal                                                     : Integer;
    begin
-      if SocketNotInitialized then
-         Init;
-         SocketNotInitialized := False;
+      if SocketOpenFlag = False then
+         Open;
+         SocketOpenFlag := True;
       end if;
       
       RetVal := SendMessage_Wrp (Msg & ASCII.LF, Msg'Length+1);
       if RetVal /= STATUS_NO_ERROR then
          if RetVal = STATUS_WRITE_ERROR then 
             raise SocketException with GNAT.Source_Info.File & " : " & Integer'Image(GNAT.Source_Info.Line) & " Socket write failed. Code (" & Integer'Image(RetVal) & ")";
+         elsif RetVal > 0 then
+            raise SocketException with GNAT.Source_Info.File & " : " & Integer'Image(GNAT.Source_Info.Line) & " Socket write failed (partial write). Code (" & Integer'Image(RetVal) & ")";
          else
             raise SocketException with GNAT.Source_Info.File & " : " & Integer'Image(GNAT.Source_Info.Line) & " Unknown error during socket write. Code (" & Integer'Image(RetVal) & ")";
          end if;
@@ -113,9 +127,9 @@ package body Insa.Simulator is
       
       RetVal                                                     : Integer;
    begin
-      if SocketNotInitialized then
-         Init;
-         SocketNotInitialized := False;
+      if SocketOpenFlag = False then
+         Open;
+         SocketOpenFlag := True;
       end if;
       
       RetVal := ReceiveMessage_Wrp (ReceiveBuffer'Unrestricted_Access, RECEIVE_BUFFER_LENGTH);
@@ -139,32 +153,40 @@ package body Insa.Simulator is
       end;
       
    end ReceiveMessage;
-
-   task body ReceiverTask is
-      Next_Time : Ada.Real_Time.Time;
-      Period : constant Time_Span := Milliseconds (250);
-   begin
-      loop
-         select
-            accept Start do -- Waiting for somebody to call the entry
-               ReceiverTaskRun:=True;
-               Ada.Text_IO.Put_Line ("Receiver task started");
-      
-               while ReceiverTaskRun loop
-                  Next_Time := Clock + Period;
-                  delay until Next_Time;
-                  
-                  declare
-                     Msg                                         : String := ReceiveMessage;
-                  begin
-                     Ada.Text_IO.Put_Line ("Message received (length=" & Integer'Image(Msg'Length) & ") = " & Msg);
-                  end;
-               end loop;
-            end Start;
-         or 
-            terminate;
-         end select;
-      end loop;
-   end ReceiverTask;
    
+   function GetListenerBuffer return String is
+      
+      function GetListenerBuffer_Wrp(Buffer                         : ReceiveBufferAccess; BufferLen: Integer) return Integer;
+      pragma Import (C, GetListenerBuffer_Wrp, "socket_getlistenermessage");
+      
+      RetVal                                                     : Integer;
+   begin
+      if SocketOpenFlag = False then
+         Open;
+         SocketOpenFlag := True;
+      end if;
+      
+      RetVal := GetListenerBuffer_Wrp (ReceiveBuffer'Unrestricted_Access, RECEIVE_BUFFER_LENGTH);
+      
+      declare
+         Msg                                                     : String (1..RetVal);
+      begin
+         for I in 1..RetVal loop
+            Msg(I):=ReceiveBuffer(I-1);
+         end loop;
+        
+         return Msg;
+      end;
+      
+   end GetListenerBuffer;
+   
+begin
+   GNAT.Exception_Traces.Trace_On (GNAT.Exception_Traces.Every_Raise); 
+   Ada.Text_IO.Put_Line ("[sim] Initialize socket");
+      
+   Open;
+   Tasks.StartSocketListenerTask;
+   
+   FinalizeFlagPtr := new FinalizeObject;
+   FinalizeFlagPtr.Flag:=True;
 end Insa.Simulator;

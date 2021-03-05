@@ -1,0 +1,22 @@
+[GENERATED OBJECT FILE]
+b__matrix.o
+[PROJECT FILES]
+/home/dimercur/Travail/git/arm-ada/simulateur/x86/exemples/Matrix/matrix.gpr
+20210304152540 5dc056e8a0cf2b8feed436ecad044e97
+/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr
+20210304085135 3059ed5eb8458944d37dc9e5c706627a
+[BOUND OBJECT FILES]
+/home/dimercur/Travail/git/arm-ada/simulateur/x86/exemples/Matrix/obj/matrix.o
+[GENERATED SOURCE FILES]
+b__matrix.ads
+b__matrix.adb
+b__matrix.ali
+[RESULTING OPTIONS]
+-L/home/dimercur/Travail/git/arm-ada/simulateur/x86/exemples/Matrix/obj/
+-L/home/dimercur/Travail/git/arm-ada/simulateur/x86/exemples/Matrix/obj/
+-L/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/
+-L/home/dimercur/opt/GNAT/2020-x86/lib/gcc/x86_64-pc-linux-gnu/9.3.1/adalib/
+-static
+-static-libgcc
+/home/dimercur/opt/GNAT/2020-x86/lib/gcc/x86_64-pc-linux-gnu/9.3.1/adalib/libgnat.a
+-ldl

@@ -8,16 +8,29 @@
 
 #include <fcntl.h>
 
-//char *socket_path = "./socket";
+#include <pthread.h>
+
 char *socket_path = "/home/dimercur/armada.sock";
+#define SOCKETLISTENER_BUFFER_SIZE 65535
 
 struct sockaddr_un addr;
-char buf[100];
 int fd,rc;
+
+char buf[SOCKETLISTENER_BUFFER_SIZE];
+int socketlistener_messagelength=0;
+
+typedef void (*SocketListener_EventCallback)(void);
+SocketListener_EventCallback pSocketListenerCallback=NULL;
+pthread_t listenerthread_handler;
+void *socket_listenerthread (void *args);
+
+typedef void (*Timer_EventCallback)(void);
+Timer_EventCallback pTimerCallback=NULL;
+pthread_t timerthread_handler;
+void *timer_thread (void *args);
 
 int socket_init (void) {
   if ( (fd = socket(AF_UNIX, SOCK_STREAM, 0)) == -1) {
-    // perror("socket error");
     return -1;
   }
 
@@ -31,21 +44,20 @@ int socket_init (void) {
   }
 
   if (connect(fd, (struct sockaddr*)&addr, sizeof(addr)) == -1) {
-    // perror("connect error");
     return -2;
   }
 
-  int flags = fcntl(fd, F_GETFL, 0);
-  fcntl(fd, F_SETFL, flags | O_NONBLOCK);
+  /* int flags = fcntl(fd, F_GETFL, 0);      */
+  /* fcntl(fd, F_SETFL, flags | O_NONBLOCK); */
 
   return 0;
 }
 
 int socket_write (char *msg, int len) {
   if (write(fd, msg, len) != len) {
-    if (len > 0) fprintf(stderr,"partial write");
+    if (len > 0)
+      return len;
     else {
-      // perror("write error");
       return -3;
     }
   }
@@ -55,7 +67,6 @@ int socket_write (char *msg, int len) {
 
 int socket_close (void) {
   if (close (fd) == -1)
-    // perror ("close error");
     return -4;
 
   return 0;
@@ -71,6 +82,100 @@ int socket_read (char *msg, int len) {
   return rc;
 }
 
-void test(void) {
-  printf ("Hello\n");
+int socket_getlistenermessage(char *msg, int len) {
+  strncpy(msg, buf, len);
+  memset(buf, 0,SOCKETLISTENER_BUFFER_SIZE);
+
+  return socketlistener_messagelength;
 }
+
+void socket_setcallback(SocketListener_EventCallback ptr) {
+  pSocketListenerCallback= ptr;
+}
+
+void socket_clearcallback(void) {
+  pSocketListenerCallback= NULL;
+}
+
+int socket_startthread(void) {
+  int status = 0;
+
+  if (pthread_create (&listenerthread_handler, NULL, socket_listenerthread, "1") < 0) {
+    status=-5;
+  }
+
+  return status;
+}
+
+int socket_stopthread(void) {
+  int status = 0;
+
+  if (pthread_cancel (listenerthread_handler) != 0) {
+    status=-6;
+  }
+
+  return status;
+}
+
+void timer_setcallback(Timer_EventCallback ptr) {
+  pTimerCallback= ptr;
+}
+
+void timer_clearcallback(void) {
+  pTimerCallback= NULL;
+}
+
+int timer_startthread(void) {
+  int status = 0;
+
+  if (pthread_create (&timerthread_handler, NULL, timer_thread, "1") < 0) {
+    status=-5;
+  }
+
+  return status;
+}
+
+int timer_stopthread(void) {
+  int status = 0;
+
+  if (pthread_cancel (timerthread_handler) != 0) {
+    status=-6;
+  }
+
+  return status;
+}
+
+void *socket_listenerthread (void *args) {
+  //int rc;
+
+  while (1) {
+
+    socketlistener_messagelength = read(fd, buf, SOCKETLISTENER_BUFFER_SIZE);
+
+    pthread_testcancel (); // stop thread if a cancel event has been sent
+
+    if (socketlistener_messagelength == -1) {
+      // Pas de message
+      socketlistener_messagelength=0;
+    }
+    else if (socketlistener_messagelength>0) {
+      if (pSocketListenerCallback!=NULL)
+        pSocketListenerCallback();
+    }
+    else pthread_exit (0);
+
+    socketlistener_messagelength=0;
+  }
+}
+
+void *timer_thread (void *args) {
+  while (1) {
+    sleep (1);
+    if (pTimerCallback!=NULL) pTimerCallback();
+
+    pthread_testcancel (); // stop thread if a cancel event has been sent
+  }
+
+  pthread_exit (0);
+}
+

@@ -3,15 +3,27 @@
 --
 
 -- pragma Ada_95;
+with Ada.Finalization;
 
 package Insa.Simulator is
    
-   SocketException              : exception;
+   SocketException           : exception;
+   type FinalizeObject is new Ada.Finalization.Controlled with private;
    
-   procedure Test;
-   procedure Init;
+   procedure Open;
    procedure Close;
-   procedure SendMessage(Msg    : String);
-   function ReceiveMessage return String;
+   function IsSocketOpen return Boolean;
    
+   procedure SendMessage(Msg : String);
+   function ReceiveMessage return String;
+   function GetListenerBuffer return String;
+   
+private
+   type FinalizeObject is new Ada.Finalization.Controlled with
+      record
+         Flag                : Boolean  := False;
+      end record;
+   
+   -- override operation, used to execute code when program end
+   procedure Finalize  (E    : in out FinalizeObject);  
 end Insa.Simulator;

@@ -5,27 +5,21 @@
 with Ada.Numerics.Discrete_Random;
 
 package body Insa.Random_Number is
+   package Random_Range is new Ada.Numerics.Discrete_Random (RANDOM_VALUE);
+   use Random_Range;
    
-   Firstrun : Boolean:=True;
+   G : Generator;
    
    -- GetValue
    -- return a random number from 0 to 65535
-   function GetValue return RANDOM_VALUE is
-      
+   function GetValue return RANDOM_VALUE is   
       -- function Wrapper_GetValue return RANDOM_VALUE;
       -- pragma Import (C, Wrapper_GetValue, "RNG_GetValue");
-      package Random_Die is new Ada.Numerics.Discrete_Random (RANDOM_VALUE);
-      use Random_Die;
-      G : Generator;
    begin
       -- return Wrapper_GetValue;
-      if Firstrun then
-         Reset (G);
-         Firstrun := False;
-      end if;
-      
-      return Random(G);
-        
+      return Random(G);        
    end GetValue; 
-   
+
+begin
+   Reset (G); -- Initialize random generator
 end Insa.Random_Number;

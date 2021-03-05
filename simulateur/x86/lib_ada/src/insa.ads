@@ -4,24 +4,30 @@
 
 -- pragma Ada_95;
 
+with Interfaces; use Interfaces;
+
 package Insa is
    pragma Warnings (Off);
    
    -- Definition of an unsigned byte (8 bit long)
-   type BYTE is range 0 .. 255;
-   for BYTE'Size use 8;  
+   --type BYTE is range 0 .. 255;
+   --for BYTE'Size use 8;  
+   subtype BYTE is Unsigned_8;
    
    -- Definition of a signed byte (8 bit long)
-   type SIGNED_BYTE is range -128 .. 127;
-   for SIGNED_BYTE'Size use 8;
+   --type SIGNED_BYTE is range -128 .. 127;
+   --for SIGNED_BYTE'Size use 8;
+   subtype SIGNED_BYTE is Integer_8;
    
    -- Definition of an unsigned word (16 bit long)
-   type WORD is range 0 .. 65535;
-   for WORD'Size use 16;
+   --type WORD is range 0 .. 65535;
+   --for WORD'Size use 16;
+   subtype WORD is Unsigned_16;
    
    -- Definition of a signed word (16 bit long)
-   type SIGNED_WORD is range -32768 .. 32767;
-   for SIGNED_WORD'Size use 16;
+   --type SIGNED_WORD is range -32768 .. 32767;
+   --for SIGNED_WORD'Size use 16;
+   subtype SIGNED_WORD is Integer_16;
    
    -- GetOSVersion
    -- Return current version as Major.Minor

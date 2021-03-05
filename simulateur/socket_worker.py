@@ -59,8 +59,9 @@ class SocketWorker(QObject):
                 # Receive the data in small chunks and retransmit it
                 while True:
                     data = self.connection.recv(640*480*2)
-                    print ('received "%s"' % data)
+                    
                     if data:
+                        # print ('received "%s"' % data)
                         self.dataReceived.emit(data.decode("utf_8").rstrip())
                         
                     #else:
