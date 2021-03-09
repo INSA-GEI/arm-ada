@@ -4,11 +4,14 @@ from socket_worker import *
 class CmdProcessor(QObject):
     setTextColor = pyqtSignal(int,int,int) # R: int, G: int, B: int
     setBgColor = pyqtSignal(int,int,int) # R: int, G: int, B: int
+    clearScreen = pyqtSignal(int,int,int) # R: int, G: int, B: int
     drawText = pyqtSignal(int,int,str) # x: int, y: int, text: str
     drawRect = pyqtSignal(int,int,int, int) # x: int, y: int, w: int, h: int
     drawFillRect = pyqtSignal(int,int,int, int) # x: int, y: int, w: int, h: int
-    getKeyState = pyqtSignal(str) # key: str ("A", "UP")
-    getAllKeys = pyqtSignal()     # get all key status
+    drawImage = pyqtSignal(int,int,int,int,str) # x: int, y: int, w: int, h: int, img(base64): str
+    #drawImageFromSram = pyqtSignal(int,int,int,int) # x: int, y: int, w: int, h: int, offset: int
+    #getKeyState = pyqtSignal(str) # key: str ("A", "UP")
+    #getAllKeys = pyqtSignal()     # get all key status
 
     def __init__(self, socketWorker: SocketWorker):
         super(CmdProcessor, self).__init__()
@@ -23,11 +26,7 @@ class CmdProcessor(QObject):
         # print ("Cmd in pipe = " + str(len(commandList)))
 
         for cmdstr in commandList:
-            if cmdstr.find("?KEYSTATE:") != -1:
-                self.getKeyState.emit(s[len("?KEYSTATE:"):])
-            elif cmdstr.find("?ALLKEYS") != -1:
-                self.getAllKeys.emit()
-            elif cmdstr.find("DRAWTEXT=") != -1:
+            if cmdstr.find("DRAWTEXT=") != -1:
                 substr = cmdstr[len("DRAWTEXT="):]
                 slist = substr.split(',')
                 #print ("drawtext params:\nx: "+ slist[0] + "\ny: " + slist[1] + "\ntext: " + slist[2])
@@ -52,17 +51,28 @@ class CmdProcessor(QObject):
                 slist = substr.split(',')
                 #print ("drawFillRect params:\nx: "+ slist[0] + "\ny: " + slist[1] + "\nw: " + slist[2] + "\nh: " + slist[3])
                 self.drawFillRect.emit(int(slist[0]),int(slist[1]),int(slist[2]),int(slist[3]))
+            elif cmdstr.find("DRAWIMAGE=") != -1:
+                substr = cmdstr[len("DRAWIMAGE="):]
+                slist = substr.split(',')
+                #print ("DRAWIMAGE params:\nx: "+ slist[0] + "\ny: " + slist[1] + "\nw: " + slist[2] + "\nh: " + slist[3])
+                #print ("Base 64 => " + slist[4])
+                self.drawImage.emit(int(slist[0]),int(slist[1]),int(slist[2]),int(slist[3]), str(slist[4]))
+            elif cmdstr.find("CLEARSCREEN=") != -1:
+                substr = cmdstr[len("CLEARSCREEN="):]
+                slist = substr.split(',')
+                #print ("setBgColor params:\nG: "+ slist[0] + "\nG: " + slist[1] + "\nB: " + slist[2])
+                self.clearScreen.emit(int(slist[0]),int(slist[1]),int(slist[2]))
             else:
                 print ("Unknown command: " + cmdstr)
 
-    def sendKeyState(self,key,state):
+    def sendKeyPressed(self,key):
         if type(key) == str:
-            self.socketWorker.sendData("!KEYSTATE:"+key+"="+str(state)+"\n")
+            self.socketWorker.sendData("KEYPRESSED="+key+"\n")
         else:
             raise
 
-    def sendAllKeys(self,allkeys):
-        if type(allkeys) == int:
-            self.socketWorker.sendData("!ALLKEYS="+str(allkeys)+"\n")
+    def sendKeyReleased(self,key):
+        if type(key) == str:
+            self.socketWorker.sendData("KEYRELEASED="+key+"\n")
         else:
             raise

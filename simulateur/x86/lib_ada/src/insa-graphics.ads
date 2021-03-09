@@ -32,46 +32,46 @@ package Insa.Graphics is
    
    -- SetTextColor
    -- Set the color used for drawing text (Black, Navy, DrakGreen ...)
-   procedure SetTextColor(val: COLOR);
+   procedure SetTextColor(Val: COLOR);
    
    -- SetBackColor
    -- Set the color used for drawing text background (Black, Navy, DrakGreen ...)
-   procedure SetBackColor(val: COLOR);
+   procedure SetBackColor(Val: COLOR);
    
    -- SetPenColor
    -- Set the color used for drawing graphic primitives like lines, circles, rectangles
-   procedure SetPenColor(val: COLOR);
+   procedure SetPenColor(Val: COLOR);
    
    -- ClearScreen
    -- Empty screen, with background defined 
-   procedure ClearScreen(val: COLOR);
+   procedure ClearScreen(Val: COLOR);
    
    -- PutPixel
    -- Draw a single pixel (dot) on screen
-   procedure PutPixel (x: PIXEL_X; y: PIXEL_Y; c: COLOR);
+   procedure PutPixel (X: PIXEL_X; Y: PIXEL_Y; C: COLOR);
    
    -- DrawString
    -- Draw a string on screen, like on a tty display
-   procedure DrawString (x: TEXT_X; y: TEXT_Y; s: String);
+   procedure DrawString (X: TEXT_X; Y: TEXT_Y; S: String);
    
    -- DrawLine
    -- Draw a line on screen, from (x1,y1) to (x2,y2) using color defined with SetPenColor
-   procedure DrawLine(x1: PIXEL_X; y1: PIXEL_Y; x2: PIXEL_X; y2: PIXEL_Y);
+   procedure DrawLine(X1: PIXEL_X; Y1: PIXEL_Y; X2: PIXEL_X; Y2: PIXEL_Y);
    
    -- DrawRectangle
    -- Draw an empty (only border) rectangle on screen, from (x1,y1) to (x2,y2) using color defined with SetPenColor
-   procedure DrawRectangle(x1: PIXEL_X; y1: PIXEL_Y; x2: PIXEL_X; y2: PIXEL_Y);
+   procedure DrawRectangle(X1: PIXEL_X; Y1: PIXEL_Y; X2: PIXEL_X; Y2: PIXEL_Y);
    
    -- DrawRectangle
    -- Draw a solid filled rectangle on screen, from (x1,y1) to (x2,y2) using color defined with SetPenColor
-   procedure DrawFillRectangle(x1: PIXEL_X; y1: PIXEL_Y; x2: PIXEL_X; y2: PIXEL_Y);
+   procedure DrawFillRectangle(X1: PIXEL_X; Y1: PIXEL_Y; X2: PIXEL_X; Y2: PIXEL_Y);
    
    -- DrawCircle
    -- Draw an empty (only border) circle on screen, center on (x,y), with radius and using color defined with SetPenColor
-   procedure DrawCircle(x: PIXEL_X; y: PIXEL_Y; radius: INTEGER);
+   procedure DrawCircle(X: PIXEL_X; Y: PIXEL_Y; Radius: INTEGER);
    
    -- DrawCircle
    -- Draw a solid filled circle on screen, center on (x,y), with radius and using color defined with SetPenColor
-   procedure DrawFillCircle(x: PIXEL_X; y: PIXEL_Y; radius: INTEGER);
+   procedure DrawFillCircle(X: PIXEL_X; Y: PIXEL_Y; Radius: INTEGER);
 
 end Insa.Graphics;

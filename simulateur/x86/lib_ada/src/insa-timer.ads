@@ -10,7 +10,8 @@ package Insa.Timer is
    pragma Warnings (Off);
    
    type TIMER_CALLBACK is access procedure;
-      
+   -- pragma Convention(C, TIMER_CALLBACK);
+   
    TIMER_CALLBACK_NOT_SET: exception;
    
    -- StartTimer
@@ -25,5 +26,4 @@ package Insa.Timer is
    -- SetEventCallBack
    -- register a callback that will be called by periodic timer (period = 100 ms)
    procedure SetEventCallBack(Callback: TIMER_CALLBACK);
-
 end Insa.Timer;

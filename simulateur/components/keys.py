@@ -48,13 +48,13 @@ class Keys():
 
         return state
 
-    def setKeyPressed(self, key):
+    def sendKeyPressed(self, key):
         if (key in self.keyList): 
             self.keyState |= key
         else:
             raise
 
-    def setKeyReleased(self, key):
+    def sendKeyReleased(self, key):
         if (key in self.keyList): 
             self.keyState &= ~key
         else:

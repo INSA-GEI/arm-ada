@@ -6,10 +6,12 @@
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Exceptions;  use Ada.Exceptions;
 with Ada.Strings;
+with Ada.Strings.Fixed;
 with GNAT.Source_Info;
 
 with Insa.Simulator;
-  
+with Insa.Timer; use Insa.Timer;
+
 package body Insa.Simulator.Tasks is
 
    type TASK_CALLBACK is access procedure;
@@ -31,7 +33,17 @@ package body Insa.Simulator.Tasks is
          Msg : String := GetListenerBuffer;
       begin
          if Msg'Length /= 0 then
-            Ada.Text_IO.Put_Line ("[receiver task] Message received (length=" & Integer'Image(Msg'Length) & ") = " & Msg);
+            --Ada.Text_IO.Put_Line ("[receiver task] Message received (length=" & Integer'Image(Msg'Length) & ") = " & Msg);
+            if Ada.Strings.Fixed.Index(Msg, "KEYPRESSED=") > 0 then
+               -- Keypressed event received
+               Simulator.KeyPressedEventReceived(Msg);
+            elsif Ada.Strings.Fixed.Index(Msg, "KEYRELEASED=") > 0 then
+               -- Keyreleased event received
+               Simulator.KeyReleasedEventReceived(Msg);
+            else
+               Ada.Text_IO.Put_Line ("[receiver task] Unknown message");
+            end if;
+            
          else
             Ada.Text_IO.Put_Line ("[receiver task] No message");
          end if;
@@ -89,17 +101,28 @@ package body Insa.Simulator.Tasks is
    -----------------------------------------------------------------------------
    -- Timer task related function and procedure
    -----------------------------------------------------------------------------
+   procedure TimerCallback;
+   pragma Convention(C, TimerCallback);
+   
+   TimerAppCallback : Insa.TIMER.TIMER_CALLBACK := null;
    
    procedure TimerCallback is
    begin
-      Ada.Text_IO.Put_Line("[timer task] Task handler called");
+      -- Ada.Text_IO.Put_Line("[timer task] Task handler called");
+            
+      if TimerAppCallback /= null then
+         TimerAppCallback.all;
+      else
+         raise Timer.TIMER_CALLBACK_NOT_SET;
+      end if;
    end TimerCallback;
    
-   procedure SetTimerCallback is
-      procedure SetTimerCallback_Wrp(SysCallback: TASK_CALLBACK);
-      pragma Import (C, SetTimerCallback_Wrp, "timer_setcallback");
+   procedure SetTimerCallback (Callback: TIMER.TIMER_CALLBACK) is
+       
    begin
-      SetTimerCallback_Wrp(SocketListenerCallback'Access);
+      
+      TimerAppCallback := Callback;
+      --SetTimerCallback_Wrp(TimerCallback'Access);
    end SetTimerCallback;
    
    procedure ClearTimerCallback is
@@ -107,19 +130,23 @@ package body Insa.Simulator.Tasks is
       pragma Import (C, ClearTimerCallback_Wrp, "timer_clearcallback");
    begin
       ClearTimerCallback_Wrp;
+      --TimerAppCallback := null;
    end ClearTimerCallback;
    
    procedure StartTimerTask is
       function StartTimerTask_Wrp return Integer;
       pragma Import (C, StartTimerTask_Wrp, "timer_startthread");
       
+      procedure SetTimerCallback_Wrp(SysCallback: TASK_CALLBACK);
+      pragma Import (C, SetTimerCallback_Wrp, "timer_setcallback");  
+      
       RetVal : Integer;
    begin
-      SetTimerCallback;
+      SetTimerCallback_Wrp(TimerCallback'Access);
       RetVal := StartTimerTask_Wrp;
       
       if RetVal /= 0 then
-         raise SocketTaskException with GNAT.Source_Info.File & " : " & Integer'Image(GNAT.Source_Info.Line) & " Timer task listener creation failed. Code (" & Integer'Image(RetVal) & ")";
+         raise SocketTaskException with GNAT.Source_Info.File & " : " & Integer'Image(GNAT.Source_Info.Line) & " Timer task creation failed. Code (" & Integer'Image(RetVal) & ")";
       else
          Ada.Text_IO.Put_Line("[timer task] Task handler started");
       end if;
@@ -134,7 +161,7 @@ package body Insa.Simulator.Tasks is
       RetVal := StopTimerTask_Wrp;
       
       if RetVal /= 0 then
-         raise SocketTaskException with GNAT.Source_Info.File & " : " & Integer'Image(GNAT.Source_Info.Line) & " Timer task listener cancelation failed. Code (" & Integer'Image(RetVal) & ")";
+         raise SocketTaskException with GNAT.Source_Info.File & " : " & Integer'Image(GNAT.Source_Info.Line) & " Timer task cancelation failed. Code (" & Integer'Image(RetVal) & ")";
       else
          Ada.Text_IO.Put_Line("[timer task] Task handler canceled");
       end if;

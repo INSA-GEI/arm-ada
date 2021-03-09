@@ -39,6 +39,7 @@ class Display(QtWidgets.QLabel):
         color = QtGui.QColor(int(rCorrected),int(gCorrected),int(bCorrected))
         return color
 
+
     def resizeWidget (self, geom: QtCore.QRect):
         self.canvas = QtGui.QPixmap(self.geometry().width(), self.geometry().height())       
         self.setPixmap(self.canvas)
@@ -152,6 +153,7 @@ class Display(QtWidgets.QLabel):
 
     def drawImageFromBase64 (self, x,y,w,h,s):
         data= b64decode(s)
+       
         self.drawImage(x,y,w,h,data)
 
     

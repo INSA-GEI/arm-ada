@@ -43,6 +43,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)
+        self.setChildrenFocusPolicy(QtCore.Qt.NoFocus)
 
         self.socketThread = QtCore.QThread()
         self.socketWorker = SocketWorker("/home/dimercur/armada.sock")
@@ -84,6 +85,19 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.socketWorker.openSocket()
         self.socketThread.start()
 
+    def setChildrenFocusPolicy (self, policy):
+        self.centralwidget.setFocusPolicy(policy)
+        self.backgroundImg.setFocusPolicy(policy)
+        self.buttonUp.setFocusPolicy(policy)
+        self.buttonLeft.setFocusPolicy(policy)
+        self.buttonRight.setFocusPolicy(policy)
+        self.buttonDown.setFocusPolicy(policy)
+        self.buttonB.setFocusPolicy(policy)
+        self.buttonA.setFocusPolicy(policy)
+        self.buttonX.setFocusPolicy(policy)
+        self.buttonY.setFocusPolicy(policy)
+        self.buttonReset.setFocusPolicy(policy)
+
     def __del__(self):
         self.socketError("finished")
 
@@ -121,43 +135,101 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # Connect command processor events
         self.cmdProcessor.drawText.connect(self.cmp_display.drawText)
-        self.cmdProcessor.getKeyState.connect(self.cp_GetKeyState)
-        self.cmdProcessor.getAllKeys.connect(self.cp_GetAllKeys)
+        #self.cmdProcessor.getKeyState.connect(self.cp_GetKeyState)
+        #self.cmdProcessor.getAllKeys.connect(self.cp_GetAllKeys)
         self.cmdProcessor.setTextColor.connect(self.cmp_display.setTextColor)
         self.cmdProcessor.setBgColor.connect(self.cmp_display.setBgColor)
         self.cmdProcessor.drawRect.connect(self.cmp_display.drawRectangle)
         self.cmdProcessor.drawFillRect.connect(self.cmp_display.drawFillRectangle)
+        self.cmdProcessor.drawImage.connect(self.cmp_display.drawImageFromBase64)
+        self.cmdProcessor.clearScreen.connect(self.cmp_display.clearScreen)
 
         # Connect socket events
         self.socketWorker.stateChanged.connect(self.socketEvent)
         self.socketThread.started.connect(self.socketWorker.run)
         
     def keyPressEvent(self, e):
+        #print ("Key Pressed event: " + str(e.key()))
         self.buttonPressEvent(e.key())
 
     def keyReleaseEvent(self, e):
+        #print ("Key Released event: " + str(e.key()))
         self.buttonReleaseEvent(e.key())
 
     def buttonPressEvent(self,key):
+        keystr=""
+
         if key in keyDict:
-            self.cmp_keys.setKeyPressed(keyDict[key])
+            if key == QtCore.Qt.Key_Up:
+                keystr="UP"
+            elif key == QtCore.Qt.Key_Left:
+                keystr="LEFT"  
+            elif key == QtCore.Qt.Key_Right: 
+                keystr="RIGHT"
+            elif key == QtCore.Qt.Key_Down: 
+                keystr="DOWN"
+            elif key == QtCore.Qt.Key_A:
+                keystr="A"
+            elif key == QtCore.Qt.Key_B: 
+                keystr="B"
+            elif key == QtCore.Qt.Key_X:
+                keystr="X"
+            elif key == QtCore.Qt.Key_Y: 
+                keystr="Y"
+            elif key == QtCore.Qt.Key_R:
+                keystr="R"
+            else:
+                raise
+
+            self.cmdProcessor.sendKeyPressed(keystr)
 
     def buttonReleaseEvent(self,key):
+        keystr=""
+
         if key in keyDict:
-            self.cmp_keys.setKeyReleased(keyDict[key])
-
-    def cp_GetKeyState(self, key):
-        if key in textKeyDict:
-            if self.cmp_keys.isKeyPressed(textKeyDict[key]):
-                self.cmdProcessor.sendKeyState(key, 1)
+            if key == QtCore.Qt.Key_Up:
+                keystr="UP"
+            elif key == QtCore.Qt.Key_Left:
+                keystr="LEFT"  
+            elif key == QtCore.Qt.Key_Right: 
+                keystr="RIGHT"
+            elif key == QtCore.Qt.Key_Down: 
+                keystr="DOWN"
+            elif key == QtCore.Qt.Key_A:
+                keystr="A"
+            elif key == QtCore.Qt.Key_B: 
+                keystr="B"
+            elif key == QtCore.Qt.Key_X:
+                keystr="X"
+            elif key == QtCore.Qt.Key_Y: 
+                keystr="Y"
+            elif key == QtCore.Qt.Key_R:
+                keystr="R"
             else:
-                self.cmdProcessor.sendKeyState(key, 0)
-        else:
-            raise
+                raise
 
-    def cp_GetAllKeys(self):
-        allkeys = self.cmp_keys.getState()
-        self.cmdProcessor.sendAllKeys(allkeys)
+            self.cmdProcessor.sendKeyReleased(keystr)
+
+    # def buttonPressEvent(self,key):
+    #     if key in keyDict:
+    #         self.cmp_keys.setKeyPressed(keyDict[key])
+
+    # def buttonReleaseEvent(self,key):
+    #     if key in keyDict:
+    #         self.cmp_keys.setKeyReleased(keyDict[key])
+
+    # def cp_GetKeyState(self, key):
+    #     if key in textKeyDict:
+    #         if self.cmp_keys.isKeyPressed(textKeyDict[key]):
+    #             self.cmdProcessor.sendKeyState(key, 1)
+    #         else:
+    #             self.cmdProcessor.sendKeyState(key, 0)
+    #     else:
+    #         raise
+
+    # def cp_GetAllKeys(self):
+    #     allkeys = self.cmp_keys.getState()
+    #     self.cmdProcessor.sendAllKeys(allkeys)
 
     def close(self):
         self.socketWorker.closeSocket()

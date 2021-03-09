@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<Locations >
+  <Project>
+    <vfs_file />
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project>/home/dimercur/arm-ada/simulateur/x86/exemples/pacman/pacman.gpr</vfs_project>
+      <vfs_file>/home/dimercur/arm-ada/simulateur/x86/exemples/pacman/src/carte.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 4" line=" 1" >
+      <vfs_project>/home/dimercur/arm-ada/simulateur/x86/exemples/pacman/pacman.gpr</vfs_project>
+      <vfs_file>/home/dimercur/arm-ada/simulateur/x86/exemples/pacman/src/lab.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 4" line=" 1" >
+      <vfs_project>/home/dimercur/arm-ada/simulateur/x86/exemples/pacman/pacman.gpr</vfs_project>
+      <vfs_file>/home/dimercur/arm-ada/simulateur/x86/exemples/pacman/src/lab.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 4" line=" 5" >
+      <vfs_project>/home/dimercur/arm-ada/simulateur/x86/exemples/pacman/pacman.gpr</vfs_project>
+      <vfs_file>/home/dimercur/arm-ada/simulateur/x86/exemples/pacman/src/sprites.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-audio-synthesizer.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/wrapper.c</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 103" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/wrapper.c</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 42" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-graphics-images.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 47" line=" 62" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-audio-synthesizer.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 42" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-graphics-images.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 31" line=" 45" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-graphics-images.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 4" line=" 3" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-base64.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 4" line=" 3" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-base64.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 31" line=" 45" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-graphics-images.adb</vfs_file>
+    </file_marker>
+    <file_marker current="true" column=" 4" line=" 3" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-base64.adb</vfs_file>
+    </file_marker>
+  </Project>
+</Locations>

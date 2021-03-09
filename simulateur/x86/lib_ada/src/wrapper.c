@@ -24,6 +24,9 @@ SocketListener_EventCallback pSocketListenerCallback=NULL;
 pthread_t listenerthread_handler;
 void *socket_listenerthread (void *args);
 
+
+#define TIMER_TASK_DURATION 100000000L // expressed in nanoseconds => 0.1 sec
+
 typedef void (*Timer_EventCallback)(void);
 Timer_EventCallback pTimerCallback=NULL;
 pthread_t timerthread_handler;
@@ -46,9 +49,6 @@ int socket_init (void) {
   if (connect(fd, (struct sockaddr*)&addr, sizeof(addr)) == -1) {
     return -2;
   }
-
-  /* int flags = fcntl(fd, F_GETFL, 0);      */
-  /* fcntl(fd, F_SETFL, flags | O_NONBLOCK); */
 
   return 0;
 }
@@ -170,7 +170,13 @@ void *socket_listenerthread (void *args) {
 
 void *timer_thread (void *args) {
   while (1) {
-    sleep (1);
+
+    if(nanosleep((const struct timespec[]){{0, TIMER_TASK_DURATION}}, NULL) < 0 )
+      {
+        printf("Nano sleep system call failed \n");
+        exit (1);
+      }
+
     if (pTimerCallback!=NULL) pTimerCallback();
 
     pthread_testcancel (); // stop thread if a cancel event has been sent

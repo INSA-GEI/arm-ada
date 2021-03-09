@@ -6,16 +6,19 @@
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Exceptions;  use Ada.Exceptions;
 with Ada.Strings;
+with Ada.Strings.Fixed;
+
 with GNAT.Source_Info;
 with GNAT.Exception_Traces;
 
+with Insa.Keys;
 with Ada.Finalization;
 
 with INSA.Simulator.Tasks;
 --  with System.Task_Primitives.Operations;
 
 package body Insa.Simulator is
-
+   
    SocketOpenFlag                                                : Boolean := False;
    
    STATUS_NO_ERROR                                               : constant Integer := 0;
@@ -180,6 +183,83 @@ package body Insa.Simulator is
       
    end GetListenerBuffer;
    
+   KeyStates : Keys.KEY_LIST;
+   
+   procedure KeyPressedEventReceived(Msg: String) is
+   begin
+      if Ada.Strings.Fixed.Index (Msg, "=A") > 0 then
+         KeyStates.A := Keys.Key_Pressed;
+      elsif Ada.Strings.Fixed.Index (Msg, "=B") > 0 then
+         KeyStates.B := Keys.Key_Pressed;
+      elsif Ada.Strings.Fixed.Index (Msg, "=X") > 0 then
+         KeyStates.X := Keys.Key_Pressed;
+      elsif Ada.Strings.Fixed.Index (Msg, "=Y") > 0 then
+         KeyStates.Y := Keys.Key_Pressed;
+      elsif Ada.Strings.Fixed.Index (Msg, "=UP") > 0 then
+         KeyStates.Up := Keys.Key_Pressed;
+      elsif Ada.Strings.Fixed.Index (Msg, "=DOWN") > 0 then
+         KeyStates.Down := Keys.Key_Pressed;
+      elsif Ada.Strings.Fixed.Index (Msg, "=LEFT") > 0 then
+         KeyStates.Left := Keys.Key_Pressed;
+      elsif Ada.Strings.Fixed.Index (Msg, "=RIGHT") > 0 then
+         KeyStates.Right := Keys.Key_Pressed;
+      else
+         -- Unknown key
+         null;
+      end if;
+   end KeyPressedEventReceived;
+   
+   procedure KeyReleasedEventReceived(Msg: String) is
+   begin
+      if Ada.Strings.Fixed.Index (Msg, "=A") > 0 then
+         KeyStates.A := Keys.Key_Released;
+      elsif Ada.Strings.Fixed.Index (Msg, "=B") > 0 then
+         KeyStates.B := Keys.Key_Released;
+      elsif Ada.Strings.Fixed.Index (Msg, "=X") > 0 then
+         KeyStates.X := Keys.Key_Released;
+      elsif Ada.Strings.Fixed.Index (Msg, "=Y") > 0 then
+         KeyStates.Y := Keys.Key_Released;
+      elsif Ada.Strings.Fixed.Index (Msg, "=UP") > 0 then
+         KeyStates.Up := Keys.Key_Released;
+      elsif Ada.Strings.Fixed.Index (Msg, "=DOWN") > 0 then
+         KeyStates.Down := Keys.Key_Released;
+      elsif Ada.Strings.Fixed.Index (Msg, "=LEFT") > 0 then
+         KeyStates.Left := Keys.Key_Released;
+      elsif Ada.Strings.Fixed.Index (Msg, "=RIGHT") > 0 then
+         KeyStates.Right := Keys.Key_Released;
+      else
+         -- Unknown key
+         null;
+      end if;
+   end KeyReleasedEventReceived;
+   
+   function GetSimulatorKeyState (Key: Keys.KEY_ID) return Keys.KEY_STATE is
+      State : Keys.KEY_STATE;
+   begin
+      if Key = Keys.Key_A then
+         State := KeyStates.A;
+      elsif Key = Keys.Key_B then
+         State := KeyStates.B;
+      elsif Key = Keys.Key_X then
+         State := KeyStates.X;
+      elsif Key = Keys.Key_Y then
+         State := KeyStates.Y;
+      elsif Key = Keys.Key_Up then
+         State := KeyStates.Up;
+      elsif Key = Keys.Key_Down then
+         State := KeyStates.Down;
+      elsif Key = Keys.Key_Left then
+         State := KeyStates.Left;
+      elsif Key = Keys.Key_Right then
+         State := KeyStates.Right;
+      else
+         null;
+      end if;
+      
+      return State;
+      
+   end GetSimulatorKeyState;
+   
 begin
    GNAT.Exception_Traces.Trace_On (GNAT.Exception_Traces.Every_Raise); 
    Ada.Text_IO.Put_Line ("[sim] Initialize socket");
@@ -189,4 +269,15 @@ begin
    
    FinalizeFlagPtr := new FinalizeObject;
    FinalizeFlagPtr.Flag:=True;
+   
+   KeyStates.A:= Keys.Key_Released;
+   KeyStates.B:= Keys.Key_Released;
+   KeyStates.X:= Keys.Key_Released;
+   KeyStates.Y:= Keys.Key_Released;
+   KeyStates.Up:= Keys.Key_Released;
+   KeyStates.Down:= Keys.Key_Released;
+   KeyStates.Left:= Keys.Key_Released;
+   KeyStates.Right:= Keys.Key_Released;
+   KeyStates.Center:= Keys.Key_Released;
+   
 end Insa.Simulator;

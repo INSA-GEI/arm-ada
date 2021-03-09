@@ -1,7 +1,7 @@
-PROJECT_NAME = pacman
+PROJECT_NAME = missionpacman
 
 TARGET = $(PROJECT_NAME).elf
-DEP_ADA = $(PROJECT_NAME).o game.o
+DEP_ADA = $(PROJECT_NAME).o ecran.o carte.o lab.o
 DEP_ALI = 
 DEP_ASM = 
 DEP_C =
@@ -23,7 +23,7 @@ LIBINSA_PATH =  $(ARM_ADA_PATH)/lib/lib-ada
 
 OPTIONS = -gdwarf-2 -O0 --function-sections -march=armv7e-m -mthumb -mthumb-interwork -mfloat-abi=hard -mfpu=fpv4-sp-d16
 
-.PHONY: all clean install ressources doc
+.PHONY: all clean install ressources doc export solution
 
 all: $(TARGET)
 	arm-none-eabi-objcopy -O ihex $(TARGET) $(PROJECT_NAME).hex
@@ -50,10 +50,13 @@ $(TARGET): $(DEP_ADA) $(DEP_ALI) $(DEP_ASM) $(DEP_C) $(ARM_ADA_PATH)/lib/linker-
 	arm-none-eabi-gcc -gdwarf-2 -march=armv7e-m -mthumb -mthumb-interwork -mfloat-abi=hard -mfpu=fpv4-sp-d16 -Wl,-Map="ada-program.map" -Wl,--gc-section -T $(ARM_ADA_PATH)/lib/linker-script-insa.ld -o $(TARGET) *.o $(LIBWRAPPER_PATH)/retarget.o -nostartfiles -nodefaultlibs -L $(LIBWRAPPER_PATH) -L $(LIBINSA_PATH) -L $(LIBGNAT_PATH) -lgnat -lc -ladainsa -lwrapper
 
 clean:
-	rm -f  *.o *.ali b~* $(TARGET) $(PROJECT_NAME).hex ada-program.map *.log
+	rm -f  $(PROJECT_NAME).o $(PROJECT_NAME).ali b~* $(TARGET) $(PROJECT_NAME).hex ada-program.map *.log
 
 install:
 	flashprog $(PROJECT_NAME).hex
+
+solution:
+	flashprog solution.hex
 
 doc:
 	a2ps -R -o doc.ps carte.ads ecran.ads lab.ads
@@ -64,3 +67,8 @@ ifdef RESSOURCES_NAME
 	rca $(RESSOURCES_NAME).job
 	arm-none-eabi-gcc $(OPTIONS) -I$(LIBINSA_PATH) -I$(LIBWRAPPER_PATH) -c $(RESSOURCES_NAME).ads
 endif
+
+export:
+	mv $(PROJECT_NAME).hex solution.hex
+	rm -f carte.adb lab.adb ecran.adb $(PROJECT_NAME).o $(PROJECT_NAME).ali b~* $(TARGET) $(PROJECT_NAME).hex ada-program.map *.log
+	mv $(PROJECT_NAME).adb.tp $(PROJECT_NAME).adb

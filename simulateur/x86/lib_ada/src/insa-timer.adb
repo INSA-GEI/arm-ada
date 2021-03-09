@@ -6,6 +6,9 @@
 
 -- pragma Ada_95;
 
+with Insa.Simulator;
+with Insa.Simulator.Tasks;
+
 package body Insa.Timer is
    type CtoADA_TIMER_CALLBACK is access procedure;
    pragma Convention(C, CtoADA_TIMER_CALLBACK);
@@ -24,35 +27,41 @@ package body Insa.Timer is
    -- Return TIMER_CALLBACK_NOT_SET if not callback was previously registered using SetEventCallBack
    procedure StartTimer is
       
-     function Wrapper_StartTimer return Integer;
-     pragma Import (C, Wrapper_StartTimer, "TIMER_Start");
+      -- function Wrapper_StartTimer return Integer;
+      -- pragma Import (C, Wrapper_StartTimer, "TIMER_Start");
       
    begin
-      if Wrapper_StartTimer = 0 then -- timer non demarré / callback pas initialisé
-	 raise TIMER_CALLBACK_NOT_SET;
-      end if;
+      Simulator.Tasks.StartTimerTask;
+      --  if Wrapper_StartTimer = 0 then -- timer non demarré / callback pas initialisé
+      --     raise TIMER_CALLBACK_NOT_SET;
+      --  end if;
+   exception
+         when others => raise TIMER_CALLBACK_NOT_SET;
    end StartTimer;
    
    -- StopTimer
    -- Stop event timer
    procedure StopTimer is
       
-     procedure Wrapper_StopTimer;
-     pragma Import (C, Wrapper_StopTimer, "TIMER_Stop");
+      --  procedure Wrapper_StopTimer;
+      --  pragma Import (C, Wrapper_StopTimer, "TIMER_Stop");
      
    begin
-      Wrapper_StopTimer;
+      -- Wrapper_StopTimer;
+      Simulator.Tasks.StopTimerTask;
    end StopTimer;
    
    -- SetEventCallBack
    -- register a callback that will be called by periodic timer (period = 100 ms)
    procedure SetEventCallBack(Callback: TIMER_CALLBACK) is
       
-     procedure Wrapper_SetEventCallBack(SysCallback: CtoADA_TIMER_CALLBACK);
-     pragma Import (C, Wrapper_SetEventCallBack, "TIMER_SetEventCallback");
+      -- procedure Wrapper_SetEventCallBack(SysCallback: CtoADA_TIMER_CALLBACK);
+      -- pragma Import (C, Wrapper_SetEventCallBack, "TIMER_SetEventCallback");
      
    begin
-      Wrapper_SetEventCallBack(CtoADATimerCallback'access);
+      Simulator.Tasks.SetTimerCallback(Callback);
+      
+      --Wrapper_SetEventCallBack(CtoADATimerCallback'Access);
       Event_Callback := Callback;
    end SetEventCallBack;
    

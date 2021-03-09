@@ -16,24 +16,24 @@ package Insa.Graphics.Images is
    type BITMAP_ACCESS is access all BITMAP;
    type IMAGE is 
       record
-	 Width: NATURAL := 0;
-	 Height: NATURAL := 0;
-	 Data : BITMAP_ACCESS;
+         Width: NATURAL := 0;
+         Height: NATURAL := 0;
+         Data : BITMAP_ACCESS;
       end record;
    
    type PACK_BITMAP_ELEMENT is 
       record
-	 Pixel : COLOR;
-	 Length : BYTE;
+         Pixel : COLOR;
+         Length : BYTE;
       end record;
    
    type PACK_BITMAP is array(NATURAL range <>) of PACK_BITMAP_ELEMENT;
    type PACK_BITMAP_ACCESS is access constant PACK_BITMAP;
-   Type PACK_IMAGE is
+   type PACK_IMAGE is
       record
-	 Width: NATURAL := 0;
-	 Height: NATURAL := 0;
-	 Data : PACK_BITMAP_ACCESS;
+         Width: NATURAL := 0;
+         Height: NATURAL := 0;
+         Data : PACK_BITMAP_ACCESS;
       end record;
    
    -- NewImage
@@ -46,11 +46,11 @@ package Insa.Graphics.Images is
    
    -- DrawImage
    -- Draw an image at position (x,y) on screen
-   procedure DrawImage(x: PIXEL_X; y: PIXEL_Y; Img: IMAGE);
+   procedure DrawImage(X: PIXEL_X; Y: PIXEL_Y; Img: IMAGE);
    
    -- DrawImageFromSRAM
    -- Draw an image, stored in SRAM, at position (x,y) on screen
-   procedure DrawImageFromSRAM(x: PIXEL_X; y: PIXEL_Y; W: NATURAL; H: NATURAL; addr: MEMORY_ADDRESS);
+   procedure DrawImageFromSRAM(X: PIXEL_X; Y: PIXEL_Y; W: NATURAL; H: NATURAL; Addr: MEMORY_ADDRESS);
    
    -- UnpackImage
    -- Unpack a compressed image to an usable image
@@ -58,6 +58,6 @@ package Insa.Graphics.Images is
    
    -- UnpackImageToSRAM
    -- Unpack a compressed image to an usable image directly into SRAM
-   procedure UnpackImageToSRAM(Pack_Img: PACK_IMAGE; addr: MEMORY_ADDRESS);
+   procedure UnpackImageToSRAM(Pack_Img: PACK_IMAGE; Addr: MEMORY_ADDRESS);
 
 end Insa.Graphics.Images;

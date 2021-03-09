@@ -4,6 +4,8 @@
 
 -- pragma Ada_95;
 
+with Insa.Timer;
+
 package Insa.Simulator.Tasks is
    
    SocketTaskException           : exception;
@@ -19,5 +21,6 @@ package Insa.Simulator.Tasks is
    -----------------------------------------------------------------------------
    procedure StartTimerTask;
    procedure StopTimerTask;
+   procedure SetTimerCallback (Callback: TIMER.TIMER_CALLBACK);
    
 end Insa.Simulator.Tasks;
