@@ -1,0 +1,24 @@
+[GENERATED OBJECT FILE]
+b__missionkoch.o
+[PROJECT FILES]
+/home/dimercur/arm-ada/simulateur/x86/exemples/koch/koch.gpr
+20210310155232 fa851d5fd3f587e8c929a0f91c649c17
+/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr
+20210304085135 3059ed5eb8458944d37dc9e5c706627a
+[BOUND OBJECT FILES]
+/home/dimercur/arm-ada/simulateur/x86/exemples/koch/obj/nombre.o
+/home/dimercur/arm-ada/simulateur/x86/exemples/koch/obj/tortue.o
+/home/dimercur/arm-ada/simulateur/x86/exemples/koch/obj/missionkoch.o
+[GENERATED SOURCE FILES]
+b__missionkoch.ads
+b__missionkoch.adb
+b__missionkoch.ali
+[RESULTING OPTIONS]
+-L/home/dimercur/arm-ada/simulateur/x86/exemples/koch/obj/
+-L/home/dimercur/arm-ada/simulateur/x86/exemples/koch/obj/
+-L/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/
+-L/home/dimercur/opt/GNAT/2020-x86/lib/gcc/x86_64-pc-linux-gnu/9.3.1/adalib/
+-static
+-static-libgcc
+/home/dimercur/opt/GNAT/2020-x86/lib/gcc/x86_64-pc-linux-gnu/9.3.1/adalib/libgnat.a
+-ldl

@@ -110,6 +110,9 @@ package body Insa.Simulator is
          SocketOpenFlag := True;
       end if;
       
+      --Ada.Text_IO.Put_Line("sendMessage => " & Msg);
+      --Ada.Text_IO.Put_Line("Msg'length = " & Integer'Image(Msg'Length));
+        
       RetVal := SendMessage_Wrp (Msg & ASCII.LF, Msg'Length+1);
       if RetVal /= STATUS_NO_ERROR then
          if RetVal = STATUS_WRITE_ERROR then 

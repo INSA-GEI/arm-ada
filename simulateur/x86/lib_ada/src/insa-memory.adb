@@ -5,6 +5,8 @@
 --
 
 -- pragma Ada_95;
+with Insa.Simulator;
+with Insa.Simulator.Common;
 
 package body Insa.Memory is
    
@@ -20,10 +22,14 @@ package body Insa.Memory is
    -- WriteByte
    -- Stop audio processing
    procedure WriteByte(Addr: MEMORY_ADDRESS; Data: MEMORY_BYTE) is
-      procedure Wrapper_WriteByte(Addr: MEMORY_ADDRESS; Data: MEMORY_BYTE);
-      pragma Import (C, Wrapper_WriteByte, "SRAM_WriteByte");
+      -- procedure Wrapper_WriteByte(Addr: MEMORY_ADDRESS; Data: MEMORY_BYTE);
+      -- pragma Import (C, Wrapper_WriteByte, "SRAM_WriteByte");
+      Msb,Lsb: BYTE;
    begin
-      Wrapper_WriteByte(Addr, Data);
+      -- Wrapper_WriteByte(Addr, Data);
+      Simulator.Common.MemoryByteToRGB16(Data, Msb, Lsb);
+      Simulator.SendMessage("WRITEBYTE=" & Integer'Image(Addr*2) & "," & Integer'Image(Natural(Lsb)) & "," 
+                            & Integer'Image(Natural(Msb)));
    end WriteByte;
    
    -- ReadByteBuffer
@@ -34,13 +40,13 @@ package body Insa.Memory is
       Local_Addr:=Addr;
       
       for Counter in Buffer'Range loop
-	 Buffer(Counter):=ReadByte(Local_Addr);
+         Buffer(Counter):=ReadByte(Local_Addr);
 	 
-	 if Local_Addr/=MEMORY_ADDRESS'Last then
-	    Local_Addr:=Local_Addr+1;
-	 else
-	    Local_Addr:=MEMORY_ADDRESS'First;
-	 end if; 
+         if Local_Addr/=MEMORY_ADDRESS'Last then
+            Local_Addr:=Local_Addr+1;
+         else
+            Local_Addr:=MEMORY_ADDRESS'First;
+         end if; 
       end loop;
       
    end ReadByteBuffer;
@@ -53,13 +59,13 @@ package body Insa.Memory is
       Local_Addr:=Addr;
       
       for Counter in Buffer'Range loop
-	  WriteByte(Local_Addr, Buffer(Counter));
+         WriteByte(Local_Addr, Buffer(Counter));
 	 
-	 if Local_Addr/=MEMORY_ADDRESS'Last then
-	    Local_Addr:=Local_Addr+1;
-	 else
-	    Local_Addr:=MEMORY_ADDRESS'First;
-	 end if; 
+         if Local_Addr/=MEMORY_ADDRESS'Last then
+            Local_Addr:=Local_Addr+1;
+         else
+            Local_Addr:=MEMORY_ADDRESS'First;
+         end if; 
       end loop;
    
    end WriteByteBuffer;

@@ -70,7 +70,7 @@ package body Insa.Keys is
       
    begin
       -- return Wrapper_GetPotentiometerValue(Pot);
-      return 0;
+      return 200;
    end GetPotentiometerValue;
    
 end Insa.Keys;

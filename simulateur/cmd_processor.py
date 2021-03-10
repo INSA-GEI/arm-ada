@@ -6,10 +6,13 @@ class CmdProcessor(QObject):
     setBgColor = pyqtSignal(int,int,int) # R: int, G: int, B: int
     clearScreen = pyqtSignal(int,int,int) # R: int, G: int, B: int
     drawText = pyqtSignal(int,int,str) # x: int, y: int, text: str
+    drawLine = pyqtSignal(int,int,int, int) # x1: int, y1: int, x2: int, y2: int
     drawRect = pyqtSignal(int,int,int, int) # x: int, y: int, w: int, h: int
     drawFillRect = pyqtSignal(int,int,int, int) # x: int, y: int, w: int, h: int
     drawImage = pyqtSignal(int,int,int,int,str) # x: int, y: int, w: int, h: int, img(base64): str
-    #drawImageFromSram = pyqtSignal(int,int,int,int) # x: int, y: int, w: int, h: int, offset: int
+    drawImageFromSram = pyqtSignal(int,int,int,int,int) # x: int, y: int, w: int, h: int, offset: int
+    writeByte = pyqtSignal(int,int,int) # offset: int, LSB: int, MSB: int
+    writeBuffer = pyqtSignal(int,str) # offset: int, LSB: int, MSB: int
     #getKeyState = pyqtSignal(str) # key: str ("A", "UP")
     #getAllKeys = pyqtSignal()     # get all key status
 
@@ -41,6 +44,16 @@ class CmdProcessor(QObject):
                 slist = substr.split(',')
                 #print ("setBgColor params:\nG: "+ slist[0] + "\nG: " + slist[1] + "\nB: " + slist[2])
                 self.setBgColor.emit(int(slist[0]),int(slist[1]),int(slist[2]))
+            elif cmdstr.find("CLEARSCREEN=") != -1:
+                substr = cmdstr[len("CLEARSCREEN="):]
+                slist = substr.split(',')
+                #print ("setBgColor params:\nG: "+ slist[0] + "\nG: " + slist[1] + "\nB: " + slist[2])
+                self.clearScreen.emit(int(slist[0]),int(slist[1]),int(slist[2]))
+            elif cmdstr.find("DRAWLINE=") != -1:
+                substr = cmdstr[len("DRAWLINE="):]
+                slist = substr.split(',')
+                #print ("drawRect params:\nx1: "+ slist[0] + "\ny1: " + slist[1] + "\nx2: " + slist[2] + "\ny2: " + slist[3])
+                self.drawLine.emit(int(slist[0]),int(slist[1]),int(slist[2]),int(slist[3]))
             elif cmdstr.find("DRAWRECT=") != -1:
                 substr = cmdstr[len("DRAWRECT="):]
                 slist = substr.split(',')
@@ -57,13 +70,28 @@ class CmdProcessor(QObject):
                 #print ("DRAWIMAGE params:\nx: "+ slist[0] + "\ny: " + slist[1] + "\nw: " + slist[2] + "\nh: " + slist[3])
                 #print ("Base 64 => " + slist[4])
                 self.drawImage.emit(int(slist[0]),int(slist[1]),int(slist[2]),int(slist[3]), str(slist[4]))
-            elif cmdstr.find("CLEARSCREEN=") != -1:
-                substr = cmdstr[len("CLEARSCREEN="):]
+            elif cmdstr.find("DRAWIMAGEFROMSRAM=") != -1:
+                print (cmdstr)
+                substr = cmdstr[len("DRAWIMAGEFROMSRAM="):]
+                slist = substr.split(',')
+                #print ("DRAWIMAGEFROMSRAM params:\nx: "+ slist[0] + "\ny: " + slist[1] + "\nw: " + slist[2] + "\nh: " + slist[3])
+                #print ("Base 64 => " + slist[4])
+                self.drawImageFromSram.emit(int(slist[0]),int(slist[1]),int(slist[2]),int(slist[3]),int(slist[4]))
+            elif cmdstr.find("WRITEBYTE=") != -1:
+                # print (cmdstr)
+                substr = cmdstr[len("WRITEBYTE="):]
                 slist = substr.split(',')
                 #print ("setBgColor params:\nG: "+ slist[0] + "\nG: " + slist[1] + "\nB: " + slist[2])
-                self.clearScreen.emit(int(slist[0]),int(slist[1]),int(slist[2]))
+                self.writeByte.emit(int(slist[0]),int(slist[1]),int(slist[2]))
+            elif cmdstr.find("WRITEBUFFER=") != -1:
+                # print (cmdstr)
+                substr = cmdstr[len("WRITEBUFFER="):]
+                slist = substr.split(',')
+                #print ("setBgColor params:\nAddr: "+ slist[0])
+                #print ("Base 64 => " + slist[1])
+                self.writeBuffer.emit(int(slist[0]),slist[1])
             else:
-                print ("Unknown command: " + cmdstr)
+                print ("Unimplemented command: " + cmdstr)
 
     def sendKeyPressed(self,key):
         if type(key) == str:

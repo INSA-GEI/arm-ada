@@ -1,0 +1,302 @@
+<?xml version="1.0"?>
+<Locations >
+  <Project>
+    <vfs_file />
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project />
+      <vfs_file>/home/dimercur/arm-ada/simulateur/x86/exemples/simon/simon.gpr</vfs_file>
+    </file_marker>
+    <file_marker column=" 25" line=" 5" >
+      <vfs_project />
+      <vfs_file>/home/dimercur/arm-ada/simulateur/x86/exemples/simon/simon.gpr</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project />
+      <vfs_file>/home/dimercur/arm-ada/simulateur/x86/exemples/simon/src/missionsimon.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 19" line=" 317" >
+      <vfs_project />
+      <vfs_file>/home/dimercur/arm-ada/simulateur/x86/exemples/simon/src/simon.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 20" >
+      <vfs_project />
+      <vfs_file>/home/dimercur/arm-ada/simulateur/x86/exemples/simon/src/simon.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 6" line=" 19" >
+      <vfs_project />
+      <vfs_file>/home/dimercur/arm-ada/simulateur/x86/exemples/simon/src/simon.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 5" >
+      <vfs_project />
+      <vfs_file>/home/dimercur/arm-ada/simulateur/x86/exemples/simon/src/ressources.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 503" >
+      <vfs_project />
+      <vfs_file>/home/dimercur/arm-ada/simulateur/x86/exemples/simon/src/simon.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 16" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-audio-synthesizer.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 7" line=" 93" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-audio-synthesizer.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 37" line=" 69" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-audio-synthesizer.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 29" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-memory.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 10" line=" 62" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-memory.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 54" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-graphics-advanced.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 29" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-memory.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 26" line=" 336" >
+      <vfs_project />
+      <vfs_file>/home/dimercur/arm-ada/simulateur/x86/exemples/simon/src/simon.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-graphics-images.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 18" >
+      <vfs_project />
+      <vfs_file>/home/dimercur/arm-ada/simulateur/x86/exemples/simon/src/missionsimon.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 22" line=" 341" >
+      <vfs_project />
+      <vfs_file>/home/dimercur/arm-ada/simulateur/x86/exemples/simon/src/simon.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 17" >
+      <vfs_project />
+      <vfs_file>/home/dimercur/arm-ada/simulateur/x86/exemples/simon/src/simon.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 89" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-graphics-images.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 29" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-memory.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 89" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-graphics-images.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 18" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-graphics-images.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 89" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-graphics-images.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 4" line=" 43" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-graphics-images.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 4" line=" 8" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-simulator-common.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 4" line=" 12" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-simulator-common.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 40" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-simulator-common.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-simulator-tasks.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-memory.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 58" line=" 32" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-memory.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 42" line=" 30" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-memory.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 49" line=" 24" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-simulator-common.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 39" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-simulator-common.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 31" line=" 28" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-simulator-common.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 41" line=" 30" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-memory.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 88" line=" 31" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-memory.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 28" line=" 23" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-memory.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 45" line=" 91" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-graphics-images.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 17" >
+      <vfs_project />
+      <vfs_file>/home/dimercur/arm-ada/simulateur/x86/exemples/simon/src/simon.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 3" line=" 19" >
+      <vfs_project />
+      <vfs_file>/home/dimercur/arm-ada/simulateur/x86/exemples/simon/src/simon.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 13" line=" 212" >
+      <vfs_project />
+      <vfs_file>/home/dimercur/arm-ada/simulateur/x86/exemples/simon/src/simon.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 18" >
+      <vfs_project />
+      <vfs_file>/home/dimercur/arm-ada/simulateur/x86/exemples/simon/src/missionsimon.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project />
+      <vfs_file>/home/dimercur/arm-ada/simulateur/x86/exemples/simon/src/simon.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 21" line=" 309" >
+      <vfs_project />
+      <vfs_file>/home/dimercur/arm-ada/simulateur/x86/exemples/simon/src/simon.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 27" line=" 355" >
+      <vfs_project />
+      <vfs_file>/home/dimercur/arm-ada/simulateur/x86/exemples/simon/src/simon.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 4" line=" 525" >
+      <vfs_project />
+      <vfs_file>/home/dimercur/arm-ada/simulateur/x86/exemples/simon/src/simon.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 4" line=" 524" >
+      <vfs_project />
+      <vfs_file>/home/dimercur/arm-ada/simulateur/x86/exemples/simon/src/simon.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-simulator-tasks.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 6" line=" 524" >
+      <vfs_project />
+      <vfs_file>/home/dimercur/arm-ada/simulateur/x86/exemples/simon/src/simon.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-graphics.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-graphics-images.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-memory.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 64" line=" 31" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-memory.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 7" line=" 151" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-graphics-images.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 26" line=" 17" >
+      <vfs_project />
+      <vfs_file>/home/dimercur/arm-ada/simulateur/x86/exemples/simon/src/simon.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-keys.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 362" >
+      <vfs_project />
+      <vfs_file>/home/dimercur/arm-ada/simulateur/x86/exemples/simon/src/simon.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project />
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/exemples/simon/src/missionsimon.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 362" >
+      <vfs_project />
+      <vfs_file>/home/dimercur/arm-ada/simulateur/x86/exemples/simon/src/simon.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 362" >
+      <vfs_project />
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/exemples/simon/src/simon.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 362" >
+      <vfs_project />
+      <vfs_file>/home/dimercur/arm-ada/simulateur/x86/exemples/simon/src/simon.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 363" >
+      <vfs_project />
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/exemples/simon/src/simon.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 362" >
+      <vfs_project />
+      <vfs_file>/home/dimercur/arm-ada/simulateur/x86/exemples/simon/src/simon.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 363" >
+      <vfs_project />
+      <vfs_file>/home/dimercur/arm-ada/simulateur/x86/exemples/simon/src/simon.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 12" line=" 148" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-graphics-images.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 14" line=" 44" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-graphics-images.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 4" line=" 17" >
+      <vfs_project />
+      <vfs_file>/home/dimercur/arm-ada/simulateur/x86/exemples/simon/src/missionsimon.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 17" >
+      <vfs_project />
+      <vfs_file>/home/dimercur/arm-ada/simulateur/x86/exemples/simon/src/missionsimon.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 1" line=" 18" >
+      <vfs_project />
+      <vfs_file>/home/dimercur/arm-ada/simulateur/x86/exemples/simon/src/missionsimon.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 4" line=" 7" >
+      <vfs_project />
+      <vfs_file>/home/dimercur/arm-ada/simulateur/x86/exemples/simon/src/missionsimon.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 27" line=" 44" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-graphics-images.adb</vfs_file>
+    </file_marker>
+    <file_marker current="true" column=" 1" line=" 1" >
+      <vfs_project>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr</vfs_project>
+      <vfs_file>/home/dimercur/Travail/git/arm-ada/simulateur/x86/lib_ada/src/insa-simulator.adb</vfs_file>
+    </file_marker>
+  </Project>
+</Locations>

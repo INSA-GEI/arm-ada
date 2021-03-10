@@ -14,6 +14,8 @@ with Insa.Base64;
 with Ada.Text_IO;
 with Ada.Integer_Text_IO;
 
+with Insa.Simulator.Common;
+
 package body Insa.Graphics.Images is
    pragma Warnings (Off);
    
@@ -40,45 +42,6 @@ package body Insa.Graphics.Images is
    end FreeImage; 
    
    procedure ImageToStream(Img: in BITMAP_ACCESS; StreamBuffer: out Ada.Streams.Stream_Element_Array ) is
-             
-      procedure ColorToRGB16(C: in COLOR; Msb: out BYTE; Lsb: out BYTE) is
-         R,G,B: WORD;
-      begin
-         R:= WORD(Shift_Right((C and 16#E0#),5));
-         G:= WORD(Shift_Right((C and 16#1C#),2));
-         B:= WORD(C and 16#03#);
-          
-         --  Ada.Text_IO.Put ("RGB_8: ");
-         --  Ada.Integer_Text_IO.Put (Integer(R), Base => 16);
-         --  Ada.Text_IO.Put (",");
-         --  Ada.Integer_Text_IO.Put (Integer(G), Base => 16);
-         --  Ada.Text_IO.Put (",");
-         --  Ada.Integer_Text_IO.Put (Integer(B), Base => 16);
-         --  Ada.Text_IO.New_Line;
-
-         R:= (R*31)/7;
-         G:= (G*63)/7;
-         B:= (B*31)/3;
-         
-         --  Ada.Text_IO.Put ("RGB_16: ");
-         --  Ada.Integer_Text_IO.Put (Integer(R), Base => 16);
-         --  Ada.Text_IO.Put (",");
-         --  Ada.Integer_Text_IO.Put (Integer(G), Base => 16);
-         --  Ada.Text_IO.Put (",");
-         --  Ada.Integer_Text_IO.Put (Integer(B), Base => 16);
-         --  Ada.Text_IO.New_Line;
-         
-         Msb := BYTE(Shift_Left(R,3) or Shift_Right(G,3));
-         Lsb := BYTE((Shift_Left(G,5) and 16#E0#) or B);
-         
-         --  Ada.Text_IO.Put ("MSB,LSB: ");
-         --  Ada.Integer_Text_IO.Put (Integer(MSB), Base => 16);
-         --  Ada.Text_IO.Put (",");
-         --  Ada.Integer_Text_IO.Put (Integer(LSB), Base => 16);
-         --  Ada.Text_IO.New_Line;
-         --  Ada.Text_IO.New_Line;
-      end ColorToRGB16;
-      
       Counter: Integer;
       Msb,Lsb: BYTE;
       
@@ -87,7 +50,7 @@ package body Insa.Graphics.Images is
       --  Ada.Text_IO.Put_Line("Img First = " & Integer'Image(Img'First) & "; Last = " & Integer'Image(Img'Last));
 
       for Counter in Img'Range loop
-         ColorToRGB16(Img(Counter), Msb, Lsb);
+         Simulator.Common.ColorToRGB16(Img(Counter), Msb, Lsb);
          --  Ada.Text_IO.Put_Line("Counter = " & Integer'Image(Counter));
          
          Streambuffer(Ada.Streams.Stream_Element_Offset(1+(2*Counter))) := Ada.Streams.Stream_Element(Lsb);
@@ -120,10 +83,13 @@ package body Insa.Graphics.Images is
    -- DrawImageFromSRAM
    -- Draw an image, stored in SRAM, at position (x,y) on screen
    procedure DrawImageFromSRAM(X: PIXEL_X; Y: PIXEL_Y; W: NATURAL; H: NATURAL; Addr: MEMORY_ADDRESS) is
-      procedure Wrapper_DrawImageFromSRAM(Addr: MEMORY_ADDRESS; X: NATURAL; Y: NATURAL; W: NATURAL; H:NATURAL);
-      pragma Import (C, Wrapper_DrawImageFromSRAM, "GLCD_DrawImagefromSRAM");
+      --procedure Wrapper_DrawImageFromSRAM(Addr: MEMORY_ADDRESS; X: NATURAL; Y: NATURAL; W: NATURAL; H:NATURAL);
+      --pragma Import (C, Wrapper_DrawImageFromSRAM, "GLCD_DrawImagefromSRAM");
    begin
-      Wrapper_DrawImageFromSRAM(Addr, NATURAL(X), NATURAL(Y), NATURAL(W), NATURAL(H));
+      --Wrapper_DrawImageFromSRAM(Addr, NATURAL(X), NATURAL(Y), NATURAL(W), NATURAL(H));
+      Simulator.SendMessage("DRAWIMAGEFROMSRAM=" & Integer'Image(X) & "," & Integer'Image(Y) & "," 
+                            & Integer'Image(W) & "," & Integer'Image(H) & "," 
+                            & Integer'Image(Addr*2));
    end DrawImageFromSRAM;
 
    -- UnpackImage
@@ -147,17 +113,42 @@ package body Insa.Graphics.Images is
    
    -- UnpackImageToSRAM
    -- Unpack a compressed image to an usable image directly into SRAM
+   --  procedure UnpackImageToSRAM(Pack_Img: PACK_IMAGE; Addr: MEMORY_ADDRESS) is
+   --     Index: MEMORY_ADDRESS:=Addr;
+   --  begin
+   --     for I in Pack_Img.Data'Range loop
+   --        for X in 0 .. Pack_Img.Data(I).Length-1 loop
+   --           --Img.Data(Index+Natural(X)):=Pack_Img.Data(I).Pixel;
+   --           WriteByte(Index+MEMORY_ADDRESS(X), MEMORY_BYTE(Pack_Img.Data(I).Pixel));
+   --        end loop;
+   --  
+   --        Index:=Index + MEMORY_ADDRESS(Pack_Img.Data(I).Length);
+   --     end loop;
+   --  end UnpackImageToSRAM;
+   
    procedure UnpackImageToSRAM(Pack_Img: PACK_IMAGE; Addr: MEMORY_ADDRESS) is
-      Index: MEMORY_ADDRESS:=Addr;
+      --Index: MEMORY_ADDRESS:=Addr;
+      Img: IMAGE;
+      Index: NATURAL:=0;
+      StreamBuffer : Ada.Streams.Stream_Element_Array(1..Ada.Streams.Stream_Element_Offset((Pack_Img.Width*Pack_Img.Height*2))); -- 2 fois la taille de l'image car en 16 bits
    begin
+      Img:=NewImage(Pack_Img.Width,Pack_Img.Height);
+      Ada.Text_IO.Put_Line("Pack image size = " & Integer'Image(Pack_Img.Width) &"*"& Integer'Image(Pack_Img.Height) &
+                             " => " & Integer'Image(Pack_Img.Width*Pack_Img.Height));
+      
       for I in Pack_Img.Data'Range loop
          for X in 0 .. Pack_Img.Data(I).Length-1 loop
-            --Img.Data(Index+Natural(X)):=Pack_Img.Data(I).Pixel;
-            WriteByte(Index+MEMORY_ADDRESS(X), MEMORY_BYTE(Pack_Img.Data(I).Pixel));
+            Img.Data(Index+Natural(X)):=Pack_Img.Data(I).Pixel;
          end loop;
 	 
-         Index:=Index + MEMORY_ADDRESS(Pack_Img.Data(I).Length);
+         Index:=Index + NATURAL(Pack_Img.Data(I).Length);
       end loop;
+      Ada.Text_IO.Put_Line("Index = " & Integer'Image(Index));
+      
+      ImageToStream(Img.Data, StreamBuffer); 
+      
+      Simulator.SendMessage("WRITEBUFFER=" & Integer'Image(Integer(Addr*2)) & "," & Base64.Encode(StreamBuffer));
+      
    end UnpackImageToSRAM;
 
 end Insa.Graphics.Images;

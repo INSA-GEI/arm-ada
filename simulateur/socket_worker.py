@@ -57,16 +57,17 @@ class SocketWorker(QObject):
                 self.stateChanged.emit("connected")
 
                 # Receive the data in small chunks and retransmit it
-                while True:
+                while self.connected:
                     data = self.connection.recv(640*480*2)
+                    #print ('length = %i' % len(data))
                     
                     if data:
-                        # print ('received "%s"' % data)
+                        #print ('received "%s"' % data)
                         self.dataReceived.emit(data.decode("utf_8").rstrip())
-                        
-                    #else:
-                    #    print ('no more data from' % self.client_address)
-                    #    break
+                    else:
+                        self.connected = False
+                        self.stateChanged.emit("disconnected")
+                        print("socket closed by client")
             
             finally:
                 # Clean up the connection

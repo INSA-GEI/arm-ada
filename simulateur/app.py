@@ -139,10 +139,14 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         #self.cmdProcessor.getAllKeys.connect(self.cp_GetAllKeys)
         self.cmdProcessor.setTextColor.connect(self.cmp_display.setTextColor)
         self.cmdProcessor.setBgColor.connect(self.cmp_display.setBgColor)
+        self.cmdProcessor.clearScreen.connect(self.cmp_display.clearScreen)
+        self.cmdProcessor.drawLine.connect(self.cmp_display.drawLine)
         self.cmdProcessor.drawRect.connect(self.cmp_display.drawRectangle)
         self.cmdProcessor.drawFillRect.connect(self.cmp_display.drawFillRectangle)
         self.cmdProcessor.drawImage.connect(self.cmp_display.drawImageFromBase64)
-        self.cmdProcessor.clearScreen.connect(self.cmp_display.clearScreen)
+        self.cmdProcessor.drawImageFromSram.connect(self.cmp_display.drawImageFromSRAM)
+        self.cmdProcessor.writeByte.connect(self.cmp_display.writeByteInSRAM)
+        self.cmdProcessor.writeBuffer.connect(self.cmp_display.writeBufferInSRAM)
 
         # Connect socket events
         self.socketWorker.stateChanged.connect(self.socketEvent)

@@ -6,7 +6,7 @@ class Display(QtWidgets.QLabel):
     bgColor = QtGui.QColor(0,0,0)
     canvas = None
 
-    Sram = bytearray(2*1024*1024)
+    Sram = bytearray((2*1024*1024)*2)
 
     def __init__(self,parentWidget):
         super(Display, self).__init__(parentWidget)
@@ -38,7 +38,6 @@ class Display(QtWidgets.QLabel):
 
         color = QtGui.QColor(int(rCorrected),int(gCorrected),int(bCorrected))
         return color
-
 
     def resizeWidget (self, geom: QtCore.QRect):
         self.canvas = QtGui.QPixmap(self.geometry().width(), self.geometry().height())       
@@ -133,27 +132,29 @@ class Display(QtWidgets.QLabel):
         painter.drawImage(QtCore.QPoint(x,y),qimage)
         self.__closeDrawingContext()
 
-    def drawImageFromSRAM (self, x, y, w, h, index):
+    def drawImageFromSRAM (self, x, y, w, h, offset):
         painter=self.__openDrawingContext()
-        qimage = QtGui.QImage(self.Sram[index:index+(w*h*2)], w, h, QtGui.QImage.Format_RGB16)
+        #print (f'drawfromsram: x={x}, y={y}, w={w}, h={h}, offset={offset}')
+        #print (f'w*h*2 = {w*h*2}')
+        qimage = QtGui.QImage(self.Sram[offset:(offset+(w*h*2)-1)], w, h, QtGui.QImage.Format_RGB16)
         
         painter.drawImage(QtCore.QPoint(x,y),qimage)
         self.__closeDrawingContext()
 
-    def writeByteInSRAM (self, offset, byte:bytes):
-        self.Sram[offset:offset] = [byte]
+    def writeByteInSRAM (self, offset, lsb:bytes, msb:bytes):
+        self.Sram[offset:offset] = [lsb]
+        self.Sram[offset+1:offset+1] = [msb]
 
-    def writeByteArrayInSRAM (self, offset, byte:bytes):
-        # print ("Longueur de SRAM avant: " + str(len(self.Sram)))
-        self.Sram[offset:(offset+len(byte)-1)] = byte[0:len(byte)-1]
-        # print ("Longueur de SRAM apres: " + str(len(self.Sram)))
+    def writeBufferInSRAM (self, offset, s):
+        data= b64decode(s)
+        #print (f'writeBufferInSRAM: offset={offset}, data length={len(data)}, data type = {type(data)}')
+        self.Sram[offset:(offset+len(data)-1)] = data[0:(len(data)-1)]
 
     def readByteInSRAM (self, offset):
-        return self.Sram[offset]
+        return self.Sram[(offset*2):(offset*2)+1]
 
     def drawImageFromBase64 (self, x,y,w,h,s):
         data= b64decode(s)
-       
         self.drawImage(x,y,w,h,data)
 
     
