@@ -13,9 +13,7 @@ class CmdProcessor(QObject):
     drawImageFromSram = pyqtSignal(int,int,int,int,int) # x: int, y: int, w: int, h: int, offset: int
     writeByte = pyqtSignal(int,int,int) # offset: int, LSB: int, MSB: int
     writeBuffer = pyqtSignal(int,str) # offset: int, LSB: int, MSB: int
-    #getKeyState = pyqtSignal(str) # key: str ("A", "UP")
-    #getAllKeys = pyqtSignal()     # get all key status
-
+    
     def __init__(self, socketWorker: SocketWorker):
         super(CmdProcessor, self).__init__()
         # Store constructor arguments (re-used for processing)
@@ -94,13 +92,39 @@ class CmdProcessor(QObject):
                 print ("Unimplemented command: " + cmdstr)
 
     def sendKeyPressed(self,key):
-        if type(key) == str:
+        if type(key)==str:
             self.socketWorker.sendData("KEYPRESSED="+key+"\n")
         else:
             raise
 
     def sendKeyReleased(self,key):
-        if type(key) == str:
+        if type(key)==str:
             self.socketWorker.sendData("KEYRELEASED="+key+"\n")
         else:
             raise
+
+    def sendKnobsValues(self,leftKnob, rightKnob):
+        if type(leftKnob)==int and type(rightKnob)==int:
+            self.socketWorker.sendData("KNOBSCHANGED="+str(leftKnob)+','+str(rightKnob)+"\n")
+        else:
+            raise
+
+    def sendAccelerometerValues(self,X, Y, Z):
+        if type(X)==int and type(Y)==int and type(Z)==int:
+            self.socketWorker.sendData("ACCCHANGED="+str(X)+','+str(Y)+','+str(Z)+"\n")
+        else:
+            raise
+    
+    def sendGyroscopeValues(self,X, Y, Z):
+        if type(X)==int and type(Y)==int and type(Z)==int:
+            self.socketWorker.sendData("GYRCHANGED="+str(X)+','+str(Y)+','+str(Z)+"\n")
+        else:
+            raise
+
+    def sendMagnetometerValues(self,X, Y, Z):
+        if type(X)==int and type(Y)==int and type(Z)==int:
+            self.socketWorker.sendData("MAGCHANGED="+str(X)+','+str(Y)+','+str(Z)+"\n")
+        else:
+            raise
+
+    

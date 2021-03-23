@@ -15,14 +15,18 @@ class MetaIMUDialog(QtWidgets.QDialog):
         self.sliderY.valueChanged.connect(self.updateYLabel)
         self.sliderZ.valueChanged.connect(self.updateZLabel)
 
+        self.sliderX.sliderReleased.connect(self.resetX)
+        self.sliderY.sliderReleased.connect(self.resetY)
+        self.sliderZ.sliderReleased.connect(self.resetZ)
+
     def getXValue(self):
-        return self.dialLeft.value()
+        return self.sliderX.value()
 
     def getYValue(self):
-        return self.dialRight.value()
+        return self.sliderY.value()
 
     def getZValue(self):
-        return self.dialRight.value()
+        return self.sliderZ.value()
 
     def setXRange(self,minVal, maxVal):
         self.sliderX.setRange(minVal,maxVal)
@@ -33,26 +37,53 @@ class MetaIMUDialog(QtWidgets.QDialog):
     def setZRange(self,minVal, maxVal):
         self.sliderZ.setRange(minVal,maxVal)
 
+    def resetX(self):
+        #print("sliderX released")
+        self.sliderX.setValue(0)
+    
+    def resetY(self):
+        #print("sliderY released")
+        self.sliderY.setValue(0)
+    
+    def resetZ(self):
+        #print("sliderZ released")
+        self.sliderZ.setValue(0)
+
     def updateXLabel(self):
-        val = self.sliderX.value()
-        print ("X= " + str(val))
+        val = self.getXValue()
+        #print ("X= " + str(val))
         self.labelX.setText("Axe X = " + str(val) + " g [ " + hex(val) + " ]")
 
     def updateYLabel(self):
-        val = self.sliderY.value()
-        print ("Y= " + str(val))
+        val = self.getYValue()
+        #print ("Y= " + str(val))
         self.labelY.setText("Axe Y = " + str(val) + " g [ " + hex(val) + " ]")
 
     def updateZLabel(self):
-        val = self.sliderZ.value()
-        print ("Z= " + str(val))
+        val = self.getZValue()
+        #print ("Z= " + str(val))
         self.labelZ.setText("Axe Z = " + str(val) + " g [ " + hex(val) + " ]")
 
 class Accelerometer(MetaIMUDialog, Ui_DialogAccelerometer):
-    pass
+    def __init__(self,parent=None):
+        super().__init__(parent)
+
+        self.setXRange(-32768, +32767)
+        self.setYRange(-32768, +32767)
+        self.setZRange(-32768, +32767)
 
 class Gyroscope(MetaIMUDialog, Ui_DialogGyroscope):
-    pass
+    def __init__(self,parent=None):
+        super().__init__(parent)
+
+        self.setXRange(-32768, +32767)
+        self.setYRange(-32768, +32767)
+        self.setZRange(-32768, +32767)
 
 class Magnetometer(MetaIMUDialog, Ui_DialogMagnetometer):
-    pass
+    def __init__(self,parent=None):
+        super().__init__(parent)
+
+        self.setXRange(-32768, +32767)
+        self.setYRange(-32768, +32767)
+        self.setZRange(-32768, +32767)

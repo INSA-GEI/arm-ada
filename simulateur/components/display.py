@@ -99,11 +99,7 @@ class Display(QtWidgets.QLabel):
     def drawRectangle(self,x1,y1,x2,y2):
         painter=self.__openDrawingContext()
         painter.setPen(self.fgColor)
-        # brush = QtGui.QBrush(QtGui.QColor(self.fgColor.red(),
-        #                                  self.fgColor.green(),
-        #                                  self.fgColor.blue(),
-        #                                  128))
-        # painter.setBrush(brush)
+        
         painter.drawRect(QtCore.QRect(x1,y1,x2-x1,y2-y1))
         self.__closeDrawingContext()
 

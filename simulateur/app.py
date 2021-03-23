@@ -133,10 +133,21 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionMagnetometre.triggered.connect(self.showMagnetometer)
         self.actionTests.triggered.connect(self.showTests)
 
+        # Connect dialog events
+        self.cmp_knobs.dialLeft.valueChanged.connect(self.knobsChanged)
+        self.cmp_knobs.dialRight.valueChanged.connect(self.knobsChanged)
+        self.cmp_accelerometer.sliderX.valueChanged.connect(self.accelerometerChanged)
+        self.cmp_accelerometer.sliderY.valueChanged.connect(self.accelerometerChanged)
+        self.cmp_accelerometer.sliderZ.valueChanged.connect(self.accelerometerChanged)
+        self.cmp_gyroscope.sliderX.valueChanged.connect(self.gyroscopeChanged)
+        self.cmp_gyroscope.sliderY.valueChanged.connect(self.gyroscopeChanged)
+        self.cmp_gyroscope.sliderZ.valueChanged.connect(self.gyroscopeChanged)
+        self.cmp_magnetometer.sliderX.valueChanged.connect(self.magnetometerChanged)
+        self.cmp_magnetometer.sliderY.valueChanged.connect(self.magnetometerChanged)
+        self.cmp_magnetometer.sliderZ.valueChanged.connect(self.magnetometerChanged)
+
         # Connect command processor events
         self.cmdProcessor.drawText.connect(self.cmp_display.drawText)
-        #self.cmdProcessor.getKeyState.connect(self.cp_GetKeyState)
-        #self.cmdProcessor.getAllKeys.connect(self.cp_GetAllKeys)
         self.cmdProcessor.setTextColor.connect(self.cmp_display.setTextColor)
         self.cmdProcessor.setBgColor.connect(self.cmp_display.setBgColor)
         self.cmdProcessor.clearScreen.connect(self.cmp_display.clearScreen)
@@ -214,26 +225,28 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
             self.cmdProcessor.sendKeyReleased(keystr)
 
-    # def buttonPressEvent(self,key):
-    #     if key in keyDict:
-    #         self.cmp_keys.setKeyPressed(keyDict[key])
+    def knobsChanged(self):
+        leftKnob = self.cmp_knobs.getLeftKnobValue()
+        rightKnob = self.cmp_knobs.getRightKnobValue()
+        self.cmdProcessor.sendKnobsValues(leftKnob, rightKnob)
 
-    # def buttonReleaseEvent(self,key):
-    #     if key in keyDict:
-    #         self.cmp_keys.setKeyReleased(keyDict[key])
+    def accelerometerChanged(self):
+        X = self.cmp_accelerometer.getXValue()
+        Y = self.cmp_accelerometer.getYValue()
+        Z = self.cmp_accelerometer.getZValue()
+        self.cmdProcessor.sendAccelerometerValues(X, Y, Z)
 
-    # def cp_GetKeyState(self, key):
-    #     if key in textKeyDict:
-    #         if self.cmp_keys.isKeyPressed(textKeyDict[key]):
-    #             self.cmdProcessor.sendKeyState(key, 1)
-    #         else:
-    #             self.cmdProcessor.sendKeyState(key, 0)
-    #     else:
-    #         raise
+    def gyroscopeChanged(self):
+        X = self.cmp_gyroscope.getXValue()
+        Y = self.cmp_gyroscope.getYValue()
+        Z = self.cmp_gyroscope.getZValue()
+        self.cmdProcessor.sendGyroscopeValues(X, Y, Z)
 
-    # def cp_GetAllKeys(self):
-    #     allkeys = self.cmp_keys.getState()
-    #     self.cmdProcessor.sendAllKeys(allkeys)
+    def magnetometerChanged(self):
+        X = self.cmp_magnetometer.getXValue()
+        Y = self.cmp_magnetometer.getYValue()
+        Z = self.cmp_magnetometer.getZValue()
+        self.cmdProcessor.sendMagnetometerValues(X, Y, Z)
 
     def close(self):
         self.socketWorker.closeSocket()

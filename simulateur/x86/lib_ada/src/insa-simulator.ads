@@ -5,6 +5,7 @@
 -- pragma Ada_95;
 with Ada.Finalization;
 with Insa.Keys;
+with Insa.Sensors;
 
 with Ada.Strings;
 
@@ -26,6 +27,18 @@ package Insa.Simulator is
    procedure KeyReleasedEventReceived(Msg:String);
    function GetSimulatorKeyState (Key: Keys.KEY_ID) return Keys.KEY_STATE;
 
+   procedure KnobsEventReceived(Msg: String);
+   function GetKnobsState (Knob: Keys.POTENTIOMETER_ID) return Keys.POTENTIOMETER_VALUE;
+   
+   procedure AccelerometerEventReceived(Msg: String);
+   function GetSimAccelerometerValues return Sensors.SENSOR_VALUES;
+   
+   procedure GyroscopeEventReceived(Msg: String);
+   function GetSimGyrosocopeValues return Sensors.SENSOR_VALUES;
+   
+   procedure MagnetometerEventReceived(Msg: String);
+   function GetSimMagnetometerValues return Sensors.SENSOR_VALUES;
+   
 private
    type FinalizeObject is new Ada.Finalization.Controlled with
       record

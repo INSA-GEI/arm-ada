@@ -260,8 +260,62 @@ package body Insa.Simulator is
       end if;
       
       return State;
-      
    end GetSimulatorKeyState;
+   
+   LeftKnob: Keys.POTENTIOMETER_VALUE:=0;
+   RightKnob: Keys.POTENTIOMETER_VALUE:=0;
+   
+   procedure KnobsEventReceived(Msg: String) is
+   begin
+      if Ada.Strings.Fixed.Index (Msg, "=") > 0 then
+         KeyStates.A := Keys.Key_Released;
+      end if;
+   end KnobsEventReceived;
+   
+   function GetKnobsState (Knob: Keys.POTENTIOMETER_ID) return Keys.POTENTIOMETER_VALUE is
+      Val: Keys.POTENTIOMETER_VALUE;
+   begin
+      Val:=RightKnob;
+      
+      if Knob = Keys.Potentiometer_Left then
+         Val:= LeftKnob;   
+      end if;
+      
+      return Val;
+   end GetKnobsState;
+     
+   AccelerometerValues: Sensors.SENSOR_VALUES := (0.0,0.0,0.0);
+   procedure AccelerometerEventReceived(Msg: String) is
+   begin
+      null;
+   end AccelerometerEventReceived;
+   
+   function GetSimAccelerometerValues return Sensors.SENSOR_VALUES is
+   begin
+      return AccelerometerValues;
+   end GetSimAccelerometerValues;
+      
+   GyroscopeValues: Sensors.SENSOR_VALUES := (0.0,0.0,0.0);
+   procedure GyroscopeEventReceived(Msg: String) is
+   begin
+      null;
+   end GyroscopeEventReceived;
+   
+   function GetSimGyrosocopeValues return Sensors.SENSOR_VALUES is
+   begin
+      return GyroscopeValues;
+   end GetSimGyrosocopeValues; 
+   
+   MagnetometerValues: Sensors.SENSOR_VALUES := (0.0,0.0,0.0);
+   procedure MagnetometerEventReceived(Msg: String) is
+   begin
+      null;
+   end MagnetometerEventReceived;
+   
+   function GetSimMagnetometerValues return Sensors.SENSOR_VALUES is
+   begin
+      return MagnetometerValues;
+   end GetSimMagnetometerValues; 
    
 begin
    GNAT.Exception_Traces.Trace_On (GNAT.Exception_Traces.Every_Raise); 

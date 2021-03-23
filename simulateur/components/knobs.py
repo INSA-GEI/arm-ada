@@ -4,6 +4,8 @@ from dialog_knobs_ui import Ui_DialogPotentiometers
 
 class KnobsDialog(QtWidgets.QDialog, Ui_DialogPotentiometers):
 
+    # knobValuesChanged = pyqtSignal(int,int) # leftKnob: int, rightKnob: int
+
     def __init__(self,parent=None):
         super().__init__(parent)
         self.setupUi(self)
