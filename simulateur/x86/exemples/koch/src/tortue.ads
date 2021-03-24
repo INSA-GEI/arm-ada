@@ -50,7 +50,7 @@ package Tortue is
    procedure Baisser_Plume;
 
    -- procédure permettant de choisir la couleur du tracé
-   procedure Choix_Couleur(pen_color: in Insa.Graphics.COLOR);
+   procedure Choix_Couleur(Pen_Color: in Insa.Graphics.COLOR);
 
    -- function retournant l'abscisse (= le numéro de colonne) de la position courante de la tortue
    function Coordonnee_X return Float;

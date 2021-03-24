@@ -12,6 +12,13 @@ class Display(QtWidgets.QLabel):
         super(Display, self).__init__(parentWidget)
 
         self.resizeWidget(self.geometry())
+        self.reset()
+
+    def reset(self):
+        self.setTextColor(0,0,0)
+        self.setBgColor(255,255,255)
+        self.clearScreen(255,255,255)
+        self.update()
 
     def __openDrawingContext(self):
         self.__currentContext = QtGui.QPainter(self.pixmap())

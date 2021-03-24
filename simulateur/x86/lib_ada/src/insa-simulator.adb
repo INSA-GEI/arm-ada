@@ -7,6 +7,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Exceptions;  use Ada.Exceptions;
 with Ada.Strings;
 with Ada.Strings.Fixed;
+with GNAT.String_Split;
 
 with GNAT.Source_Info;
 with GNAT.Exception_Traces;
@@ -259,35 +260,148 @@ package body Insa.Simulator is
          null;
       end if;
       
+      --Petite pause pour eviter de faire fondre le CPU si c'est appelé en boucle
+      delay(0.05);
+      
       return State;
    end GetSimulatorKeyState;
    
-   LeftKnob: Keys.POTENTIOMETER_VALUE:=0;
-   RightKnob: Keys.POTENTIOMETER_VALUE:=0;
+   LeftKnob: Integer:=1;
+   RightKnob: Integer:=1;
    
    procedure KnobsEventReceived(Msg: String) is
+      use GNAT;
+      
+      Index:Integer;
+      CRLFPresent:Integer:=0;
+     
    begin
-      if Ada.Strings.Fixed.Index (Msg, "=") > 0 then
-         KeyStates.A := Keys.Key_Released;
+      Index:=Ada.Strings.Fixed.Index (Msg, "=");
+      
+      if Index> 0 then
+         if Msg(Msg'Last)=ASCII.LF or Msg(Msg'Last)=ASCII.CR then
+            CRLFPresent:=1;
+         end if;
+         
+         declare
+            Data:String:=Msg(Index+1..Msg'Last-CRLFPresent);
+        
+            Subs : String_Split.Slice_Set;
+            --  Subs is populated by the actual substrings.
+ 
+            Seps : constant String := ",";  
+            --  Set the different separator (here, only ',' is used).                                 
+         begin
+            --  Ada.Text_IO.Put_Line ("Splitting '" & Data & "' at ,.");
+            --  Introduce our job.
+ 
+            String_Split.Create (S          => Subs,
+                                 From       => Data,
+                                 Separators => Seps,
+                                 Mode       => String_Split.Multiple);
+            --  Create the split, using Multiple mode to treat strings of multiple
+            --  whitespace characters as a single separator.
+            --  This populates the Subs object.
+ 
+            --  Ada.Text_IO.Put_Line
+            --    ("Got" &
+            --       String_Split.Slice_Number'Image (String_Split.Slice_Count (Subs)) &
+            --       " substrings:");
+            --  Report results, starting with the count of substrings created.
+ 
+            for I in 1 .. String_Split.Slice_Count (Subs) loop
+               --  Loop though the substrings.  
+               declare
+                  Sub : constant String := String_Split.Slice (Subs, I);
+                  --  Pull the next substring out into a string object for easy handling.
+               begin
+                  case I is
+                     when 1 => LeftKnob := Integer'Value(Sub);
+                     when 2 => RightKnob:= Integer'Value(Sub);
+                     when others => null;
+                  end case;
+               end;
+            end loop;
+            
+            --  Ada.Text_IO.Put_Line("[Knobs] Left= " & Integer'Image(LeftKnob) &
+            --                         "; Right= " & Integer'Image(RightKnob));
+         end;
       end if;
    end KnobsEventReceived;
    
-   function GetKnobsState (Knob: Keys.POTENTIOMETER_ID) return Keys.POTENTIOMETER_VALUE is
+   function GetKnobsValue (Knob: Keys.POTENTIOMETER_ID) return Keys.POTENTIOMETER_VALUE is
       Val: Keys.POTENTIOMETER_VALUE;
    begin
-      Val:=RightKnob;
+      Val:=Keys.POTENTIOMETER_VALUE(RightKnob);
       
       if Knob = Keys.Potentiometer_Left then
-         Val:= LeftKnob;   
+         Val:= Keys.POTENTIOMETER_VALUE(LeftKnob);   
       end if;
       
       return Val;
-   end GetKnobsState;
+   end GetKnobsValue;
      
    AccelerometerValues: Sensors.SENSOR_VALUES := (0.0,0.0,0.0);
    procedure AccelerometerEventReceived(Msg: String) is
+      use GNAT;
+      
+      Index:Integer;
+      CRLFPresent:Integer:=0;
+     
    begin
-      null;
+      Index:=Ada.Strings.Fixed.Index (Msg, "=");
+      
+      if Index> 0 then
+         if Msg(Msg'Last)=ASCII.LF or Msg(Msg'Last)=ASCII.CR then
+            CRLFPresent:=1;
+         end if;
+         
+         declare
+            Data:String:=Msg(Index+1..Msg'Last-CRLFPresent);
+        
+            Subs : String_Split.Slice_Set;
+            --  Subs is populated by the actual substrings.
+ 
+            Seps : constant String := ",";  
+            --  Set the different separator (here, only ',' is used).                                 
+         begin
+            --  Ada.Text_IO.Put_Line ("Splitting '" & Data & "' at ,.");
+            --  Introduce our job.
+ 
+            String_Split.Create (S          => Subs,
+                                 From       => Data,
+                                 Separators => Seps,
+                                 Mode       => String_Split.Multiple);
+            --  Create the split, using Multiple mode to treat strings of multiple
+            --  whitespace characters as a single separator.
+            --  This populates the Subs object.
+ 
+            --  Ada.Text_IO.Put_Line
+            --    ("Got" &
+            --       String_Split.Slice_Number'Image (String_Split.Slice_Count (Subs)) &
+            --       " substrings:");
+            --  Report results, starting with the count of substrings created.
+ 
+            for I in 1 .. String_Split.Slice_Count (Subs) loop
+               --  Loop though the substrings.  
+               declare
+                  Sub : constant String := String_Split.Slice (Subs, I);
+                  --  Pull the next substring out into a string object for easy handling.
+               begin
+                  case I is
+                     when 1 => AccelerometerValues(1):= Float'Value(Sub);
+                     when 2 => AccelerometerValues(2):= Float'Value(Sub);
+                     when 3 => AccelerometerValues(3):= Float'Value(Sub);
+                     when others => null;
+                  end case;
+               end;
+            end loop;
+            
+            --  Ada.Text_IO.Put_Line("[Acc] X= " & Float'Image(AccelerometerValues(1)) &
+            --                         "; Y= " & Float'Image(AccelerometerValues(2)) &
+            --                         "; Z= " & Float'Image(AccelerometerValues(3)));
+         end;
+      end if;
    end AccelerometerEventReceived;
    
    function GetSimAccelerometerValues return Sensors.SENSOR_VALUES is
@@ -297,8 +411,65 @@ package body Insa.Simulator is
       
    GyroscopeValues: Sensors.SENSOR_VALUES := (0.0,0.0,0.0);
    procedure GyroscopeEventReceived(Msg: String) is
+      use GNAT;
+      
+      Index:Integer;
+      CRLFPresent:Integer:=0;
+     
    begin
-      null;
+      Index:=Ada.Strings.Fixed.Index (Msg, "=");
+      
+      if Index> 0 then
+         if Msg(Msg'Last)=ASCII.LF or Msg(Msg'Last)=ASCII.CR then
+            CRLFPresent:=1;
+         end if;
+         
+         declare
+            Data:String:=Msg(Index+1..Msg'Last-CRLFPresent);
+        
+            Subs : String_Split.Slice_Set;
+            --  Subs is populated by the actual substrings.
+ 
+            Seps : constant String := ",";  
+            --  Set the different separator (here, only ',' is used).                                 
+         begin
+            --  Ada.Text_IO.Put_Line ("Splitting '" & Data & "' at ,.");
+            --  Introduce our job.
+ 
+            String_Split.Create (S          => Subs,
+                                 From       => Data,
+                                 Separators => Seps,
+                                 Mode       => String_Split.Multiple);
+            --  Create the split, using Multiple mode to treat strings of multiple
+            --  whitespace characters as a single separator.
+            --  This populates the Subs object.
+ 
+            --  Ada.Text_IO.Put_Line
+            --    ("Got" &
+            --       String_Split.Slice_Number'Image (String_Split.Slice_Count (Subs)) &
+            --       " substrings:");
+            --  Report results, starting with the count of substrings created.
+ 
+            for I in 1 .. String_Split.Slice_Count (Subs) loop
+               --  Loop though the substrings.  
+               declare
+                  Sub : constant String := String_Split.Slice (Subs, I);
+                  --  Pull the next substring out into a string object for easy handling.
+               begin
+                  case I is
+                     when 1 => GyroscopeValues(1):= Float'Value(Sub);
+                     when 2 => GyroscopeValues(2):= Float'Value(Sub);
+                     when 3 => GyroscopeValues(3):= Float'Value(Sub);
+                     when others => null;
+                  end case;
+               end;
+            end loop;
+            
+            --  Ada.Text_IO.Put_Line("[Gyro] X= " & Float'Image(GyroscopeValues(1)) &
+            --                         "; Y= " & Float'Image(GyroscopeValues(2)) &
+            --                         "; Z= " & Float'Image(GyroscopeValues(3)));
+         end;
+      end if;
    end GyroscopeEventReceived;
    
    function GetSimGyrosocopeValues return Sensors.SENSOR_VALUES is
@@ -308,8 +479,65 @@ package body Insa.Simulator is
    
    MagnetometerValues: Sensors.SENSOR_VALUES := (0.0,0.0,0.0);
    procedure MagnetometerEventReceived(Msg: String) is
+      use GNAT;
+      
+      Index:Integer;
+      CRLFPresent:Integer:=0;
+     
    begin
-      null;
+      Index:=Ada.Strings.Fixed.Index (Msg, "=");
+      
+      if Index> 0 then
+         if Msg(Msg'Last)=ASCII.LF or Msg(Msg'Last)=ASCII.CR then
+            CRLFPresent:=1;
+         end if;
+         
+         declare
+            Data:String:=Msg(Index+1..Msg'Last-CRLFPresent);
+        
+            Subs : String_Split.Slice_Set;
+            --  Subs is populated by the actual substrings.
+ 
+            Seps : constant String := ",";  
+            --  Set the different separator (here, only ',' is used).                                 
+         begin
+            --  Ada.Text_IO.Put_Line ("Splitting '" & Data & "' at ,.");
+            --  Introduce our job.
+ 
+            String_Split.Create (S          => Subs,
+                                 From       => Data,
+                                 Separators => Seps,
+                                 Mode       => String_Split.Multiple);
+            --  Create the split, using Multiple mode to treat strings of multiple
+            --  whitespace characters as a single separator.
+            --  This populates the Subs object.
+ 
+            --  Ada.Text_IO.Put_Line
+            --    ("Got" &
+            --       String_Split.Slice_Number'Image (String_Split.Slice_Count (Subs)) &
+            --       " substrings:");
+            --  Report results, starting with the count of substrings created.
+ 
+            for I in 1 .. String_Split.Slice_Count (Subs) loop
+               --  Loop though the substrings.  
+               declare
+                  Sub : constant String := String_Split.Slice (Subs, I);
+                  --  Pull the next substring out into a string object for easy handling.
+               begin
+                  case I is
+                     when 1 => MagnetometerValues(1):= Float'Value(Sub);
+                     when 2 => MagnetometerValues(2):= Float'Value(Sub);
+                     when 3 => MagnetometerValues(3):= Float'Value(Sub);
+                     when others => null;
+                  end case;
+               end;
+            end loop;
+            
+            --  Ada.Text_IO.Put_Line("[Mag] X= " & Float'Image(MagnetometerValues(1)) &
+            --                         "; Y= " & Float'Image(MagnetometerValues(2)) &
+            --                         "; Z= " & Float'Image(MagnetometerValues(3)));
+         end;
+      end if;
    end MagnetometerEventReceived;
    
    function GetSimMagnetometerValues return Sensors.SENSOR_VALUES is
@@ -321,8 +549,10 @@ begin
    GNAT.Exception_Traces.Trace_On (GNAT.Exception_Traces.Every_Raise); 
    Ada.Text_IO.Put_Line ("[sim] Initialize socket");
       
-   Open;
-   Tasks.StartSocketListenerTask;
+   Open; -- open socket or raise exception
+   Tasks.StartSocketListenerTask; -- start socketlistener for incoming message
+   
+   SendMessage("RESET"); -- Send Reset event to simulator
    
    FinalizeFlagPtr := new FinalizeObject;
    FinalizeFlagPtr.Flag:=True;

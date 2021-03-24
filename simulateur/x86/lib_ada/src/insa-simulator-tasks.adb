@@ -40,6 +40,18 @@ package body Insa.Simulator.Tasks is
             elsif Ada.Strings.Fixed.Index(Msg, "KEYRELEASED=") > 0 then
                -- Keyreleased event received
                Simulator.KeyReleasedEventReceived(Msg);
+            elsif Ada.Strings.Fixed.Index(Msg, "KNOBSCHANGED=") > 0 then
+               -- Knobschanged event received
+               Simulator.KnobsEventReceived(Msg);
+            elsif Ada.Strings.Fixed.Index(Msg, "ACCCHANGED=") > 0 then
+               -- AccelerometerChanged event received
+               Simulator.AccelerometerEventReceived(Msg);
+            elsif Ada.Strings.Fixed.Index(Msg, "GYRCHANGED=") > 0 then
+               -- GyroscopeChanged event received
+               Simulator.GyroscopeEventReceived(Msg);
+            elsif Ada.Strings.Fixed.Index(Msg, "MAGCHANGED=") > 0 then
+               -- MagnetometerChanged event received
+               Simulator.MagnetometerEventReceived(Msg);
             else
                Ada.Text_IO.Put_Line ("[receiver task] Unknown message");
             end if;

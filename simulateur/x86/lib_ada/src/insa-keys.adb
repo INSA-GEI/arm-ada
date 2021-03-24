@@ -63,14 +63,12 @@ package body Insa.Keys is
    -- Return the current value (range 0 to 255) of a given potentiometer (Potentiometer_Left or Potentiometer_Right)
    -- Incorrect potentiometer id will raise CONSTRAINT_ERROR  
    function GetPotentiometerValue(Pot: POTENTIOMETER_ID) return POTENTIOMETER_VALUE is
-      
-      -- Wrapper to corresponding OS function
-      -- function Wrapper_GetPotentiometerValue(pot: POTENTIOMETER_ID) return POTENTIOMETER_VALUE;
-      -- pragma Import (C, Wrapper_GetPotentiometerValue, "POT_GetValue");
-      
    begin
-      -- return Wrapper_GetPotentiometerValue(Pot);
-      return 200;
+      if Pot /= Potentiometer_Left and Pot /= Potentiometer_Right then
+         raise CONSTRAINT_ERROR;
+      end if;
+      
+      return Simulator.GetKnobsValue(Pot);
    end GetPotentiometerValue;
    
 end Insa.Keys;

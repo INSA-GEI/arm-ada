@@ -102,6 +102,14 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.socketError("finished")
 
     def connectSignalsSlots(self):
+        # Reset signal
+        self.cmdProcessor.resetEvent.connect(self.cmp_display.reset)
+        self.cmdProcessor.resetEvent.connect(self.cmp_knobs.reset)
+        self.cmdProcessor.resetEvent.connect(self.cmp_accelerometer.reset)
+        self.cmdProcessor.resetEvent.connect(self.cmp_gyroscope.reset)
+        self.cmdProcessor.resetEvent.connect(self.cmp_magnetometer.reset)
+        self.cmdProcessor.resetEvent.connect(self.reset)
+
         # Connect buttons
         self.buttonUp.pressed.connect(lambda key=QtCore.Qt.Key_Up: self.buttonPressEvent(key))
         self.buttonLeft.pressed.connect(lambda key=QtCore.Qt.Key_Left: self.buttonPressEvent(key))
@@ -162,7 +170,10 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # Connect socket events
         self.socketWorker.stateChanged.connect(self.socketEvent)
         self.socketThread.started.connect(self.socketWorker.run)
-        
+    
+    def reset(self):
+        pass
+
     def keyPressEvent(self, e):
         #print ("Key Pressed event: " + str(e.key()))
         self.buttonPressEvent(e.key())

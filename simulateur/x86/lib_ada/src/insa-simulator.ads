@@ -28,7 +28,7 @@ package Insa.Simulator is
    function GetSimulatorKeyState (Key: Keys.KEY_ID) return Keys.KEY_STATE;
 
    procedure KnobsEventReceived(Msg: String);
-   function GetKnobsState (Knob: Keys.POTENTIOMETER_ID) return Keys.POTENTIOMETER_VALUE;
+   function GetKnobsValue (Knob: Keys.POTENTIOMETER_ID) return Keys.POTENTIOMETER_VALUE;
    
    procedure AccelerometerEventReceived(Msg: String);
    function GetSimAccelerometerValues return Sensors.SENSOR_VALUES;

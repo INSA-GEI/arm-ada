@@ -44,6 +44,6 @@ package Nombre is
    function SaisirFinesse return Integer  ; 
    
    
---      Choix_Couleur(Insa.Graphics.Black);
+   --      Choix_Couleur(Insa.Graphics.Black);
    
 end Nombre ;

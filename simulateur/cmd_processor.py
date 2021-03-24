@@ -14,6 +14,8 @@ class CmdProcessor(QObject):
     writeByte = pyqtSignal(int,int,int) # offset: int, LSB: int, MSB: int
     writeBuffer = pyqtSignal(int,str) # offset: int, LSB: int, MSB: int
     
+    resetEvent = pyqtSignal() # Reset message 
+
     def __init__(self, socketWorker: SocketWorker):
         super(CmdProcessor, self).__init__()
         # Store constructor arguments (re-used for processing)
@@ -27,7 +29,10 @@ class CmdProcessor(QObject):
         # print ("Cmd in pipe = " + str(len(commandList)))
 
         for cmdstr in commandList:
-            if cmdstr.find("DRAWTEXT=") != -1:
+            if cmdstr.find("RESET") != -1:
+                print("Reset msg received")
+                self.resetEvent.emit()
+            elif cmdstr.find("DRAWTEXT=") != -1:
                 substr = cmdstr[len("DRAWTEXT="):]
                 slist = substr.split(',')
                 #print ("drawtext params:\nx: "+ slist[0] + "\ny: " + slist[1] + "\ntext: " + slist[2])

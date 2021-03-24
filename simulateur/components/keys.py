@@ -21,6 +21,9 @@ class Keys():
     keyState = 0
 
     def __init__(self):
+        self.reset()
+
+    def reset(self):
         self.keyState=0
 
     def getState(self):

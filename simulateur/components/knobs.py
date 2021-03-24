@@ -10,9 +10,18 @@ class KnobsDialog(QtWidgets.QDialog, Ui_DialogPotentiometers):
         super().__init__(parent)
         self.setupUi(self)
 
+        self.dialLeft.setRange(1,255)
+        self.dialRight.setRange(1,255)
+
         # signals connection
         self.dialLeft.valueChanged.connect(self.updateLeftLabel)
         self.dialRight.valueChanged.connect(self.updateRightLabel)
+
+        self.reset()
+
+    def reset(self):
+        self.dialLeft.setValue(1)
+        self.dialRight.setValue(1)
 
     def getLeftKnobValue(self):
         return self.dialLeft.value()

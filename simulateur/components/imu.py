@@ -19,6 +19,13 @@ class MetaIMUDialog(QtWidgets.QDialog):
         self.sliderY.sliderReleased.connect(self.resetY)
         self.sliderZ.sliderReleased.connect(self.resetZ)
 
+        self.reset()
+    
+    def reset(self):
+        self.resetX()
+        self.resetY()
+        self.resetZ()
+
     def getXValue(self):
         return self.sliderX.value()
 
