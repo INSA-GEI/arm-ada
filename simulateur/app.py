@@ -277,10 +277,12 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         QMessageBox.information(self,"A propos de","Arm-Ada simulator\nVersion 1.0\n\nCopyright INSA-GEI 2021", QMessageBox.Ok)
     
     def open(self):
-        if self.isRunning==True:
-            print ("Previous execWorker running: killing instance ")
-            del self.execThread
-            print ("Previous execWorker killed")
+        if self.execThread is None:
+            pass
+        else:
+            if self.execThread.is_alive():
+                QMessageBox.critical(self,"Error","A program is already loaded. Cannot load another ADA program", QMessageBox.Ok)
+                return
 
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
