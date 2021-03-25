@@ -74,23 +74,26 @@ class MetaIMUDialog(QtWidgets.QDialog):
 class Accelerometer(MetaIMUDialog, Ui_DialogAccelerometer):
     def __init__(self,parent=None):
         super().__init__(parent)
-
-        self.setXRange(-32768, +32767)
-        self.setYRange(-32768, +32767)
-        self.setZRange(-32768, +32767)
+        
+        # Accelerometer values are from -1024.0 to 1024.0
+        self.setXRange(-1024, +1024)
+        self.setYRange(-1024, +1024)
+        self.setZRange(-1024, +1024)
 
 class Gyroscope(MetaIMUDialog, Ui_DialogGyroscope):
     def __init__(self,parent=None):
         super().__init__(parent)
 
-        self.setXRange(-32768, +32767)
-        self.setYRange(-32768, +32767)
-        self.setZRange(-32768, +32767)
+        # Gyroscope values are from -256.0 to 256.0
+        self.setXRange(-256, +256)
+        self.setYRange(-256, +256)
+        self.setZRange(-256, +256)
 
 class Magnetometer(MetaIMUDialog, Ui_DialogMagnetometer):
     def __init__(self,parent=None):
         super().__init__(parent)
 
-        self.setXRange(-32768, +32767)
-        self.setYRange(-32768, +32767)
-        self.setZRange(-32768, +32767)
+        # Magnetometer values are from -512.0 to 512.0
+        self.setXRange(-512, +512)
+        self.setYRange(-512, +512)
+        self.setZRange(-512, +512)

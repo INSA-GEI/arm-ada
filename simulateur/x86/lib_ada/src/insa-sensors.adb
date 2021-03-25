@@ -4,6 +4,8 @@
 
 -- pragma Ada_95;
 
+with Insa.Simulator;
+
 package body Insa.Sensors is
    
    type WRAPPER_VALUES is array(0..2) of FLOAT;
@@ -15,19 +17,19 @@ package body Insa.Sensors is
    -- values are from -256.0 to 256.0
    function GetGyroscopicValues return SENSOR_VALUES is
    
-     function Wrapper_GetGyroscopicValues return WRAPPER_ACCESS;
-     pragma Import (C, Wrapper_GetGyroscopicValues, "L3GD20_GetGyroscopicValues");
+     --  function Wrapper_GetGyroscopicValues return WRAPPER_ACCESS;
+     --  pragma Import (C, Wrapper_GetGyroscopicValues, "L3GD20_GetGyroscopicValues");
      
      Values: SENSOR_VALUES;
-     Wrapper_Values: WRAPPER_ACCESS;
+     -- Wrapper_Values: WRAPPER_ACCESS;
      
    begin 
-      Wrapper_Values := Wrapper_GetGyroscopicValues;
-      
-      Values(1) := Wrapper_Values(0);
-      Values(2) := Wrapper_Values(1);
-      Values(3) := Wrapper_Values(2);
-      
+      --  Wrapper_Values := Wrapper_GetGyroscopicValues;
+      --  
+      --  Values(1) := Wrapper_Values(0);
+      --  Values(2) := Wrapper_Values(1);
+      --  Values(3) := Wrapper_Values(2);
+      Values:=Simulator.GetSimGyrosocopeValues;
       return Values;
    end GetGyroscopicValues;
    
@@ -37,18 +39,18 @@ package body Insa.Sensors is
    -- values are from -512.0 to 512.0
    function GetMagneticValues return SENSOR_VALUES is
       
-     function Wrapper_GetMagneticValues return WRAPPER_ACCESS;
-     pragma Import (C, Wrapper_GetMagneticValues, "LSM303DLHC_GetMagneticValues");
-     
+     --  function Wrapper_GetMagneticValues return WRAPPER_ACCESS;
+     --  pragma Import (C, Wrapper_GetMagneticValues, "LSM303DLHC_GetMagneticValues");
+     --  
      Values: SENSOR_VALUES;
-     Wrapper_Values: WRAPPER_ACCESS;
+     --  Wrapper_Values: WRAPPER_ACCESS;
    begin
-      Wrapper_Values := Wrapper_GetMagneticValues;
-      
-      Values(1) := Wrapper_Values(0);
-      Values(2) := Wrapper_Values(1);
-      Values(3) := Wrapper_Values(2);
-      
+      --  Wrapper_Values := Wrapper_GetMagneticValues;
+      --  
+      --  Values(1) := Wrapper_Values(0);
+      --  Values(2) := Wrapper_Values(1);
+      --  Values(3) := Wrapper_Values(2);
+      Values:=Simulator.GetSimMagnetometerValues;
       return Values;
    end GetMagneticValues;
    
@@ -58,18 +60,18 @@ package body Insa.Sensors is
    -- values are from -1024.0 to 1024.0
    function GetAccelerometerValues return SENSOR_VALUES is
       
-     function Wrapper_GetAccelerometerValues return WRAPPER_ACCESS;
-     pragma Import (C, Wrapper_GetAccelerometerValues, "LSM303DLHC_GetAccelerometerValues");
-     
+     --  function Wrapper_GetAccelerometerValues return WRAPPER_ACCESS;
+     --  pragma Import (C, Wrapper_GetAccelerometerValues, "LSM303DLHC_GetAccelerometerValues");
+     --  
      Values: SENSOR_VALUES;
-     Wrapper_Values: WRAPPER_ACCESS;
+     --  Wrapper_Values: WRAPPER_ACCESS;
    begin
-      Wrapper_Values := Wrapper_GetAccelerometerValues;
-      
-      Values(1) := Wrapper_Values(0);
-      Values(2) := Wrapper_Values(1);
-      Values(3) := Wrapper_Values(2);
-      
+      --  Wrapper_Values := Wrapper_GetAccelerometerValues;
+      --  
+      --  Values(1) := Wrapper_Values(0);
+      --  Values(2) := Wrapper_Values(1);
+      --  Values(3) := Wrapper_Values(2);
+      Values:=Simulator.GetSimAccelerometerValues;
       return Values;
    end GetAccelerometerValues;
 

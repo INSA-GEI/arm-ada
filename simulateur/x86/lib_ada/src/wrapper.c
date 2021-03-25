@@ -24,7 +24,6 @@ SocketListener_EventCallback pSocketListenerCallback=NULL;
 pthread_t listenerthread_handler;
 void *socket_listenerthread (void *args);
 
-
 #define TIMER_TASK_DURATION 100000000L // expressed in nanoseconds => 0.1 sec
 
 typedef void (*Timer_EventCallback)(void);

@@ -35,24 +35,24 @@ class SocketWorker(QObject):
         self.sock.bind(self.server_address)
 
     def closeSocket(self):
-        print ("Closing socket")
+        # print ("Closing socket")
         self.sock.close()
         self.connected = False
         self.stateChanged.emit("disconnected")
 
     def run(self):
         """network main loop."""
-        print ("SocketThread running")
+        # print ("SocketThread running")
         # Listen for incoming connections
         self.sock.listen(1)
-        print ('Listening on sock')
+        # print ('Listening on sock')
 
         while True:
         # Wait for a connection
             print ('waiting for a connection (on socket %s)' % self.server_address)
             self.connection, self.client_address = self.sock.accept()
             try:
-                print ('connection from' + str(self.client_address))
+                # print ('connection from' + str(self.client_address))
                 self.connected = True
                 self.stateChanged.emit("connected")
 
@@ -67,7 +67,7 @@ class SocketWorker(QObject):
                     else:
                         self.connected = False
                         self.stateChanged.emit("disconnected")
-                        print("socket closed by client")
+                        # print("socket closed by client")
             
             finally:
                 # Clean up the connection

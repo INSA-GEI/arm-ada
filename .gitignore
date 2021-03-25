@@ -34,3 +34,4 @@ simulateur/tests/__pycache__
 *.stdout
 *.stderr
 *.lexch
+*.adx

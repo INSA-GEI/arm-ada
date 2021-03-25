@@ -1,4 +1,4 @@
-with "../../../../../Travail/git/arm-ada/simulateur/x86/lib_ada/lib_ada.gpr";
+with "../../lib_ada/lib_ada.gpr";
 
 project Pacman is
 

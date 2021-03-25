@@ -9,6 +9,8 @@ class CmdProcessor(QObject):
     drawLine = pyqtSignal(int,int,int, int) # x1: int, y1: int, x2: int, y2: int
     drawRect = pyqtSignal(int,int,int, int) # x: int, y: int, w: int, h: int
     drawFillRect = pyqtSignal(int,int,int, int) # x: int, y: int, w: int, h: int
+    drawCircle = pyqtSignal(int,int,int) # x: int, y: int, radius: int
+    drawFillCircle = pyqtSignal(int,int,int) # x: int, y: int, radius: int
     drawImage = pyqtSignal(int,int,int,int,str) # x: int, y: int, w: int, h: int, img(base64): str
     drawImageFromSram = pyqtSignal(int,int,int,int,int) # x: int, y: int, w: int, h: int, offset: int
     writeByte = pyqtSignal(int,int,int) # offset: int, LSB: int, MSB: int
@@ -67,6 +69,16 @@ class CmdProcessor(QObject):
                 slist = substr.split(',')
                 #print ("drawFillRect params:\nx: "+ slist[0] + "\ny: " + slist[1] + "\nw: " + slist[2] + "\nh: " + slist[3])
                 self.drawFillRect.emit(int(slist[0]),int(slist[1]),int(slist[2]),int(slist[3]))
+            elif cmdstr.find("DRAWCIRCLE=") != -1:
+                substr = cmdstr[len("DRAWCIRCLE="):]
+                slist = substr.split(',')
+                #print ("drawRect params:\nx: "+ slist[0] + "\ny: " + slist[1] + "\nw: " + slist[2] + "\nh: " + slist[3])
+                self.drawCircle.emit(int(slist[0]),int(slist[1]),int(slist[2]))
+            elif cmdstr.find("DRAWFILLCIRCLE=") != -1:
+                substr = cmdstr[len("DRAWFILLCIRCLE="):]
+                slist = substr.split(',')
+                #print ("drawFillRect params:\nx: "+ slist[0] + "\ny: " + slist[1] + "\nw: " + slist[2] + "\nh: " + slist[3])
+                self.drawFillCircle.emit(int(slist[0]),int(slist[1]),int(slist[2]))
             elif cmdstr.find("DRAWIMAGE=") != -1:
                 substr = cmdstr[len("DRAWIMAGE="):]
                 slist = substr.split(',')
@@ -131,5 +143,3 @@ class CmdProcessor(QObject):
             self.socketWorker.sendData("MAGCHANGED="+str(X)+','+str(Y)+','+str(Z)+"\n")
         else:
             raise
-
-    

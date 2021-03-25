@@ -62,5 +62,3 @@ class Keys():
             self.keyState &= ~key
         else:
             raise
-
-    

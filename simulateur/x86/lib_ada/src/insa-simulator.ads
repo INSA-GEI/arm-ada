@@ -12,7 +12,7 @@ with Ada.Strings;
 package Insa.Simulator is
    
    --pragma Elaborate_Body;
-   SocketException           : exception;
+   SocketException: exception;
    type FinalizeObject is new Ada.Finalization.Controlled with private;
    
    procedure Open;
@@ -42,9 +42,9 @@ package Insa.Simulator is
 private
    type FinalizeObject is new Ada.Finalization.Controlled with
       record
-         Flag                : Boolean  := False;
+         Flag: Boolean  := False;
       end record;
    
    -- override operation, used to execute code when program end
-   procedure Finalize  (E    : in out FinalizeObject);  
+   procedure Finalize  (E: in out FinalizeObject);  
 end Insa.Simulator;

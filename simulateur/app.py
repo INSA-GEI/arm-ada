@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 
-import sys
+import sys, threading,subprocess
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QMessageBox, QFileDialog
 
 from main_window_ui import Ui_MainWindow
 
@@ -85,6 +85,10 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.socketWorker.openSocket()
         self.socketThread.start()
 
+        # Gestion de l'appli externe ADA
+        self.isRunning=False
+        self.execThread=None
+
     def setChildrenFocusPolicy (self, policy):
         self.centralwidget.setFocusPolicy(policy)
         self.backgroundImg.setFocusPolicy(policy)
@@ -162,6 +166,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.cmdProcessor.drawLine.connect(self.cmp_display.drawLine)
         self.cmdProcessor.drawRect.connect(self.cmp_display.drawRectangle)
         self.cmdProcessor.drawFillRect.connect(self.cmp_display.drawFillRectangle)
+        self.cmdProcessor.drawCircle.connect(self.cmp_display.drawCircle)
+        self.cmdProcessor.drawFillCircle.connect(self.cmp_display.drawFillCircle)
         self.cmdProcessor.drawImage.connect(self.cmp_display.drawImageFromBase64)
         self.cmdProcessor.drawImageFromSram.connect(self.cmp_display.drawImageFromSRAM)
         self.cmdProcessor.writeByte.connect(self.cmp_display.writeByteInSRAM)
@@ -264,13 +270,44 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
     
         self.socketThread.quit()
         self.socketThread.deleteLater() 
+
         app.exit()
 
     def about(self):
         QMessageBox.information(self,"A propos de","Arm-Ada simulator\nVersion 1.0\n\nCopyright INSA-GEI 2021", QMessageBox.Ok)
     
     def open(self):
-        QMessageBox.critical(self,"Error","Function not implemented", QMessageBox.Ok)
+        if self.isRunning==True:
+            print ("Previous execWorker running: killing instance ")
+            del self.execThread
+            print ("Previous execWorker killed")
+
+        options = QFileDialog.Options()
+        options |= QFileDialog.DontUseNativeDialog
+        adaExec, _ = QFileDialog.getOpenFileName(self,"Select an ADA executable", "","Python Files (*.adx);;All Files (*)", options=options)
+
+        if adaExec:
+            self.execThread = threading.Thread(target=self.fun, args=(adaExec,))
+            self.execThread.daemon=True
+            # print ("Starting execWorker thread")
+            self.execThread.start()
+            # print ("Starting execWorker thread done")
+        else:
+            QMessageBox.critical(self,"Error","No ADA executable selected", QMessageBox.Ok)
+    
+    def fun(self, filename):
+        # print ("Start execWorker")
+
+        if filename and filename != "":
+            # print ("Start %1 executable",filename)
+            self.isRunning=True
+
+            return_code = subprocess.call(filename, shell=True)
+        else:
+            print ("No ada executable to run")
+
+        self.isRunning=False
+        # print ("execWorker done")
 
     def showPotentiometres(self):
         self.cmp_knobs.show()
@@ -289,15 +326,18 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.tests.show()
 
     def socketEvent(self,evt):
-        print("Socket event received: "+ evt)
+        # print("Socket event received: "+ evt)
 
         if evt=="connected":
-            print ("socket connected")
-            
+            # print ("socket connected")
+            pass
+
         elif evt=="disconnected":
-            print ("socket disconnected")
+            # print ("socket disconnected")
+            pass
+
         elif evt=="finished":
-            print ("closing socket and finishing thread")
+            # print ("closing socket and finishing thread")
             self.socketWorker.closeSocket()
     
             self.socketThread.quit()

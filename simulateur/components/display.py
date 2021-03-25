@@ -124,7 +124,7 @@ class Display(QtWidgets.QLabel):
                                           self.fgColor.blue(),
                                           255))
         painter.setBrush(brush)
-        painter.drawEllipse(QtCore.QPoint(x,y),r,r)
+        painter.drawEllipse(QtCore.QPoint(x,y),r-1,r-1)
  
         self.__closeDrawingContext()
     
@@ -159,7 +159,3 @@ class Display(QtWidgets.QLabel):
     def drawImageFromBase64 (self, x,y,w,h,s):
         data= b64decode(s)
         self.drawImage(x,y,w,h,data)
-
-    
-
-    

@@ -1,10 +1,10 @@
 with "../../lib_ada/lib_ada.gpr";
 
-project Simon is
+project Snake is
 
    for Source_Dirs use ("src");
    for Object_Dir use "obj";
-   for Main use ("missionsimon.adb");
+   for Main use ("missionsnake.adb");
    for Runtime ("ada") use "native";
 
    package Compiler is
@@ -17,7 +17,8 @@ project Simon is
 
    package Builder is
       for Switches ("ada") use ("-j4", "-g", "-C");
+      for Executable ("missionsnake.adb") use "../missionsnake.adx";
    end Builder;
 
-end Simon;
+end Snake;
 

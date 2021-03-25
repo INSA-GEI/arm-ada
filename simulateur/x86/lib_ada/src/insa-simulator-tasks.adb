@@ -53,11 +53,13 @@ package body Insa.Simulator.Tasks is
                -- MagnetometerChanged event received
                Simulator.MagnetometerEventReceived(Msg);
             else
-               Ada.Text_IO.Put_Line ("[receiver task] Unknown message");
+               Ada.Text_IO.Put_Line ("[arm-ada] Unknown message received from simulator");
+               Ada.Text_IO.Put_Line ("[arm-ada] Msg is: " & Msg );
             end if;
             
          else
-            Ada.Text_IO.Put_Line ("[receiver task] No message");
+            --  Ada.Text_IO.Put_Line ("[arm-ada] No message");
+            null;
          end if;
       end;
    end SocketListenerCallback;
@@ -87,8 +89,8 @@ package body Insa.Simulator.Tasks is
       
       if RetVal /= 0 then
          raise SocketTaskException with GNAT.Source_Info.File & " : " & Integer'Image(GNAT.Source_Info.Line) & " Socket task listener creation failed. Code (" & Integer'Image(RetVal) & ")";
-      else
-         Ada.Text_IO.Put_Line("[receiver task] Task handler started");
+         --  else
+         --     Ada.Text_IO.Put_Line("[arm-ada] Task handler [receiver] started");
       end if;
    end StartSocketListenerTask;
    
@@ -96,14 +98,14 @@ package body Insa.Simulator.Tasks is
       function StopSocketListenerTask_Wrp return Integer;
       pragma Import (C, StopSocketListenerTask_Wrp, "socket_stopthread");
       
-      RetVal : Integer;
+      RetVal: Integer;
    begin 
-      RetVal := StopSocketListenerTask_Wrp;
+      RetVal:= StopSocketListenerTask_Wrp;
       
       if RetVal /= 0 then
          raise SocketTaskException with GNAT.Source_Info.File & " : " & Integer'Image(GNAT.Source_Info.Line) & " Socket task listener cancelation failed. Code (" & Integer'Image(RetVal) & ")";
-      else
-         Ada.Text_IO.Put_Line("[receiver task] Task handler canceled");
+         --  else
+         --     Ada.Text_IO.Put_Line("[arm-ada] Task handler [receiver] canceled");
       end if;
       
       ClearSocketListenerCallback;
@@ -159,8 +161,8 @@ package body Insa.Simulator.Tasks is
       
       if RetVal /= 0 then
          raise SocketTaskException with GNAT.Source_Info.File & " : " & Integer'Image(GNAT.Source_Info.Line) & " Timer task creation failed. Code (" & Integer'Image(RetVal) & ")";
-      else
-         Ada.Text_IO.Put_Line("[timer task] Task handler started");
+         --  else
+         --     Ada.Text_IO.Put_Line("[arm-ada] Task handler [timer] started");
       end if;
    end StartTimerTask;
    
@@ -174,8 +176,8 @@ package body Insa.Simulator.Tasks is
       
       if RetVal /= 0 then
          raise SocketTaskException with GNAT.Source_Info.File & " : " & Integer'Image(GNAT.Source_Info.Line) & " Timer task cancelation failed. Code (" & Integer'Image(RetVal) & ")";
-      else
-         Ada.Text_IO.Put_Line("[timer task] Task handler canceled");
+         --  else
+         --     Ada.Text_IO.Put_Line("[arm-ada] Task handler [timer] canceled");
       end if;
       
       ClearTimerCallback;

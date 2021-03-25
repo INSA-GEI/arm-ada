@@ -20,29 +20,28 @@ with INSA.Simulator.Tasks;
 
 package body Insa.Simulator is
    
-   SocketOpenFlag                                                : Boolean := False;
+   SocketOpenFlag: Boolean := False;
    
-   STATUS_NO_ERROR                                               : constant Integer := 0;
-   STATUS_SOCKET_CREATION_ERROR                                  : constant Integer := -1;
-   STATUS_CONNECTION_ERROR                                       : constant Integer := -2;
-   STATUS_WRITE_ERROR                                            : constant Integer := -3;
-   STATUS_CLOSE_ERROR                                            : constant Integer := -4;
-   STATUS_READ_ERROR                                             : constant Integer := -5;
+   STATUS_NO_ERROR: constant Integer := 0;
+   STATUS_SOCKET_CREATION_ERROR: constant Integer := -1;
+   STATUS_CONNECTION_ERROR: constant Integer := -2;
+   STATUS_WRITE_ERROR: constant Integer := -3;
+   STATUS_CLOSE_ERROR: constant Integer := -4;
+   STATUS_READ_ERROR: constant Integer := -5;
    
-   RECEIVE_BUFFER_LENGTH                                         : constant Integer := 65535;
+   RECEIVE_BUFFER_LENGTH: constant Integer := 65535;
    
    type ReceiveBufferType is array (0..RECEIVE_BUFFER_LENGTH) of Character;
    type ReceiveBufferAccess is access all ReceiveBufferType;
    
-   ReceiveBuffer                                                 : ReceiveBufferType;
+   ReceiveBuffer: ReceiveBufferType;
       
    type PtrFinalizeObject_Type is access all FinalizeObject;      -- global access type
-   FinalizeFlagPtr                                               : PtrFinalizeObject_Type;
+   FinalizeFlagPtr: PtrFinalizeObject_Type;
    
-   procedure Finalize  (E                                        : in out FinalizeObject) is  -- override operation
-   begin
-            
-      Ada.Text_IO.Put_Line ("[sim] Close socket");
+   procedure Finalize  (E: in out FinalizeObject) is  -- override operation
+   begin     
+      --  Ada.Text_IO.Put_Line ("[arm-ada] Close socket");
       Close;
       
       Tasks.StopSocketListenerTask;
@@ -53,7 +52,7 @@ package body Insa.Simulator is
       function Open_Wrp return Integer;
       pragma Import (C, Open_Wrp, "socket_init");
       
-      RetVal                                                     : Integer;
+      RetVal: Integer;
    begin
       if SocketOpenFlag = False then
          RetVal := Open_Wrp;
@@ -84,7 +83,7 @@ package body Insa.Simulator is
       function Close_Wrp return Integer;
       pragma Import (C, Close_Wrp, "socket_close");
       
-      RetVal                                                     : Integer;
+      RetVal: Integer;
    begin
       if SocketOpenFlag then
          RetVal := Close_Wrp;
@@ -100,11 +99,11 @@ package body Insa.Simulator is
       end if;
    end Close;
    
-   procedure SendMessage(Msg                                     : String) is
-      function SendMessage_Wrp(Msg                               : String; MsgLen: Integer) return Integer;
+   procedure SendMessage(Msg: String) is
+      function SendMessage_Wrp(Msg: String; MsgLen: Integer) return Integer;
       pragma Import (C, SendMessage_Wrp, "socket_write");
       
-      RetVal                                                     : Integer;
+      RetVal: Integer;
    begin
       if SocketOpenFlag = False then
          Open;
@@ -129,17 +128,17 @@ package body Insa.Simulator is
    
    function ReceiveMessage return String is
       
-      function ReceiveMessage_Wrp(Buffer                         : ReceiveBufferAccess; BufferLen: Integer) return Integer;
+      function ReceiveMessage_Wrp(Buffer: ReceiveBufferAccess; BufferLen: Integer) return Integer;
       pragma Import (C, ReceiveMessage_Wrp, "socket_read");
       
-      RetVal                                                     : Integer;
+      RetVal: Integer;
    begin
       if SocketOpenFlag = False then
          Open;
          SocketOpenFlag := True;
       end if;
       
-      RetVal := ReceiveMessage_Wrp (ReceiveBuffer'Unrestricted_Access, RECEIVE_BUFFER_LENGTH);
+      RetVal:= ReceiveMessage_Wrp (ReceiveBuffer'Unrestricted_Access, RECEIVE_BUFFER_LENGTH);
       
       if RetVal < 0 then
          if RetVal = STATUS_READ_ERROR then 
@@ -150,7 +149,7 @@ package body Insa.Simulator is
       end if;
       
       declare
-         Msg                                                     : String (1..RetVal);
+         Msg: String (1..RetVal);
       begin
          for I in 1..RetVal loop
             Msg(I):=ReceiveBuffer(I-1);
@@ -163,20 +162,20 @@ package body Insa.Simulator is
    
    function GetListenerBuffer return String is
       
-      function GetListenerBuffer_Wrp(Buffer                         : ReceiveBufferAccess; BufferLen: Integer) return Integer;
+      function GetListenerBuffer_Wrp(Buffer: ReceiveBufferAccess; BufferLen: Integer) return Integer;
       pragma Import (C, GetListenerBuffer_Wrp, "socket_getlistenermessage");
       
-      RetVal                                                     : Integer;
+      RetVal: Integer;
    begin
       if SocketOpenFlag = False then
          Open;
          SocketOpenFlag := True;
       end if;
       
-      RetVal := GetListenerBuffer_Wrp (ReceiveBuffer'Unrestricted_Access, RECEIVE_BUFFER_LENGTH);
+      RetVal:= GetListenerBuffer_Wrp (ReceiveBuffer'Unrestricted_Access, RECEIVE_BUFFER_LENGTH);
       
       declare
-         Msg                                                     : String (1..RetVal);
+         Msg: String (1..RetVal);
       begin
          for I in 1..RetVal loop
             Msg(I):=ReceiveBuffer(I-1);
@@ -547,7 +546,7 @@ package body Insa.Simulator is
    
 begin
    GNAT.Exception_Traces.Trace_On (GNAT.Exception_Traces.Every_Raise); 
-   Ada.Text_IO.Put_Line ("[sim] Initialize socket");
+   --  Ada.Text_IO.Put_Line ("[arm-ada] Initialize socket");
       
    Open; -- open socket or raise exception
    Tasks.StartSocketListenerTask; -- start socketlistener for incoming message
