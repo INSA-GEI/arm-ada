@@ -1,5 +1,0 @@
-# Directories to ignore
-obj/*
-lib/*
-sys/obj/*
-sys/lib/*
