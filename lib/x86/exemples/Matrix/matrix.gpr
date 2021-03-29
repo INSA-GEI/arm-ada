@@ -1,0 +1,23 @@
+with "../../lib_ada/lib_ada.gpr";
+
+project Matrix is
+
+   for Source_Dirs use ("src");
+   for Object_Dir use "obj";
+   for Main use ("matrix.adb");
+   for Runtime ("ada") use "native";
+
+   package Builder is
+      for Switches ("ada") use ("-g", "-C", "-j4");
+   end Builder;
+
+   package Compiler is
+      for Switches ("ada") use ("-g", "-ffunction-sections", "-fdata-sections");
+   end Compiler;
+
+   package Linker is
+      for Switches ("ada") use ("-g", "-Wl,--gc-sections", "-lpthread");
+   end Linker;
+
+end Matrix;
+

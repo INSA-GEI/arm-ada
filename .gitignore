@@ -53,6 +53,8 @@ dkms.conf
 
 # ADA
 *.ali
+*.bin
+*.log
 
 # Miscelaneous
 *.zip
@@ -82,4 +84,14 @@ firmware/Middlewares/ST/STM32_USB_Device_Library
 firmware/Middlewares/ST/STM32_Audio
 firmware/Drivers/CMSIS/Documentation
 firmware/Drivers/CMSIS/DSP_Lib
+*.bmp~
+*.png~
+*.mid~
+*.jpg~
+
+# Simulateur
+simulateur/__pycache__/
+simulateur/components/__pycache__/
+simulateur/tests/__pycache__/
+simulateur/armada.sock
 
