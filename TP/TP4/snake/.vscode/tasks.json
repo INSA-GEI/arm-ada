@@ -18,20 +18,6 @@
       "problemMatcher": []
     },
     {
-      "label": "Generate ressources",
-      "type": "shell",
-      "command": "make ressources",
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      },
-      "presentation": {
-        "reveal": "always",
-        "panel": "new"
-      },
-      "problemMatcher": []
-    },
-    {
       "label": "Build",
       "type": "shell",
       "command": "make",
@@ -46,7 +32,7 @@
       "problemMatcher": []
     },
     {
-      "label": "Build (new console)",
+      "label": "Build for new GameBoy",
       "type": "shell",
       "command": "make new",
       "group": {
@@ -74,7 +60,7 @@
       "problemMatcher": []
     },
     {
-      "label": "Download (new console)",
+      "label": "Download to new GameBoy",
       "type": "shell",
       "command": "make install-new",
       "group": {
@@ -90,7 +76,7 @@
     {
       "label": "Start gdbserver",
       "type": "shell",
-      "command": "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/arm-ada/bin/native/linux_x64;~/arm-ada/bin/ST-LINK_gdbserver -cp /usr/local/insa/STM32Cube/STM32CubeProgrammer/bin -d",
+      "command": "JLinkGDBServer -device STM32F746NG -If SWD -Speed 4000",
       "isBackground": true,
       "presentation": {
         "reveal": "always",
@@ -98,25 +84,23 @@
       },
       "problemMatcher": {
         "owner": "custom",
-        "pattern": [
-          {
-            "regexp": ".",
-            "file": 1,
-            "location": 2,
-            "message": 3
-          }
-        ],
+        "pattern": [{
+          "regexp": ".",
+          "file": 1,
+          "location": 2,
+          "message": 3
+        }],
         "background": {
           "activeOnStart": true,
-          "beginsPattern": "^STMicroelectronics",
-          "endsPattern": "^Waiting for connection on port"
+          "beginsPattern": "^SEGGER.*$",
+          "endsPattern": "^Waiting for GDB connection.*$"
         },
       },
     },
     {
       "label": "Kill gdbserver",
       "type": "shell",
-      "command": "killall ST-LINK_gdbserver",
+      "command": "killall JLinkGDBServer && killall JLinkGDBServer",
       "presentation": {
         "reveal": "always",
         "panel": "new"

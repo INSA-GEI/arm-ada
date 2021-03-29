@@ -1,0 +1,16 @@
+[DesignatorManager]
+
+[SheetNumberManager]
+SheetNumberOrder=Display Order
+SheetNumberMethod=Increasing
+DocumentName0=Audio_Keys.SchDoc
+UniqueIDPath0=
+SheetNumber0=
+DocumentName1=LCD_SRAM.SchDoc
+UniqueIDPath1=
+SheetNumber1=
+DocumentName2=MCU.SchDoc
+UniqueIDPath2=
+SheetNumber2=
+
+

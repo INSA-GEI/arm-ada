@@ -1,102 +1,30 @@
-# Prerequisites
+*.uvguix.*
+*.crf
 *.d
-
-# Object files
 *.o
-*.ko
-*.obj
-*.elf
-
-# Linker output
-*.ilk
+*.lst
+*.dep
 *.map
-*.exp
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Libraries
-*.lib
-*.a
-*.la
-*.lo
-
-# Shared objects (inc. Windows DLLs)
-*.dll
-*.so
-*.so.*
-*.dylib
-
-# Executables
-*.exe
-*.out
-*.app
-*.i*86
-*.x86_64
-*.hex
-
-# Debug files
-*.dSYM/
-*.su
-*.idb
-*.pdb
-
-# Kernel Module Compile Results
-*.mod*
-*.cmd
-.tmp_versions/
-modules.order
-Module.symvers
-Mkfile.old
-dkms.conf
-
-# ADA
 *.ali
-
-# Altium
-__Previews/
-History/
-Project Logs for*/
-
-# Miscelaneous
-*.zip
-*.tgz
-*.msi
-*.cab
-*.tar.*
-*.7z
-
-# documentations
-*.pdf
-*.chm
-
-# kicad
-*.bak
-*.kicad_pcb-bak
-
-# temporary
-firmware/obj
-firmware/lib
-libs/native/insa/obj
-libs/native/insa/lib
-
-TP/TP1/obj
-TP/TP2/obj
-TP/TP3.1/obj
-TP/TP3.2/obj
-TP/TP4.1/obj
-TP/TP4.2/obj
-exemples/declaration/obj
-exemples/exceptions/obj
-exemples/template/obj
-
-# Misc
-*.db
-*.cswi
-*.deps
-*.cgpr
-*.stderr
-*.stdout
-
+*.elf
+*.log
+*.bin
+b~*
+*.hex
+*.a
+arm-ada-deploiement/compilateur/gcc-arm-none-eabi-6-2017-q3-update
+*.lib
+*.*~
+*~
+export/*.xz
+export/arm-ada
+export/arm-ada_home*.tar.xz
+export/index.html
+hardware/Altium-PCB/"Project Logs for Ada4Arm"/
+hardware/Altium-PCB/"Project Outputs for Ada4Arm"/
+hardware/Altium-PCB/__Previews/
+hardware/Altium-PCB/History/
+hardware/Altium-PCB/Simu/
+*.iex
+*#
 
