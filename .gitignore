@@ -42,6 +42,11 @@
 *.idb
 *.pdb
 
+# gnatstudio
+*.stderr
+*.stdout
+*.lexch
+
 # Kernel Module Compile Results
 *.mod*
 *.cmd
@@ -93,5 +98,5 @@ firmware/Drivers/CMSIS/DSP_Lib
 simulateur/__pycache__/
 simulateur/components/__pycache__/
 simulateur/tests/__pycache__/
-simulateur/armada.sock
+*.sock
 

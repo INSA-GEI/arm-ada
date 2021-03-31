@@ -10,7 +10,8 @@
 
 #include <pthread.h>
 
-char *socket_path = "/home/dimercur/armada.sock";
+//char *socket_path = "/home/dimercur/armada.sock";
+char *socket_path = "armada.sock";
 #define SOCKETLISTENER_BUFFER_SIZE 65535
 
 struct sockaddr_un addr;

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ressources>
+  <file language="ada">ressources</file> 
+
+  <image id="Cerise" color="8bpp" packed="true">./ressources/Cerise.bmp</image>
+  <image id="Pacman_Gauche" color="8bpp" packed="true">./ressources/Pacman_Gauche.bmp</image>
+  <image id="Pacman_Droit" color="8bpp" packed="true">./ressources/Pacman_Droit.bmp</image>
+  <image id="Pacman_Haut" color="8bpp" packed="true">./ressources/Pacman_Haut.bmp</image>
+  <image id="Pacman_Bas" color="8bpp" packed="true">./ressources/Pacman_Bas.bmp</image>
+  <image id="Mur" color="8bpp" packed="true">./ressources/mur2.bmp</image>
+</ressources>
+

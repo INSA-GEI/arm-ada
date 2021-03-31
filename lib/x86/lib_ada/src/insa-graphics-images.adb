@@ -133,8 +133,8 @@ package body Insa.Graphics.Images is
       StreamBuffer : Ada.Streams.Stream_Element_Array(1..Ada.Streams.Stream_Element_Offset((Pack_Img.Width*Pack_Img.Height*2))); -- 2 fois la taille de l'image car en 16 bits
    begin
       Img:=NewImage(Pack_Img.Width,Pack_Img.Height);
-      Ada.Text_IO.Put_Line("Pack image size = " & Integer'Image(Pack_Img.Width) &"*"& Integer'Image(Pack_Img.Height) &
-                             " => " & Integer'Image(Pack_Img.Width*Pack_Img.Height));
+      --  Ada.Text_IO.Put_Line("Pack image size = " & Integer'Image(Pack_Img.Width) &"*"& Integer'Image(Pack_Img.Height) &
+      --                        " => " & Integer'Image(Pack_Img.Width*Pack_Img.Height));
       
       for I in Pack_Img.Data'Range loop
          for X in 0 .. Pack_Img.Data(I).Length-1 loop
@@ -143,7 +143,7 @@ package body Insa.Graphics.Images is
 	 
          Index:=Index + NATURAL(Pack_Img.Data(I).Length);
       end loop;
-      Ada.Text_IO.Put_Line("Index = " & Integer'Image(Index));
+      --  Ada.Text_IO.Put_Line("Index = " & Integer'Image(Index));
       
       ImageToStream(Img.Data, StreamBuffer); 
       

@@ -1,0 +1,23 @@
+[GENERATED OBJECT FILE]
+b__missionmagneto.o
+[PROJECT FILES]
+/home/dimercur/Travail/git/arm-ada/TP/TP4/magneto/magneto.gpr
+20210331132355 f38140cd7cd6732f4fdb29cb731bfdb0
+/home/dimercur/Travail/git/arm-ada/lib/x86/lib_ada/lib_ada.gpr
+20210329150343 f24e072eca807db894717946a7161611
+[BOUND OBJECT FILES]
+/home/dimercur/Travail/git/arm-ada/TP/TP4/magneto/obj/magneto.o
+/home/dimercur/Travail/git/arm-ada/TP/TP4/magneto/obj/missionmagneto.o
+[GENERATED SOURCE FILES]
+b__missionmagneto.ads
+b__missionmagneto.adb
+b__missionmagneto.ali
+[RESULTING OPTIONS]
+-L/home/dimercur/Travail/git/arm-ada/TP/TP4/magneto/obj/
+-L/home/dimercur/Travail/git/arm-ada/TP/TP4/magneto/obj/
+-L/home/dimercur/Travail/git/arm-ada/lib/x86/lib_ada/
+-L/home/dimercur/opt/GNAT/2020-x86/lib/gcc/x86_64-pc-linux-gnu/9.3.1/adalib/
+-static
+-static-libgcc
+/home/dimercur/opt/GNAT/2020-x86/lib/gcc/x86_64-pc-linux-gnu/9.3.1/adalib/libgnat.a
+-ldl
