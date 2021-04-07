@@ -104,6 +104,8 @@ extern uint32_t PRG_ReprogPatternAddr;
 
 int LEGACY_System (void)
 {
+	char str[15];
+
 	/* Pre init du system */
 	SetStack((uint32_t)&__system_stack_end__,(uint32_t)&__app_stack_end__);
 	//SYSTEM_MoveITVector();
@@ -117,10 +119,10 @@ int LEGACY_System (void)
 	GLCD_SetTextColor(Black);
 
 #ifndef ADA_TEST_SYSTEM	
-	if (PRG_CheckReprogRequest()==PRG_RESET_HARDRESET) 
-	{
-		SYSTEM_SplashScreen();
-	}
+//	if (PRG_CheckReprogRequest()==PRG_RESET_HARDRESET)
+//	{
+		//SYSTEM_SplashScreen();
+//	}
 #endif /* ADA_TEST_SYSTEM */
 
 	/* Finalement, on positionne le drapeau de demarrage a froid */
@@ -134,6 +136,10 @@ int LEGACY_System (void)
 	GLCD_SetBackColor(White);
 	GLCD_SetTextColor(Black);
 
+	sprintf (str, "System ver. %d.%d", BL_MAJOR_VERSION, BL_MINOR_VERSION);
+	GLCD_DrawString((40-strlen(str))/2, 13, str);
+	Delay(2000);
+	GLCD_Clear(White);
 	//	/* Essai du synthe */
 	//	if (BSP_AUDIO_OUT_Init(OUTPUT_DEVICE_BOTH, 92, 44100)== 0) {
 	//		GLCD_DrawString(1,10, "Codec Init OK: 44100 Khz");
@@ -555,17 +561,17 @@ void SYSTEM_SplashScreen(void)
 	int x;
 	char str[15];
 
-	GLCD_SetLayer(GLCD_LAYER2);
+	//GLCD_SetLayer(GLCD_LAYER2);
 	GLCD_SetTextColor(White);
 	GLCD_DrawFillRectangle(0,0,319,239);
-	GLCD_SetLayer(GLCD_LAYER1);
-	GLCD_SetTextColor(White);
-	GLCD_DrawFillRectangle(0,0,319,239);
+	//GLCD_SetLayer(GLCD_LAYER1);
+	//GLCD_SetTextColor(White);
+	//GLCD_DrawFillRectangle(0,0,319,239);
 
-	GLCD_SetTransparentColor(Green);
-	GLCD_LayerScrollMode(GLCD_LAYER_SCROLL_BOTH);
-	GLCD_LayerDisplayMode(GLCD_LAYER_DISPLAY_TRANSPARENT);
-	GLCD_LayerTransparency(GLCD_LAYER_TRANSPARENT_TOTAL,GLCD_LAYER_TRANSPARENT_TOTAL);
+	//GLCD_SetTransparentColor(Green);
+	//GLCD_LayerScrollMode(GLCD_LAYER_SCROLL_BOTH);
+	//GLCD_LayerDisplayMode(GLCD_LAYER_DISPLAY_TRANSPARENT);
+	//GLCD_LayerTransparency(GLCD_LAYER_TRANSPARENT_TOTAL,GLCD_LAYER_TRANSPARENT_TOTAL);
 
 	if (KEYS_GetState(KEY_A)==KEY_PRESSED) 
 	{
@@ -576,34 +582,38 @@ void SYSTEM_SplashScreen(void)
 		GLCD_DrawString((40-strlen(str))/2, 13, str);
 	}
 
-	/* allocation du buffer pour l'image */
-	//data = (COLOR*)MALLOC_GetMemory(logo_armada.height*logo_armada.width);
-	data = (COLOR*)malloc(logo_armada.height*logo_armada.width);
-	if (data ==0x0) while (1);
-
-	UnpackBMP((PackedBMP_Header *)&logo_armada, data);
-
-	/* Animation du logo de demarrage */
-	GLCD_SetLayer(GLCD_LAYER2);
-	GLCD_DrawImage(data, (320-logo_armada.width)/2, (240-logo_armada.height)/2, logo_armada.width, logo_armada.height);
-
-	//MALLOC_FreeMemory(data);
-	free(data);
-	GLCD_SetLayer(GLCD_LAYER1);
-	GLCD_SetTextColor(Green);
-
-	for (i=1; i<33; i++)
-	{
-		dx=(logo_armada.width*i)/(2*32);
-		x=(320/2)-dx;
-
-		GLCD_DrawFillRectangle(x,(240-logo_armada.height)/2,x+(dx*2),((240-logo_armada.height)/2)+logo_armada.height);
-		Delay(20);
-	}
+//	/* allocation du buffer pour l'image */
+//	//data = (COLOR*)MALLOC_GetMemory(logo_armada.height*logo_armada.width);
+//	data = (COLOR*)malloc(logo_armada.height*logo_armada.width);
+//	if (data ==0x0) while (1);
+//
+//	UnpackBMP((PackedBMP_Header *)&logo_armada, data);
+//
+//	/* Animation du logo de demarrage */
+//	GLCD_SetLayer(GLCD_LAYER2);
+//	GLCD_DrawImage(data, (320-logo_armada.width)/2, (240-logo_armada.height)/2, logo_armada.width, logo_armada.height);
+//
+//	//MALLOC_FreeMemory(data);
+//	free(data);
+//	GLCD_SetLayer(GLCD_LAYER1);
+//	GLCD_SetTextColor(Green);
+//
+//	for (i=1; i<33; i++)
+//	{
+//		dx=(logo_armada.width*i)/(2*32);
+//		x=(320/2)-dx;
+//
+//		GLCD_DrawFillRectangle(x,(240-logo_armada.height)/2,x+(dx*2),((240-logo_armada.height)/2)+logo_armada.height);
+//		Delay(20);
+//	}
 
 	Delay(2000);
 
-	BSP_LCD_ResetScreen();
+	//BSP_LCD_ResetScreen();
+	GLCD_SetTextColor(White);
+	GLCD_DrawFillRectangle(0,0,319,239);
+	GLCD_SetTextColor(Black);
+	GLCD_SetBackColor(White);
 }
 
 
