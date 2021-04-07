@@ -33,7 +33,8 @@ int API_Init(void)
 {
 volatile uint32_t result;
 
-	IT_Ptr=(void*)(0x8040000-4);
+	//IT_Ptr=(void*)(0x8040000-4);
+    IT_Ptr=(void*)(0x8080000+4);
 	ABI_Table = (ABI_Table_Type*)(*IT_Ptr);
 	API_Ptr_Table = (void*)(ABI_Table->ptr);
 

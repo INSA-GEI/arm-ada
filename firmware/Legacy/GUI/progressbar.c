@@ -40,7 +40,7 @@ void LEGACY_GUI_ProgressBar(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint
 	GLCD_DrawFillRectangle(x+2, y+2, (x+2)+length , (y+2)+h-4);
 
 	GLCD_SetTextColor(White);
-	GLCD_DrawFillRectangle(x+2+length+1, y+2, (x+2+length+1)+(w-4)-length, (y+2)+ h-4);
+	GLCD_DrawFillRectangle(x+2+length, y+2, (x+2+length)+(w-4)-(length+1), (y+2)+ h-4);
 }
 
 void LEGACY_GUI_CenterBar(uint16_t x, uint16_t y, uint16_t w, uint16_t h, int val, uint32_t absolutemaxval)
@@ -79,5 +79,5 @@ void LEGACY_GUI_CenterBar(uint16_t x, uint16_t y, uint16_t w, uint16_t h, int va
 	GLCD_DrawFillRectangle(x+2, y+2, (x+2)+ length, (y+2) + h-4);
 
 	GLCD_SetTextColor(White);
-	GLCD_DrawFillRectangle(x+2+length+1, y+2, (x+2+length+1)+(w-4)-length, (y+2)+h-4);
+	GLCD_DrawFillRectangle(x+2+length+1, y+2, (x+2+length+1)+(w-4)-(length+1), (y+2)+h-4);
 }

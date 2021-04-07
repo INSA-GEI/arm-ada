@@ -4,7 +4,7 @@ MEMORY
 {
   FLASH (rx) : ORIGIN = 0x8008000, LENGTH = 0x2a800 /* 170k */
   RAM (rwx) : ORIGIN = 0x20001800, LENGTH = /*0x1800*/ 0xB000-0x1800/* ~36K */
-  STACK_RAM (rw) : ORIGIN = 0x10000000, LENGTH = 0x500 /* 2Ko - 8 octets  */
+  STACK_RAM (rw) : ORIGIN = 0x20000000, LENGTH = 0x1000 /* 4K  */
 }
 
 /* Config Libraries */

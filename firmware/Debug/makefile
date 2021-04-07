@@ -62,7 +62,7 @@ all: firmware.elf secondary-outputs
 
 # Tool invocations
 firmware.elf: $(OBJS) $(USER_OBJS) /home/dimercur/Travail/git/arm-ada/firmware/firmware.ld
-	arm-none-eabi-gcc -o "firmware.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"/home/dimercur/Travail/git/arm-ada/firmware/firmware.ld" --specs=nosys.specs -Wl,-Map="firmware.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+	arm-none-eabi-gcc -o "firmware.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"/home/dimercur/Travail/git/arm-ada/firmware/firmware.ld" --specs=nosys.specs -Wl,-Map="firmware.map" -Wl,--cref -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

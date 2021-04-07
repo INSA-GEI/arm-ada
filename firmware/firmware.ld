@@ -67,7 +67,7 @@ __dynamic_sram_org 				= __external_sram_base_address + 0x300000;
 MEMORY
 {
   VECTORS (r)			: ORIGIN = 0x08000000,						LENGTH = 500
-  FLASH (rx)      		: ORIGIN = 0x08080000, 						LENGTH = 512K
+  FLASH (rx)      		: ORIGIN = 0x08080010, 						LENGTH = 512K-16
   MEMORY_BANK1 (rx)		: ORIGIN = __external_sram_base_address, 	LENGTH = 4M
   MEMORY_QSPI (r) 		: ORIGIN = __qspi_base_address, 			LENGTH = 16M
   
@@ -77,7 +77,7 @@ MEMORY
   RAM_SHARED_DATA(rw)	: ORIGIN = 0x20001600, 						LENGTH = 4
   RAM_BUFFERS(rw)		: ORIGIN = (0x20050000-0x2000), 			LENGTH = 8K
   RAM (xrw)				: ORIGIN = 0x2000B000, 						LENGTH = (0x20050000-0x2000-0x2000B000)
-  LEGACY_ABI_ENTRYPOINT : ORIGIN = 0x8040000-8, 					LENGTH = 8
+  LEGACY_ABI_ENTRYPOINT : ORIGIN = 0x08080000, 					    LENGTH = 16
   
   /* Memory mapping for external SRAM */
   LCD_FRAMEBUFFER_FOREGROUND 	: ORIGIN = __framebuffer_foreground_org, LENGTH = __framebuffer_length

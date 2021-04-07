@@ -33,7 +33,7 @@ package body Insa.Graphics.UI is
       Insa.Graphics.DrawFillRectangle(x+2, y+2, (x+2)+Length , (y+2)+h-4);
       
       Insa.Graphics.SetTextColor(Insa.Graphics.White);
-      Insa.Graphics.DrawFillRectangle(x+2+length+1, y+2, (x+2+Length+1)+(w-4)-Length, (y+2)+ h-4);
+      Insa.Graphics.DrawFillRectangle(x+2+length, y+2, (x+2+Length)+(w-4)-Length, (y+2)+ h-4);
    end DrawProgressBar;
    
    procedure DrawCenterBar(x: PIXEL_X; y: PIXEL_Y; w: PIXEL_X; h: PIXEL_Y; val: INTEGER; maxval: POSITIVE);
