@@ -24,6 +24,7 @@ char sprintf_buf[128];
 //char write_buffer[1000];
 //struct ST_MY_FILE { int handler};
 //typedef struct ST_MY_FILE MY_FILE;
+//void abort(void) __attribute__((section(".wrapper_keep")));
 
 int _write(int file, char *ptr, int len)
 {

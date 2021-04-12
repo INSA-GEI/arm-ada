@@ -1,0 +1,35 @@
+LIBRARY_NAME = libwrapper_v1
+
+TARGET = $(LIBRARY_NAME).a
+DEP_ASM = src/startup.o
+DEP_C = src/retarget.o src/api.o
+
+OPTIONS = -gdwarf-2 -Og --function-sections --data-sections -march=armv7e-m -mthumb -mthumb-interwork -mfloat-abi=hard -mfpu=fpv4-sp-d16
+
+.PHONY: all clean 
+
+all: $(TARGET)
+	if [ ! -d lib ]; then \
+	mkdir -v lib ;        \
+	fi
+	
+	if [ ! -d lib/v1 ]; then \
+	mkdir -v lib/v1 ;        \
+	fi
+
+	arm-none-eabi-ar r lib/$(TARGET) *.o
+	mv *.o lib/v1
+
+# Say how to compile C programs.
+.SUFFIXES: .c .asm .S 
+
+.S.o:
+	arm-none-eabi-gcc -c $<
+
+.c.o:
+	arm-none-eabi-gcc $(OPTIONS) -D STM32F30X_MD -I. -Isrc/CMSIS -Isrc -c $<
+
+$(TARGET): $(DEP_ASM) $(DEP_C) 
+
+clean:
+	rm -f lib/v1/*.s lib/v1/*.o *.o src/*.o lib/$(TARGET) 

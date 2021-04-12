@@ -7,8 +7,13 @@
 with Insa.Audio;
 use Insa.Audio;
 
+-- with Interfaces; use Interfaces;
 package body Insa.Audio.Synthesizer is
-	
+   function "="(a: SYNTH_STATUS; b: SYNTH_STATUS) return Boolean is
+   begin
+        return true;
+   end "=";
+
    function SYNTH_Start return SYNTH_STATUS is
       function Wrapper_SYNTH_Start return SYNTH_STATUS;
       pragma Import (C, Wrapper_SYNTH_Start, "SYNTH_Start");

@@ -13,9 +13,6 @@ use Insa.Audio.Synthesizer;
 with Ressources;
 use Ressources;
 
-with Interfaces; use Interfaces;
-with Ada.Text_IO;
-
 package body Simon is
    
    TaillePave : constant Integer := 40 ;
@@ -338,7 +335,9 @@ package body Simon is
       I: INTEGER;
    begin 
       -- Demarrage du synthe
-      if SYNTH_Start /=SYNTH_SUCCESS then
+      status := SYNTH_Start;
+
+      if status/=0 then
          raise CONSTRAINT_ERROR;
       end if;
 
@@ -504,12 +503,12 @@ package body Simon is
          end loop;
 
          Mettreazerotimer;
-         --ReprendreTimer;
+         ReprendreTimer;
       end loop;
 
-      --SuspendreTimer;
+      SuspendreTimer;
       Mettreazerotimer;
-      --ReprendreTimer;
+      ReprendreTimer;
 
       EffaceEcranFinDuJeu;
 
@@ -521,8 +520,6 @@ package body Simon is
    end AfficherGagne;
 
 begin
-   --Ada.Text_IO.Put_Line("Init carte et son");
-   
    InitialiserCarte ;
    InitialiserSonetImage;
 end Simon;

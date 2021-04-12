@@ -25,10 +25,11 @@ ARM_ADA_PATH = $(HOME)/arm-ada
 SIMULATOR_PATH = $(ARM_ADA_PATH)/simulator
 
 LIBGNAT_PATH = $(ARM_ADA_COMPILER_PATH)/compilateur/gcc-arm-none-eabi/lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv4-sp/hard/adalib
-LIBWRAPPER_PATH = $(ARM_ADA_PATH)/lib/native/wrapper/lib
-LIBINSA_PATH =  $(ARM_ADA_PATH)/lib/native/lib-ada
+LIBARMADA_PATH = $(ARM_ADA_PATH)/lib/arm
+LIBWRAPPER_PATH = $(LIBARMADA_PATH)/wrapper/lib
+LIBINSA_PATH =  $(LIBARMADA_PATH)/lib-ada
 
-OPTIONS = -gdwarf-2 -O0 --function-sections -march=armv7e-m -mthumb -mthumb-interwork -mfloat-abi=hard -mfpu=fpv4-sp-d16
+OPTIONS = -gdwarf-2 -Og --function-sections -fdata-sections -march=armv7e-m -mthumb -mthumb-interwork -mfloat-abi=hard -mfpu=fpv4-sp-d16
 
 SRCDIR   = src
 OBJDIR   = obj
@@ -67,13 +68,15 @@ $(BINDIR)/$(TARGET): $(OBJDIR)/$(RESSOURCES_NAME).o $(DEP_ADA) $(DEP_ALI) $(DEP_
 	arm-none-eabi-gnatbind -I$(LIBINSA_PATH) -x $(OBJDIR)/$(PROJECT_NAME).ali
 	mv b~* $(OBJDIR)
 	arm-none-eabi-gcc -gdwarf-2 $(OPTIONS) -I$(LIBINSA_PATH) -I$(LIBWRAPPER_PATH) -o $(OBJDIR)/b~$(PROJECT_NAME).o -c $(OBJDIR)/b~$(PROJECT_NAME).adb
-	arm-none-eabi-gcc -gdwarf-2 -march=armv7e-m -mthumb -mthumb-interwork -mfloat-abi=hard -mfpu=fpv4-sp-d16 -Wl,-Map="ada-program.map" -Wl,--gc-section -T $(ARM_ADA_PATH)/lib/native/linker-script-insa.ld -o $(OBJDIR)/$(TARGET) $(OBJDIR)/*.o $(LIBWRAPPER_PATH)/retarget.o -nostartfiles -nodefaultlibs -L $(LIBWRAPPER_PATH) -L $(LIBINSA_PATH) -L $(LIBGNAT_PATH) -lgnat -lc -ladainsa -lwrapper
+#	arm-none-eabi-gcc -gdwarf-2 -march=armv7e-m -mthumb -mthumb-interwork -mfloat-abi=hard -mfpu=fpv4-sp-d16 -Wl,-Map="ada-program.map" -Wl,--gc-section -T $(LIBARMADA_PATH)/mapping_v1.ld -o $(OBJDIR)/$(TARGET) $(OBJDIR)/*.o $(LIBWRAPPER_PATH)/retarget.o -nostartfiles -nodefaultlibs -L $(LIBWRAPPER_PATH) -L $(LIBINSA_PATH) -L $(LIBGNAT_PATH) -lgnat -lc -ladainsa -lwrapper_v1
+	arm-none-eabi-gcc -gdwarf-2 -march=armv7e-m -mthumb -mthumb-interwork -mfloat-abi=hard -mfpu=fpv4-sp-d16 -Wl,-Map="ada-program.map" -Wl,--gc-section -T $(LIBARMADA_PATH)/mapping_v1.ld -o $(OBJDIR)/$(TARGET) $(OBJDIR)/*.o $(LIBWRAPPER_PATH)/v1/retarget.o -nostartfiles -nodefaultlibs -L $(LIBWRAPPER_PATH) -L $(LIBINSA_PATH) -L $(LIBGNAT_PATH) -lgnat -lc -ladainsa -lwrapper_v1
 
 $(BINDIR)/$(TARGET_NEW): $(OBJDIR)/$(RESSOURCES_NAME).o $(DEP_ADA) $(DEP_ALI) $(DEP_ASM) $(DEP_C)
 	arm-none-eabi-gnatbind -I$(LIBINSA_PATH) -x $(OBJDIR)/$(PROJECT_NAME).ali
 	mv b~* $(OBJDIR)
 	arm-none-eabi-gcc -gdwarf-2 $(OPTIONS) -I$(LIBINSA_PATH) -I$(LIBWRAPPER_PATH) -o $(OBJDIR)/b~$(PROJECT_NAME).o -c $(OBJDIR)/b~$(PROJECT_NAME).adb
-	arm-none-eabi-gcc -gdwarf-2 -march=armv7e-m -mthumb -mthumb-interwork -mfloat-abi=hard -mfpu=fpv4-sp-d16 -Wl,-Map="ada-program.map" -Wl,--gc-section -T $(ARM_ADA_PATH)/lib/native/linker-script-arm-ada-new.ld -o $(OBJDIR)/$(TARGET_NEW) $(OBJDIR)/*.o $(LIBWRAPPER_PATH)/retarget.o -nostartfiles -nodefaultlibs -L $(LIBWRAPPER_PATH) -L $(LIBINSA_PATH) -L $(LIBGNAT_PATH) -lgnat -lc -ladainsa -lwrapper
+#	arm-none-eabi-gcc -gdwarf-2 -march=armv7e-m -mthumb -mthumb-interwork -mfloat-abi=hard -mfpu=fpv4-sp-d16 -Wl,-Map="ada-program.map" -Wl,--gc-section -T $(LIBARMADA_PATH)/mapping_v2.ld -o $(OBJDIR)/$(TARGET_NEW) $(OBJDIR)/*.o $(LIBWRAPPER_PATH)/retarget.o -nostartfiles -nodefaultlibs -L $(LIBWRAPPER_PATH) -L $(LIBINSA_PATH) -L $(LIBGNAT_PATH) -lgnat -lc -ladainsa -lwrapper_v2
+	arm-none-eabi-gcc -gdwarf-2 -march=armv7e-m -mthumb -mthumb-interwork -mfloat-abi=hard -mfpu=fpv4-sp-d16 -Wl,-Map="ada-program.map" -Wl,--gc-section -T $(LIBARMADA_PATH)/mapping_v2.ld -o $(OBJDIR)/$(TARGET_NEW) $(OBJDIR)/*.o $(LIBWRAPPER_PATH)/v2/retarget.o -nostartfiles -nodefaultlibs -L $(LIBWRAPPER_PATH) -L $(LIBINSA_PATH) -L $(LIBGNAT_PATH) -lgnat -lc -ladainsa -lwrapper_v2
 
 $(BINDIR)/$(TARGET_SIM): $(OBJDIR)/$(RESSOURCES_NAME).o $(DEP_ADA) $(DEP_ALI) $(DEP_ASM) $(DEP_C)
 	gprbuild -r $(PROJECT_NAME_SIM)

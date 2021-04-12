@@ -33,24 +33,26 @@ int API_Init(void)
 {
 volatile uint32_t result;
 
-	//IT_Ptr=(void*)(0x8040000-4);
+#ifdef WRAPPER_V2
     IT_Ptr=(void*)(0x8080000+4);
+#else
+	IT_Ptr=(void*)(0x8040000-4);
+#endif /* WRAPPER_V2 */
+
 	ABI_Table = (ABI_Table_Type*)(*IT_Ptr);
 	API_Ptr_Table = (void*)(ABI_Table->ptr);
 
 	/* Si le system a une version d'ABI inferieur à notre appli, elle ne peut pas s'executer -> mise a jour du system necessaire */
 	if (ABI_Table->version<ABI_VERSION) return INVALID_ABI;
 	
-	if (ABI_Table->version<0xF0) {
-		/* Resize heap */
-		result = __get_bss_end();
-		//C_malloc_Init(result);
-		sbrk_buffer=(char*)result;
-	}
-	else
-	{
-		sbrk_buffer=(char*)(0xC0000000+0x300000);
-	}
+#ifdef WRAPPER_V2
+    sbrk_buffer=(char*)(0xC0000000+0x300000);
+#else
+	/* Resize heap */
+	result = __get_bss_end();
+	sbrk_buffer=(char*)result;
+#endif /* WRAPPER_V2 */
+
 	return 0;
 }
 

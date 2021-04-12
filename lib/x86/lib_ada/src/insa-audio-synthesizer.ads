@@ -3,6 +3,7 @@
 --
 
 -- pragma Ada_95;
+with Interfaces; use Interfaces;
 
 package Insa.Audio.Synthesizer is
     pragma Warnings (Off);
@@ -205,6 +206,8 @@ package Insa.Audio.Synthesizer is
     SYNTH_SUCCESS   : constant SYNTH_STATUS := 0;
 	SYNTH_ERROR     : constant SYNTH_STATUS := 1;
 	SYNTH_INVALID_CHANNEL   : constant SYNTH_STATUS := 2;
+
+    function "="(a: SYNTH_STATUS; b: SYNTH_STATUS) return Boolean;
 
     function SYNTH_Start return SYNTH_STATUS;
     function SYNTH_Stop return SYNTH_STATUS;

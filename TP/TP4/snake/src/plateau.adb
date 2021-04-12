@@ -1,4 +1,4 @@
-with Insa , Carte, Insa.Graphics, Ada.Unchecked_Deallocation, Ada.Numerics.Discrete_Random ;
+with Insa , Carte, Insa.Graphics, Ada.Unchecked_Deallocation, Ada.Numerics.Discrete_Random, Insa.Random_Number ;
 use  Insa , Insa.Graphics ;
 
 package body Plateau is
@@ -17,7 +17,7 @@ package body Plateau is
         
    CouleurMur1 : constant COLOR     := Green;
    CouleurMur2 : constant COLOR     := Darkgreen;
-   CouleurVide : constant COLOR     := White ;
+   CouleurVide : constant COLOR     :=  White ;
    CouleurCerise : constant COLOR   := Red ;
    IndexCouleurSnake : Integer := Les_CouleursSnake'First ;
    --CouleurSnake : constant COLOR  := Les_Couleurs(15) ;
@@ -104,17 +104,26 @@ package body Plateau is
    package My_Large_Int_Random is new Ada.Numerics.Discrete_Random( Large_Int_Range ) ;
    use My_Large_Int_Random ;
    
-   CeriseX : My_Small_Int_Random.Generator ;    
-   CeriseY : My_Large_Int_Random.Generator ;
-   
+   --CeriseX : My_Small_Int_Random.Generator ;    
+   --CeriseY : My_Large_Int_Random.Generator ;
+   -- CeriseX : RANDOM_VALUE;
+   -- CeriseY : RANDOM_VALUE;
    procedure PlacerCerise (T:in out T_Table) is
       LocalX,LocalY : Integer ;
    begin
       if Carte.TempsEcoule mod 50 = 0 then
-         Reset(CeriseX) ;
-         Reset(CeriseY) ;
-         Localx:=Random(CeriseX);
-         LocalY:=Random(CeriseY);
+         --Reset(CeriseX) ;
+         --Reset(CeriseY) ;
+         --Localx:=Random(CeriseX);
+         --LocalY:=Random(CeriseY);
+         Localx := Insa.Random_Number.GetValue*12/65536;
+         if Localx > 11 then Localx :=11;
+         end if;
+ 
+         Localy := Insa.Random_Number.GetValue*16/65536;
+         if Localy > 15 then Localy :=15;
+         end if;
+
          if T(LocalX,LocalY) = Vide then 
             T(LocalX,LocalY) := Cerise ;	    
             DessinerBloc(LocalX,LocalY,Cerise) ;
