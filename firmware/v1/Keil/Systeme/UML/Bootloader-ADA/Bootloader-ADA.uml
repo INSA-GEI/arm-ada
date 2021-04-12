@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Model xmi:version="2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:uml="http://www.eclipse.org/uml2/3.0.0/UML" xmi:id="_Tr4EsLyOEeKk2sPRmEIkww" name="model">
+  <packagedElement xmi:type="uml:StateMachine" xmi:id="_TubpcLyOEeKk2sPRmEIkww" name="Startup">
+    <region xmi:id="_TusvMLyOEeKk2sPRmEIkww" name="Region0"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_axzwILyPEeKk2sPRmEIkww" name="Startup" clientDependency="_7CbX0LyPEeKk2sPRmEIkww"/>
+  <packagedElement xmi:type="uml:Component" xmi:id="_e5QtsLyPEeKk2sPRmEIkww" name="System" clientDependency="_23r1sLyPEeKk2sPRmEIkww _537TkLyPEeKk2sPRmEIkww _727W4LyPEeKk2sPRmEIkww"/>
+  <packagedElement xmi:type="uml:Component" xmi:id="_f0zI4LyPEeKk2sPRmEIkww" name="Bootloader" clientDependency="_8xCOsLyPEeKk2sPRmEIkww"/>
+  <packagedElement xmi:type="uml:Component" xmi:id="_g-k0YLyPEeKk2sPRmEIkww" name="Devices Drivers"/>
+  <packagedElement xmi:type="uml:Dependency" xmi:id="_23r1sLyPEeKk2sPRmEIkww" name="Use1" supplier="_axzwILyPEeKk2sPRmEIkww" client="_e5QtsLyPEeKk2sPRmEIkww"/>
+  <packagedElement xmi:type="uml:Dependency" xmi:id="_537TkLyPEeKk2sPRmEIkww" name="Use2" supplier="_g-k0YLyPEeKk2sPRmEIkww" client="_e5QtsLyPEeKk2sPRmEIkww"/>
+  <packagedElement xmi:type="uml:Dependency" xmi:id="_7CbX0LyPEeKk2sPRmEIkww" name="Use3" supplier="_g-k0YLyPEeKk2sPRmEIkww" client="_axzwILyPEeKk2sPRmEIkww"/>
+  <packagedElement xmi:type="uml:Dependency" xmi:id="_727W4LyPEeKk2sPRmEIkww" name="Use4" supplier="_f0zI4LyPEeKk2sPRmEIkww" client="_e5QtsLyPEeKk2sPRmEIkww"/>
+  <packagedElement xmi:type="uml:Dependency" xmi:id="_8xCOsLyPEeKk2sPRmEIkww" name="Use5" supplier="_g-k0YLyPEeKk2sPRmEIkww" client="_f0zI4LyPEeKk2sPRmEIkww"/>
+</uml:Model>
