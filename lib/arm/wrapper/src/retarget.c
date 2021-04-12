@@ -18,7 +18,12 @@
 #include "api.h"
 
 char *sbrk_buffer;
-char *sbrk_UpperBound=(char*)0xC0000000 + 0x400000;
+#ifdef WRAPPER_V2
+char *sbrk_UpperBound=(char*)(0xC0000000 + 0x400000);
+#else
+char *sbrk_UpperBound=(char*)(0x20000000+0xA000);
+#endif /* WRAPPER_V2 */
+
 char sprintf_buf[128];
 
 //char write_buffer[1000];

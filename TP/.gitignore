@@ -1,0 +1,9 @@
+TP1/obj/
+TP2/obj/
+TP3/dicho/obj/
+TP3/koch/obj/
+TP4/magneto/obj/
+TP4/snake/obj/
+
+b~*.adb
+b~*.ads
