@@ -76,21 +76,21 @@ Project Logs for*/
 *.kicad_pcb-bak
 
 # temporary
-firmware/obj
-firmware/lib
-libs/native/insa/obj
-libs/native/insa/lib
+firmware/obj/
+firmware/lib/
+libs/native/insa/obj/
+libs/native/insa/lib/
 
-TP/TP1/obj
-TP/TP2/obj
-TP/TP3.1/obj
-TP/TP3.2/obj
-TP/TP4.1/obj
+TP/TP1/obj/
+TP/TP2/obj/
+TP/TP3.1/obj/
+TP/TP3.2/obj/
+TP/TP4.1/obj/
 
-TP/TP4.2/obj
-exemples/declaration/obj
-exemples/exceptions/obj
-exemples/template/obj
+TP/TP4.2/obj/
+exemples/declaration/obj/
+exemples/exceptions/obj/
+exemples/template/obj/
 
 # Misc
 *.db
@@ -104,5 +104,13 @@ exemples/template/obj
 lib/arm/old-lib/
 lib/arm/ravenscar-full-arm-ada/obj/
 __pycache__/
-
+*.pdf
+*.*~
+*.bmp
+*.jpeg
+*.jpg
+*.png
+*.tiff
+*.gif
+*.ico
 
