@@ -7,7 +7,7 @@
 	.cpu cortex-m7
 	.thumb
 
-	.text
+	.section (.ccmdata)
 	.globl __vectors
 	.p2align 9
 __vectors:

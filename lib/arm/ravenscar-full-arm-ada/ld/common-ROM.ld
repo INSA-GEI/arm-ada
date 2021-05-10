@@ -64,14 +64,13 @@ _DEFAULT_STACK_SIZE = 8*1024;
 _DEFAULT_SYS_STACK_SIZE = 1024;
 _DEFAULT_FRAMEBUFFER_SIZE = 480*272*2;
 
-ENTRY(_cpu_start);
+ENTRY(_start_rom);
 
 SECTIONS
 {
   .text :
   {
-    KEEP (*(.isr_vector))
-    KEEP (*(.interrupt_handlers))
+    KEEP (*(.vectors))
     *(.text .text.* .gnu.linkonce.t*)
     *(.gnu.warning)
   } > flash

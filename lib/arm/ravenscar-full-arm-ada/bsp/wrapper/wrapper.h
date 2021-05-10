@@ -12,6 +12,7 @@
 void WRAPPER_Init (void);
 void API_InvalidFunction(void);
 void Delay(volatile uint32_t nTime);
+void API_GetOSVersion(int* major, int* minor);
 
 // Graphics services
 #define Black           0x00      /*   0,   0,   0 */

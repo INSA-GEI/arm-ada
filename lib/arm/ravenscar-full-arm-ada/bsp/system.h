@@ -36,7 +36,6 @@
 #include "stm32746g_discovery_stdio.h"
 
 #include "version.h"
-#include "abi.h"
 #include "panic.h"
 
 #include "console.h"
@@ -54,5 +53,40 @@ extern FILE __stdin;
 extern FILE __console;
 extern FILE __lcd;
 extern FILE __stderr;
+
+/* Macros --------------------------------------------------------------------*/
+#ifdef USE_FULL_ASSERT
+/* Assert activated */
+#define ASSERT(__condition__)                do { if(__condition__) \
+                                                   {  assert_failed(__FILE__, __LINE__); \
+                                                      while(1);  \
+                                                    } \
+                                              }while(0)
+#else
+/* Assert not activated : macro has no effect */
+#define ASSERT(__condition__)                  do { if(__condition__) \
+                                                   {  ErrorCounter++; \
+                                                    } \
+                                              }while(0)
+#endif /* USE_FULL_ASSERT */
+
+/* Exported types ------------------------------------------------------------*/
+
+extern const unsigned char stlogo[];
+/* Exported variables ---------------------------------------------------*/
+extern uint8_t     NbLoop;
+extern uint8_t     MfxExtiReceived;
+#ifndef USE_FULL_ASSERT
+extern uint32_t    ErrorCounter;
+#endif
+/* Exported constants --------------------------------------------------------*/
+/* Exported macro ------------------------------------------------------------*/
+
+/* Exported functions ------------------------------------------------------- */
+
+//void BSP_LCD_DMA2D_IRQHandler(void);
+#ifdef USE_FULL_ASSERT
+void assert_failed(uint8_t* file, uint32_t line);
+#endif
 
 #endif /* __SYSTEM_H__ */

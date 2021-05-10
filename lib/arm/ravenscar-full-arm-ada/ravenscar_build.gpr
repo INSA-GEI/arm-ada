@@ -1,4 +1,5 @@
 with "runtime_build.gpr";
+with "bsp_build.gpr";
 
 project Ravenscar_Build is
 

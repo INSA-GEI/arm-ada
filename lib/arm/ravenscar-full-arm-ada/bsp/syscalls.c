@@ -165,7 +165,7 @@ lseek (int fd, off_t offset, int whence)
 
 caddr_t sbrk(int incr)
 {
-	static char *heap_end;
+	static char *heap_end=0;
 	char *prev_heap_end;
 
 	if (heap_end == 0)

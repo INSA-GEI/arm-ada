@@ -34,7 +34,7 @@
  */
 
 /* Includes ------------------------------------------------------------------*/
-#include "init_crt0.h"
+#include "init_bsp.h"
 //#include "tests.h"
 
 //#include "memory_mapping.h"
@@ -68,7 +68,7 @@ static void CPU_EnableFPU(void);
 static void CPU_EnableFaultHandler(void);
 static void MAIN_SystemInit(void);
 void BSP_Init(void);
-void RUNTIME_Main(void);
+//void RUNTIME_Main(void);
 
 /* Private functions ---------------------------------------------------------*/
 
@@ -77,25 +77,25 @@ void RUNTIME_Main(void);
  * @param  None
  * @retval None
  */
-int init_crt0(void)
+void init_bsp(void)
 {
 	/* Enable the FPU */
-	CPU_EnableFPU();
+	//CPU_EnableFPU();
 
 	/* Enable User fault, Bus fault, Memory Fault handlers */
 	CPU_EnableFaultHandler();
 
 	/* Enable the CPU Cache */
-	CPU_CACHE_Enable();
+	//CPU_CACHE_Enable();
 
 	/* Configure the system clock to 200 Mhz */
-	SystemClock_Config();
+	//SystemClock_Config();
 
   BSP_Init();
 
-  RUNTIME_Main();
+  //RUNTIME_Main();
 
-	for (;;); /* Never leave main function */
+  //for (;;); /* Never leave main function */
 }
 
 /**
