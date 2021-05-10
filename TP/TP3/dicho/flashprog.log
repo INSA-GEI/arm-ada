@@ -1,0 +1,61 @@
+flashprog 2.0.6499.16776 run 12/04/2021 12:05:24 by dimercur on INSA-08256
+
+flashprog started with arguments: obj/missiondicho.hex 
+Serial port: /dev/ttyUSB0
+Baudrate: 500000
+Block size: 1024
+File to flash: obj/missiondicho.hex
+Write = 1 ms | Read = 33 ms
+Write = 0 ms | Read = 6 ms
+Erase [0x08003000 - 0x0800B2C1]
+Write = 0 ms | Read = 382 ms
+Erase [0x0800B2C4 - 0x0800BDBB]
+Write = 0 ms | Read = 47 ms
+Set program address to 0x8003000
+Write = 0 ms | Read = 12 ms
+Programming [0x08003000 - 0x0800B2C1]
+Write = 0 ms | Read = 45 ms
+Write = 0 ms | Read = 43 ms
+Write = 0 ms | Read = 45 ms
+Write = 0 ms | Read = 45 ms
+Write = 0 ms | Read = 45 ms
+Write = 0 ms | Read = 45 ms
+Write = 0 ms | Read = 45 ms
+Write = 0 ms | Read = 45 ms
+Write = 0 ms | Read = 45 ms
+Write = 0 ms | Read = 45 ms
+Write = 0 ms | Read = 46 ms
+Write = 0 ms | Read = 45 ms
+Write = 0 ms | Read = 45 ms
+Write = 0 ms | Read = 45 ms
+Write = 0 ms | Read = 45 ms
+Write = 0 ms | Read = 44 ms
+Write = 0 ms | Read = 45 ms
+Write = 0 ms | Read = 45 ms
+Write = 0 ms | Read = 45 ms
+Write = 0 ms | Read = 45 ms
+Write = 0 ms | Read = 45 ms
+Write = 0 ms | Read = 45 ms
+Write = 0 ms | Read = 45 ms
+Write = 0 ms | Read = 43 ms
+Write = 0 ms | Read = 45 ms
+Write = 0 ms | Read = 45 ms
+Write = 0 ms | Read = 45 ms
+Write = 0 ms | Read = 45 ms
+Write = 0 ms | Read = 45 ms
+Write = 0 ms | Read = 45 ms
+Write = 0 ms | Read = 45 ms
+Write = 0 ms | Read = 46 ms
+Write = 0 ms | Read = 45 ms
+Set program address to 0x800B2C4
+Write = 0 ms | Read = 31 ms
+Programming [0x0800B2C4 - 0x0800BDBB]
+Write = 0 ms | Read = 44 ms
+Write = 0 ms | Read = 45 ms
+Write = 0 ms | Read = 45 ms
+Verify checksum [0x08003000 - 0x0800B2C1]
+Write = 0 ms | Read = 45 ms
+Verify checksum [0x0800B2C4 - 0x0800BDBB]
+Write = 0 ms | Read = 15 ms
+Reset target
+Download ended with code: Success

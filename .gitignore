@@ -86,6 +86,7 @@ TP/TP2/obj
 TP/TP3.1/obj
 TP/TP3.2/obj
 TP/TP4.1/obj
+
 TP/TP4.2/obj
 exemples/declaration/obj
 exemples/exceptions/obj
@@ -98,5 +99,10 @@ exemples/template/obj
 *.cgpr
 *.stderr
 *.stdout
+*.pyc
+*.ci
+lib/arm/old-lib/
+lib/arm/ravenscar-full-arm-ada/obj/
+__pycache__/
 
 

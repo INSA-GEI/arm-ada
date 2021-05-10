@@ -1,0 +1,39 @@
+with "target_options.gpr";
+
+project Runtime_Build is
+
+   type Build_Type is
+      ("Production", "Debug", "Assert", "Gnatcov");
+   for Languages use ("Ada", "C", "Asm_Cpp");
+   for Runtime ("ada") use project'Project_Dir;
+   for Target use "arm-eabi";
+   for Library_Auto_Init use "False";
+   for Library_Name use "gnat";
+   for Library_Kind use "static";
+   for Library_Dir use "adalib";
+   for Object_Dir use "obj";
+   for Source_Dirs use ("gnat_user", "gnat", "gnarl_user", "gnarl");
+   --BUILD : Build_Type := external ("BUILD");
+   BUILD : Build_Type :="Debug";
+
+   package Compiler extends Target_Options.Compiler is
+
+      case BUILD is
+
+         when "Production" =>
+
+         when "Debug" =>
+
+         when "Assert" =>
+
+         when "Gnatcov" =>
+
+      end case;
+   end Compiler;
+
+   package Builder is
+      for Switches ("ada") use ("-j4");
+   end Builder;
+
+end Runtime_Build;
+
