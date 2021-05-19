@@ -31,8 +31,10 @@
 extern int errno;
 //register char* stack_ptr asm("sp");
 
-extern const uint32_t* __heap_start;
-extern const uint32_t* __heap_end;
+extern const uint32_t __heap_start;
+extern const uint32_t __heap_end;
+#define HEAP_START  ((uint32_t)&__heap_start)
+#define HEAP_END  	((uint32_t)&__heap_end)
 
 FILE __stdout;
 FILE __stdin;
@@ -122,12 +124,12 @@ kill (int pid, int sig)
   return -1; /* Always fails */
 }
 
-void _exit(int exit_code)
-{
-	PANIC_SoftwarePanic("Unexpected exit", "System requests to exit");
-
-	while (1);
-}
+/* void _exit(int exit_code)                                           */
+/* {                                                                   */
+/* 	PANIC_SoftwarePanic("Unexpected exit", "System requests to exit"); */
+/*                                                                     */
+/* 	while (1);                                                         */
+/* }                                                                   */
 
 int _fstat(int file, struct stat *st) {
 	st->st_mode = S_IFCHR;
@@ -165,15 +167,15 @@ lseek (int fd, off_t offset, int whence)
 
 caddr_t sbrk(int incr)
 {
-	static char *heap_end=0;
-	char *prev_heap_end;
+	static uint32_t heap_end=0;
+	uint32_t prev_heap_end;
 
 	if (heap_end == 0)
-		heap_end = (char*)__heap_start;
+		heap_end = HEAP_START;
 
 	prev_heap_end = heap_end;
 
-	if (heap_end + incr > (char*)__heap_end)
+	if (heap_end + incr > HEAP_END)
 	{
 		errno = ENOMEM;
 		return (caddr_t) -1;
@@ -184,10 +186,15 @@ caddr_t sbrk(int incr)
 	return (caddr_t) prev_heap_end;
 }
 
-void abort (void)
+caddr_t _sbrk(int incr)
 {
-	while (1) {}
+	return sbrk(incr);
 }
+
+/* void abort (void) */
+/* {                 */
+/* 	while (1) {}     */
+/* }                 */
 
 void _ttywrch(int c) {
 	BSP_STDIO_SendData((uint8_t*)&c,1);

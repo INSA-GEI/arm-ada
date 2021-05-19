@@ -43,7 +43,7 @@ MEMORY
 {
   itcm     (x) : ORIGIN = 0x00000000, LENGTH = 16K
   flash   (rx) : ORIGIN = 0x08000000, LENGTH = 1024K
-  dtcm   ( rx) : ORIGIN = 0x20000000, LENGTH = 64K
+  dtcm   (rwx) : ORIGIN = 0x20000000, LENGTH = 64K
   sram12 (rwx) : ORIGIN = 0x20010000, LENGTH = 240K
 
   extram (rwx) : ORIGIN = 0xC0000000, LENGTH = 4M
@@ -71,6 +71,7 @@ SECTIONS
   .text :
   {
     KEEP (*(.vectors))
+    KEEP (*(.text.keep))
     *(.text .text.* .gnu.linkonce.t*)
     *(.gnu.warning)
   } > flash
@@ -99,7 +100,7 @@ SECTIONS
   .ccmdata : AT (__ccmdata_load)
   {
     __ccmdata_start = .;
-    *(.ccmdata .ccmdata.*)
+    KEEP (*(.ccmdata .ccmdata.*))
 
     /* Ensure that the end of the data section is always word aligned.
        Initial values are stored in 4-bytes blocks so we must guarantee
@@ -108,7 +109,7 @@ SECTIONS
 
     . = ALIGN(0x4);
     __ccmdata_end = .;
-  } > ccm_da
+  } > dtcm
   __ccmdata_words = (__ccmdata_end - __ccmdata_start) >> 2;
 
   .bss (NOLOAD): {
@@ -131,6 +132,16 @@ SECTIONS
    . = ALIGN(0x8);    /* Align the stack to 64 bits */
    __bss_end = .;
 
+   __interrupt_stack_start = .;
+   *(.interrupt_stacks)
+   . = ALIGN(0x8);
+   __interrupt_stack_end = .;
+
+   __stack_start = .;
+   . += DEFINED (__stack_size) ? __stack_size : _DEFAULT_STACK_SIZE;
+   . = ALIGN(0x8);
+   __stack_end = .;
+
    _end = .;
   } > sram_bs
   __bss_words = (__bss_end - __bss_start) >> 2;
@@ -139,6 +150,7 @@ SECTIONS
   .data : AT (__data_load)
   {
     __data_start = .;
+    *(.data.vectors)
     *(.data .data.* .gnu.linkonce.d*)
 
     /* Ensure that the end of the data section is always word aligned.
@@ -153,20 +165,30 @@ SECTIONS
 
   .framebuffers :
   {
+   /* 
    _framebuffer_background_start = .;
    . += DEFINED (__framebuffer_size) ? __framebuffer_size : _DEFAULT_FRAMEBUFFER_SIZE;
-   . = ALIGN(0x4);
-   _framebuffer_background_end = .;
-
+   . = ALIGN(0x4); 
+   _framebuffer_background_end = .; 
+   
    _framebuffer_foreground_start = .;
    . += DEFINED (__framebuffer_size) ? __framebuffer_size : _DEFAULT_FRAMEBUFFER_SIZE;
    . = ALIGN(0x4);
    _framebuffer_foreground_end = .;
+   */
+   
+   _framebuffer_background_start = .;
+   _framebuffer_background_end = _framebuffer_background_start + _DEFAULT_FRAMEBUFFER_SIZE -1;
+   
+   _framebuffer_foreground_start = _framebuffer_background_end +1;
+   _framebuffer_foreground_end = _framebuffer_foreground_start + _DEFAULT_FRAMEBUFFER_SIZE -1;
   } > extram_fb
 
   .heap :
   {
-   __heap_start = .;
+   __heap_start = _framebuffer_foreground_end + 1;
+   PROVIDE ( end = . );
+   PROVIDE ( _end = . );
    __heap_end = ORIGIN(extram_heap) + LENGTH(extram_heap);
   } > extram_heap
 

@@ -47,7 +47,10 @@ void RETARGET_Init(void);
 int SYSTEM_RunApp(void);
 void PRG_ResetReprogRequest(void);
 int PRG_CheckReprogRequest(void);
+void SYSTEM_ShowSystemVersion(int MajV, int MinV);
+
 int8_t  lcd_status = LCD_OK;
+extern uint32_t __vectors[116];
 
 #define PRG_RESET_REPROG		1
 #define PRG_RESET_HARDRESET		2
@@ -185,7 +188,7 @@ void MAIN_SystemInit(void)
  	/* Configure the User Button in GPIO Mode */  
  	BSP_PB_Init(BUTTON_KEY, BUTTON_MODE_GPIO);    
                  
-  /* Init External SRAM */                      
+  /* Init External SRAM */
   BSP_SDRAM_Init();
   
  	/* Init QSPI */                               
@@ -205,14 +208,12 @@ void MAIN_SystemInit(void)
  	BSP_PRESSURE_Init();                                                                                            
                                                 
  	/* Init RNG */                                
- 	BSP_RNG_InitGenerator();                      
-                                                
- }                                              
+ 	BSP_RNG_InitGenerator();
+}
 
 void RUNTIME_Main(void)
 {
-  int return_code;
-	/* Pre init du system */
+  	/* Pre init du system */
 	//SetStack((uint32_t)&__system_stack_end__,(uint32_t)&__app_stack_end__);
 	//SYSTEM_MoveITVector();
 	//RETARGET_Init();
@@ -299,19 +300,19 @@ void RUNTIME_Main(void)
 }
 
 /* Fonction pour tester si une reprog est necessaire */
-int PRG_CheckReprogRequest(void)
-{
-	if (PRG_ReprogPatternAddr == PRG_REPROG_PATTERN) return PRG_RESET_REPROG;
-	else if (PRG_ReprogPatternAddr == PRG_SOFTRESET_PATTERN) return PRG_RESET_SOFTRESET;
-
-	return PRG_RESET_HARDRESET;
-}
+//int PRG_CheckReprogRequest(void)
+//{
+//	if (PRG_ReprogPatternAddr == PRG_REPROG_PATTERN) return PRG_RESET_REPROG;
+//	else if (PRG_ReprogPatternAddr == PRG_SOFTRESET_PATTERN) return PRG_RESET_SOFTRESET;
+//
+//	return PRG_RESET_HARDRESET;
+//}
 
 /* Fonction pour nettoyer la condition de reprog */
-void PRG_ResetReprogRequest(void)
-{
-	PRG_ReprogPatternAddr = PRG_SOFTRESET_PATTERN;
-}
+//void PRG_ResetReprogRequest(void)
+//{
+//	PRG_ReprogPatternAddr = PRG_SOFTRESET_PATTERN;
+//}
 
 /**
  * @brief  Peripheral Reset.
@@ -536,7 +537,7 @@ void SYSTEM_SplashScreen(void)
 {
 	int dx,i;
 	int x;
-	char str[15];
+	char str[30];
 
 	GLCD_SetLayer(GLCD_LAYER2);
 	GLCD_SetTextColor(White);
@@ -657,7 +658,7 @@ void SystemClock_Config(void)
  * @param  None
  * @retval None
  */
-static void CPU_CACHE_Enable(void)
+void CPU_CACHE_Enable(void)
 {
 	/* Enable I-Cache */
 	SCB_EnableICache();
@@ -671,7 +672,7 @@ static void CPU_CACHE_Enable(void)
  * @param  None
  * @retval None
  */
-static void CPU_EnableFPU(void)
+void CPU_EnableFPU(void)
 {
 	SCB->CPACR=(0x3<<20)+(0x3<<22); // Enable full access to CP11 and CP10 FPU
 }
@@ -693,11 +694,14 @@ static void CPU_EnableFaultHandler(void)
  */
 void init_bsp(void)
 {
+  /* Move IT vector */
+  SCB->VTOR = (uint32_t)&__vectors[0];
+  
 	/* Enable User fault, Bus fault, Memory Fault handlers */
 	CPU_EnableFaultHandler();
-
+  
 	/* Configure the system clock to 200 Mhz */
-	//SystemClock_Config();
+	SystemClock_Config();
 
   HAL_Init();
 
@@ -720,26 +724,42 @@ void init_bsp(void)
 	WRAPPER_Init();
 	BSP_LCD_ResetScreen();
 
-	GLCD_SetBackColor(White);
-	GLCD_SetTextColor(Black);
-
-	if (PRG_CheckReprogRequest()==PRG_RESET_HARDRESET) 
-	{
-		SYSTEM_SplashScreen();
-	}
+//	if (PRG_CheckReprogRequest()==PRG_RESET_HARDRESET)
+//	{
+//		SYSTEM_SplashScreen();
+//	}
 
 	/* Finalement, on positionne le drapeau de demarrage a froid */
 	/* Desormais, lors d'un reset, le systeme ne ferra plus d'attente pour l'ecran, ni d'animation */
-	PRG_ResetReprogRequest();
+	//PRG_ResetReprogRequest();
 
 	/* Set screen in full black, except for emulated screen of legacy device (in white) */
 	BSP_LCD_Clear(Black);
 
 	GLCD_Clear(White);
 	GLCD_SetBackColor(White);
-  GLCD_SetTextColor(Black);
+	GLCD_SetTextColor(Black);
   
-  CONSOLE_GotoXY(0,0);
+	CONSOLE_GotoXY(0,0);
+  SYSTEM_ShowSystemVersion(BL_MAJOR_VERSION, BL_MINOR_VERSION);
+  
+  __disable_irq();
+}
+
+void SYSTEM_ShowSystemVersion(int MajV, int MinV)
+{
+	char str[30];
+
+	GLCD_SetBackColor(White);
+	GLCD_SetTextColor(Black);
+
+	sprintf (str, "System ver. %d.%d", BL_MAJOR_VERSION, BL_MINOR_VERSION);
+	GLCD_DrawString((40-strlen(str))/2, 13, str);
+
+	sprintf (str, "BSP init: OK");
+	GLCD_DrawString(10, 3, str);
+	//Delay(2000);
+	//GLCD_Clear(White);
 }
 
 #ifdef USE_FULL_ASSERT

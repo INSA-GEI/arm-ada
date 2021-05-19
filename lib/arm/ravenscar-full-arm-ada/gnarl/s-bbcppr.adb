@@ -41,8 +41,8 @@ with System.Machine_Code; use System.Machine_Code;
 with System.BB.CPU_Primitives.Context_Switch_Trigger;
 
 package body System.BB.CPU_Primitives is
-   use Board_Support;
-   use Board_Support.Time;
+--   use Board_Support;
+--   use Board_Support.Time;
    use System.BB.CPU_Primitives.Context_Switch_Trigger;
    use Parameters;
    use Threads.Queues;
@@ -98,9 +98,11 @@ package body System.BB.CPU_Primitives is
    --  the current time exceeds the Alarm_Time by at most half the modulus
    --  of Timer_Interval.
 
-   Alarm_Time : Board_Support.Time.Timer_Interval;
-   pragma Volatile (Alarm_Time);
-   pragma Import (C, Alarm_Time, "__gnat_alarm_time");
+--   Alarm_Time : Board_Support.Time.Timer_Interval;
+--   pragma Volatile (Alarm_Time);
+--   pragma Import (C, Alarm_Time, "__gnat_alarm_time");
+   Tmp : System.BB.CPU_Primitives.Vector_Id;
+   pragma Volatile (Tmp);
 
    procedure SV_Call_Handler;
    pragma Export (Asm, SV_Call_Handler, "__gnat_sv_call_trap");
@@ -350,33 +352,43 @@ package body System.BB.CPU_Primitives is
    -- Sys_Tick_Handler --
    ----------------------
 
+   --  procedure Sys_Tick_Handler_Org is
+   --  Max_Alarm_Interval : constant Timer_Interval := Timer_Interval'Last / 2;
+   --     Now : constant Timer_Interval := Timer_Interval (Read_Clock);
+   --
+   --  begin
+   --    --  The following allows max. efficiency for "useless" tick interrupts
+   --
+   --     if Alarm_Time - Now <= Max_Alarm_Interval then
+   --
+   --        --  Alarm is still in the future, nothing to do, so return quickly
+   --
+   --        return;
+   --     end if;
+   --
+   --     Alarm_Time := Now + Max_Alarm_Interval;
+   --
+   --     --  Call the alarm handler
+   --
+   --     Trap_Handlers (Sys_Tick_Vector)(Sys_Tick_Vector);
+   --
+   --     --  The interrupt handler may have scheduled a new task
+   --
+   --     if Context_Switch_Needed then
+   --        Context_Switch;
+   --     end if;
+   --
+   --     Enable_Interrupts (Running_Thread.Active_Priority);
+   --  end Sys_Tick_Handler_Org;
+
+   ----------------------
+   -- Sys_Tick_Handler --
+   ----------------------
+
    procedure Sys_Tick_Handler is
-      Max_Alarm_Interval : constant Timer_Interval := Timer_Interval'Last / 2;
-      Now : constant Timer_Interval := Timer_Interval (Read_Clock);
-
    begin
-      --  The following allows max. efficiency for "useless" tick interrupts
-
-      if Alarm_Time - Now <= Max_Alarm_Interval then
-
-         --  Alarm is still in the future, nothing to do, so return quickly
-
-         return;
-      end if;
-
-      Alarm_Time := Now + Max_Alarm_Interval;
-
-      --  Call the alarm handler
-
-      Trap_Handlers (Sys_Tick_Vector)(Sys_Tick_Vector);
-
-      --  The interrupt handler may have scheduled a new task
-
-      if Context_Switch_Needed then
-         Context_Switch;
-      end if;
-
-      Enable_Interrupts (Running_Thread.Active_Priority);
+      Tmp := Sys_Tick_Vector;
+      Tmp := Tmp + 1;
    end Sys_Tick_Handler;
 
    ------------------------

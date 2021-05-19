@@ -32,7 +32,7 @@
 
 	/* This is the initial vector table and also the one that is used by
 	   the zfp runtime. Ravenscar runtimes install its own table (using
-	   VTOR register) defined in handler.S.  */
+	   VTOR register) defined in vectors_table.c  */
 	.section .vectors,"a"
         .globl __vectors0
 __vectors0:
@@ -53,7 +53,7 @@ __vectors0:
         .word   PendSV_Handler  /* 14 PendSV */
         .word   SysTick_Handler /* 15 SysTick */
 
-      /* External Interrupts */
+        /* External Interrupts */
         .word     WWDG_IRQHandler                   /* Window WatchDog              */
         .word     PVD_IRQHandler                    /* PVD through EXTI Line detection */
         .word     TAMP_STAMP_IRQHandler             /* Tamper and TimeStamps through the EXTI line */
@@ -461,6 +461,7 @@ __vectors0:
         .weak      SPDIF_RX_IRQHandler
         .thumb_set SPDIF_RX_IRQHandler,Default_Handler
 
+
         .text
 
 /**
@@ -476,19 +477,6 @@ __vectors0:
 Default_Handler:
         b  .
         .size  Default_Handler, .-Default_Handler
-
-/**
- * @brief  weak function to be overloaded with corect bsp initialisation code
- * @param  None
- * @retval None
-*/
-
-        .thumb_func
-	.globl init_bsp
-        .type  init_bsp, #function
-        .weak  init_bsp
-init_bsp:
-        bx lr
 
 /**
  * @brief  Entry point of whole code, called after reset
@@ -537,12 +525,12 @@ _start_rom:
 	bne	0b
 
 1:
-	bl	_ada_setup_pll
-        bl      _move_itv
+        //bl	_ada_setup_pll
+//        bl      _move_itv
         bl      init_bsp
+        //bl	_ada_setup_pll
+        bl	main
 
-	bl	main
-
-	bl	_exit
+        bl	_exit
 
 hang:   b .

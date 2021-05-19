@@ -175,7 +175,7 @@ void GLCD_Clear (COLOR color) {
 	/* sauvegarde la couleur en cours: GLCD_Clear ne modifie pas la couleur de premier plan */
 	color_save=BSP_LCD_GetTextColor();
 
-	BSP_LCD_SetTextColor(WRAPPER_ColorConvertion_16bpp(color));
+	GLCD_SetTextColor(color);
 	GLCD_DrawFillRectangle (0, 0, 320-1, 240-1);
 
 	/* Restaure la couleur de premier plan */
@@ -501,7 +501,7 @@ uint16_t RNG_GetValue(void) {
 /* 	}                                                                                                       */
 /* }                                                                                                        */
 /*                                                                                                          */
-/* /**                                                                                                      */
+/* */ /**                                                                                                      */
 /*  * @brief  Manages the full Transfer complete event.                                                     */
 /*  * @param  None                                                                                          */
 /*  * @retval None                                                                                          */
@@ -514,7 +514,7 @@ uint16_t RNG_GetValue(void) {
 /* 	}                                                                                                       */
 /* }                                                                                                        */
 /*                                                                                                          */
-/* /**                                                                                                      */
+/* *//**                                                                                                      */
 /*  * @brief  Manages the DMA Half Transfer complete event.                                                 */
 /*  * @param  None                                                                                          */
 /*  * @retval None                                                                                          */

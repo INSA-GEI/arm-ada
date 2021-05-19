@@ -53,7 +53,7 @@ void PANIC_ReadStack(uint32_t it_source, uint32_t *sp) {
 		SP = (uint32_t)sp;
 	}
 
-	SetStack((uint32_t)&__interrupt_stack_end,(uint32_t)&__stack_end);
+	//SetStack((uint32_t)&__interrupt_stack_end,(uint32_t)&__stack_end);
 	PANIC_Display();
 }
 

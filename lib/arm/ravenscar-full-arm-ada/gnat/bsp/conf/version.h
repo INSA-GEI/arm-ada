@@ -1,5 +1,5 @@
 /******************************************************************************/
-/* ProgressBar.c: Progress Bar widget                                         */
+/* version.h: File for holding bootloader version and ABI version             */
 /*                                                                            */
 /******************************************************************************/
 /* This program is free software: you can redistribute it and/or modify       */
@@ -15,26 +15,12 @@
 /*    You should have received a copy of the GNU General Public License       */
 /*    along with this program.  If not, see <http://www.gnu.org/licenses/>.   */
 /******************************************************************************/
+#ifndef __VERSION_H__
+#define __VERSION_H__
 
-#include "stm32746g_discovery.h"
-#include "gui.h"
-#include "../wrapper.h"
-#include "string.h"
-#include "stdlib.h"
-#include "stdio.h"
+#define BL_MAJOR_VERSION	3
+#define BL_MINOR_VERSION	1
 
-const char* blackbkg="                                        ";
+#define ABI_VERSION			0xF0
 
-void LEGACY_GUI_CreateWindow(const char *title, COLOR background, COLOR titlebarText, COLOR titlebarBgnd)
-{
-  int *a = (int*)malloc(400);
-
-  printf("toto");
-
-	GLCD_Clear(background);
-	GLCD_SetTextColor(titlebarText);
-	GLCD_SetBackColor(titlebarBgnd);
-	GLCD_DrawString(0,0,blackbkg);
-	GLCD_DrawString((40-strlen(title))/2, 0, title);
-}
-
+#endif /* __VERSION_H__ */

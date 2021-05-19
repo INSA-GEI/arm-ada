@@ -1,5 +1,6 @@
 project Bsp_Build is
 
+   --for Languages use ("C","Asm_Cpp");
    for Languages use ("C");
    for Runtime ("ada") use project'Project_Dir;
    for Target use "arm-eabi";
@@ -18,14 +19,14 @@ project Bsp_Build is
    --for Runtime ("ada") use "zfp-armada";
 
    package Compiler is
-      for Switches ("c") use ("-mlittle-endian", "-mhard-float", "-mcpu=cortex-m7", "-mfpu=fpv5-sp-d16", "-mthumb", "-ffunction-sections", "-fdata-sections", 
-                              "-DSTM32F746xx", "-DUSE_HAL_DRIVER", "-g", "-Og");
-      --for Switches ("asm") use ("-g");
+      for Switches ("C") use ("-mlittle-endian", "-mhard-float", "-mcpu=cortex-m7", "-mfpu=fpv5-sp-d16", "-mthumb", "-ffunction-sections", "-fdata-sections", 
+                              "-DSTM32F746xx", "-DUSE_HAL_DRIVER", "-g", "-O0");
+      --for Switches ("Asm_Cpp") use ("-g");
    end Compiler;
 
    package Builder is
-      for Switches ("c") use ("-g", "-s", "-j4");
-      --for Switches ("asm") use ("-g", "-s");
+      for Switches ("C") use ("-g", "-s", "-j4");
+      --for Switches ("Asm_Cpp") use ("-g", "-s");
    end Builder;
 
    for Library_Version use "1.0";

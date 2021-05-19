@@ -175,25 +175,34 @@ end:
  * @param  None     
  * @retval None       
 */
-        .thumb_func
-        .globl _move_itv
-        .type  _move_itv, #function
-_move_itv:
-        ldr r0,=__vectors      /* address of target table in ram */
-        ldr r1,=Default_Handler /* address not to be copied */
-        ldr r2,=#(4*16)        /* counter, initialized at start of usefull table */ 
-        ldr r3,=#(4*114)       /* end of table */    
-        ldr r4,=__vectors0     /* vectors0 base address*/
-        add r1,#1              /* address in thumb mode end with bit 0 set to 1 */
-
-0:      ldr r5,[r4,r2]
-        cmp r5,r1
-        beq 1f
-        str r5,[r0,r2]
-
-1:      add r2,#4
-        cmp r2,r3
-        bne 0b
-
-        bx lr
-        .size _move_itv, . - _move_itv
+//        .thumb_func
+//        .globl _move_itv
+//        .type  _move_itv, #function
+//_move_itv:
+//        ldr r0,=__vectors      /* address of target table in ram */
+//        ldr r1,=Default_Handler /* address not to be copied */
+//        ldr r2,=#(4*16)        /* counter, initialized at start of usefull table */
+//        ldr r3,=#(4*114)       /* end of table */
+//        ldr r4,=__vectors0     /* vectors0 base address*/
+//
+//		  tst r1, #1
+//		  bne 0f
+//		  add r1, #1
+//
+//0:      ldr r5,[r4,r2]
+//        cmp r5,r1
+//        beq 1f
+//        str r5,[r0,r2]
+//
+//1:      add r2,#4
+//        cmp r2,r3
+//        bne 0b
+//
+//		ldr r0,=__vectors      /* address of target table in ram */
+//		ldr r1,=0xE000ED08 // VTOR address
+//		str r0,[r1]        // write __vectors address into VTOR -> __vectors is new interrupt table
+//		dsb
+//        isb
+//
+ //       bx lr
+ //       .size _move_itv, . - _move_itv
