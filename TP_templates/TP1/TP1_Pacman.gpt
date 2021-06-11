@@ -1,0 +1,19 @@
+# Header
+Name: TP1
+Category: TPs ADA 2IMACS
+Project: @_project_name_@.gpr
+
+# Variables
+Project_Name: TP1_Pacman: Nom du projet.
+Main_Name: mission_pacman: Nom du fichier principal du projet. 
+
+# Description
+[Description]
+Réalisation d'un jeu type Pacman.
+---------
+Aidez pacman à manger toute les cerises du labyrinthe
+avant que le chrono n'arrive à zéro et sans perdre vos 3 vies.
+---------
+Permet de se remettre en tête la syntaxe ADA,
+les passages de parametres, les appels de sous-routines, 
+l'utilisation des tableaux, etc ...

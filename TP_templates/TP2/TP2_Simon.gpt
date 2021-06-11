@@ -1,0 +1,19 @@
+# Header
+Name: TP2
+Category: TPs ADA 2IMACS
+Project: @_project_name_@.gpr
+
+# Variables
+Project_Name: TP2_Simon: Nom du projet.
+Main_Name: mission_simon: Nom du fichier principal du projet. 
+
+# Description
+[Description]
+Réalisation d'un "simulateur" de jeu Simon.
+---------
+Serez vous capable de retenir la sequence complete 
+et être plus fort que Simon ?
+---------
+Ce TP permet de mettre en application l'allocation à la volée 
+de tableau et le passage de tableau "en tranche" en parametre
+de sous-routines.

@@ -5,7 +5,7 @@
 import GPS
 
 def on_gps_started (hook_name):
-    templates_addon_dir=GPS.File("/home/dimercur/arm-ada/templates")
+    templates_addon_dir=GPS.File("/mnt/commetud/2eme Annee IMACS/ADA/TP templates")
     GPS.ProjectTemplate.add_templates_dir(templates_addon_dir)
     print (templates_addon_dir.name()+" added")
 
