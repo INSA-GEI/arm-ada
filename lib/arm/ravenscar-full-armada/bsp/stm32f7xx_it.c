@@ -38,7 +38,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "system.h"
 #include "stm32f7xx_it.h"
-
+#include "lvgl/src/lv_hal/lv_hal_tick.h"
 
 /** @addtogroup STM32F7xx_HAL_Examples
  * @{
@@ -210,6 +210,11 @@ void DebugMon_Handler(void)
 void SysTick_Handler(void)
 {
 	HAL_IncTick();
+    HAL_IncTick();
+    HAL_SYSTICK_IRQHandler();
+    lv_tick_inc(1);
+    HAL_Delay(5);
+        lv_task_handler();
 }
 
 /******************************************************************************/

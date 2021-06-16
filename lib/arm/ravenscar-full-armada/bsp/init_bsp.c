@@ -24,6 +24,10 @@
 
 #include "stm32746g_discovery_stdio.h"
 #include "stm32746g_discovery_lcd_dma2d.h"
+#include "lvgl/lvgl.h"
+
+#include "hal_stm_lvgl/tft/tft.h"
+#include "hal_stm_lvgl/touchpad/touchpad.h"
 /* todo a supprimer */
 /* #include "audio-synth/audio-synth.h"       */
 /* #include "audio-synth/audio.h"             */
@@ -711,21 +715,26 @@ void init_bsp(void)
 	/* Configure system and BSP peripherals (except LCD) */
 	MAIN_SystemInit();
 
-	/*##-1- Initialize the LCD #################################################*/
-	/* Initialize the LCD */
-	lcd_status = BSP_LCD_Init();
+    lv_init();
 
-	/* Initialize the LCD Layers */
-	//BSP_LCD_LayerDefaultInit(LTDC_ACTIVE_LAYER, LCD_FRAME_BUFFER);
-	BSP_LCD_LayerRgb565Init(LTDC_FOREGROUND_LAYER, LCD_FRAME_BUFFER_LAYER_FOREGROUND);
-	BSP_LCD_LayerRgb565Init(LTDC_BACKGROUND_LAYER, LCD_FRAME_BUFFER_LAYER_BACKGROUND);
+    tft_init();
+    touchpad_init();
 
-	BSP_LCD_ResetScreen();
+//	/*##-1- Initialize the LCD #################################################*/
+//	/* Initialize the LCD */
+//	lcd_status = BSP_LCD_Init();
+//
+//	/* Initialize the LCD Layers */
+//	//BSP_LCD_LayerDefaultInit(LTDC_ACTIVE_LAYER, LCD_FRAME_BUFFER);
+//	BSP_LCD_LayerRgb565Init(LTDC_FOREGROUND_LAYER, LCD_FRAME_BUFFER_LAYER_FOREGROUND);
+//	BSP_LCD_LayerRgb565Init(LTDC_BACKGROUND_LAYER, LCD_FRAME_BUFFER_LAYER_BACKGROUND);
+//
+//	BSP_LCD_ResetScreen();
 
   /* Init du wrapper */
   //RETARGET_Init();
 	WRAPPER_Init();
-	BSP_LCD_ResetScreen();
+//	BSP_LCD_ResetScreen();
 
 //	if (PRG_CheckReprogRequest()==PRG_RESET_HARDRESET)
 //	{
@@ -737,14 +746,14 @@ void init_bsp(void)
 	//PRG_ResetReprogRequest();
 
 	/* Set screen in full black, except for emulated screen of legacy device (in white) */
-	BSP_LCD_Clear(Black);
-
-	GLCD_Clear(White);
-	GLCD_SetBackColor(White);
-	GLCD_SetTextColor(Black);
-  
-	CONSOLE_GotoXY(0,0);
-  SYSTEM_ShowSystemVersion(BL_MAJOR_VERSION, BL_MINOR_VERSION);
+//	BSP_LCD_Clear(Black);
+//
+//	GLCD_Clear(White);
+//	GLCD_SetBackColor(White);
+//	GLCD_SetTextColor(Black);
+//  
+//	CONSOLE_GotoXY(0,0);
+//  SYSTEM_ShowSystemVersion(BL_MAJOR_VERSION, BL_MINOR_VERSION);
   
   //__disable_irq();
 }
