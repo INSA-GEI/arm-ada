@@ -150,6 +150,14 @@ uint8_t BSP_SDRAM_Init(void)
   sdramHandle.Instance = FMC_SDRAM_DEVICE;
     
   /* Timing configuration for 100Mhz as SD clock frequency (System clock is up to 200Mhz) */
+  /* Timing.LoadToActiveDelay    = 2; */
+  /* Timing.ExitSelfRefreshDelay = 7; */
+  /* Timing.SelfRefreshTime      = 4; */
+  /* Timing.RowCycleDelay        = 7; */
+  /* Timing.WriteRecoveryTime    = 2; */
+  /* Timing.RPDelay              = 2; */
+  /* Timing.RCDDelay             = 2; */
+  
   Timing.LoadToActiveDelay    = 2;
   Timing.ExitSelfRefreshDelay = 7;
   Timing.SelfRefreshTime      = 4;

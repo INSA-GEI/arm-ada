@@ -16,7 +16,9 @@
 #include "stm32746g_discovery.h"
 #include "stm32746g_discovery_sdram.h"
 #include "stm32746g_discovery_ts.h"
-#include "../Components/rk043fn48h/rk043fn48h.h"
+//#include "../Components/rk043fn48h/rk043fn48h.h"
+#include "rk043fn48h.h"
+#include "memory_mapping.h"
 
 /*********************
  *      DEFINES
@@ -98,7 +100,7 @@ typedef uint32_t uintpixel_t;
  * SDRAM one. */
 //static uintpixel_t my_fb[TFT_HOR_RES * TFT_VER_RES];
 
-static __IO uintpixel_t * my_fb = (__IO uintpixel_t*) (SDRAM_DEVICE_ADDR);
+static __IO uintpixel_t * my_fb = (__IO uintpixel_t*) (LCD_FRAME_BUFFER_LAYER_FOREGROUND);
 
 static DMA_HandleTypeDef  DmaHandle;
 static int32_t            x1_flush;
@@ -144,8 +146,8 @@ void tft_init(void)
 
 	static lv_disp_buf_t disp_buf_1;
 
-	static lv_color_t buf1_1[LV_HOR_RES_MAX * 68];                      /*A buffer for 10 rows*/
-	static lv_color_t buf1_2[LV_HOR_RES_MAX * 68];                      /*A buffer for 10 rows*/
+	static lv_color_t buf1_1[LV_HOR_RES_MAX * 68] __attribute__ ((section (".sdram")));                      /*A buffer for 10 rows*/
+	static lv_color_t buf1_2[LV_HOR_RES_MAX * 68] __attribute__ ((section (".sdram")));                      /*A buffer for 10 rows*/
 	lv_disp_buf_init(&disp_buf_1, buf1_1, buf1_2, LV_HOR_RES_MAX * 68);   /*Initialize the display buffer*/
 
 	/*-----------------------------------

@@ -19,7 +19,7 @@
 #define __VERSION_H__
 
 #define BL_MAJOR_VERSION	3
-#define BL_MINOR_VERSION	1
+#define BL_MINOR_VERSION	2
 
 #define ABI_VERSION			0xF0
 

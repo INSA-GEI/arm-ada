@@ -147,6 +147,10 @@ SECTIONS
   __heap_end = 0xC0400000-1;*/
   _legacysram_start = 0xC007F800;
 
+  .sdram (NOLOAD): {
+      *(.sdram .sdram.*)
+  } > ext_ram
+
   /* DWARF debug sections.
      Symbols in the DWARF debugging sections are relative to the beginning
      of the section so we begin them at 0.  */

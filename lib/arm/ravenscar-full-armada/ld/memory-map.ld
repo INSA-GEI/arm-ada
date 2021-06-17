@@ -40,7 +40,8 @@ MEMORY
   flash   (rx) : ORIGIN = 0x08000000, LENGTH = 1024K
   dtcm   ( rx) : ORIGIN = 0x20000000, LENGTH = 64K
   sram12 (rwx) : ORIGIN = 0x20010000, LENGTH = 240K
-  extram (rw ) : ORIGIN = 0xC0000000, LENGTH = 4M
+  /*extram (rw ) : ORIGIN = 0xC0000000, LENGTH = 4M*/
+  extram (rw ) : ORIGIN = 0xC007F800, LENGTH = 3586K
 }
 
 /* Do not place anything into the dtcm as it is used as Data cache by the CPU*/
