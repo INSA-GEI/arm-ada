@@ -90,7 +90,7 @@
 /************************* Miscellaneous Configuration ************************/
 /*!< Uncomment the following line if you need to use external SDRAM mounted
      on DK as data memory  */
-#define DATA_IN_ExtSDRAM 
+//#define DATA_IN_ExtSDRAM
 
 /*!< Uncomment the following line if you need to relocate your vector Table in
      Internal SRAM. */

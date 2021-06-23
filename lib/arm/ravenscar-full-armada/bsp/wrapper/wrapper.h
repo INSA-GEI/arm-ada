@@ -8,6 +8,8 @@
 #ifndef LEGACY_WRAPPER_H_
 #define LEGACY_WRAPPER_H_
 
+#include <wrapper_ui.h>
+
 // Basic OS services
 void WRAPPER_Init (void);
 void API_InvalidFunction(void);

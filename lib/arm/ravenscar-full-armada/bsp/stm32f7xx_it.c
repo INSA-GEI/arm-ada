@@ -132,8 +132,8 @@ void HardFault_Handler(void)
 void MemManage_Handler(void)
 {
 	asm ("MOV		R0, #2\n\t"
-			"MOV 	R1, SP\n\t"
-			"B       PANIC_ReadStack\n\t");
+		 "MOV 	R1, SP\n\t"
+		 "B       PANIC_ReadStack\n\t");
 
 	/* Go to infinite loop when Memory Manage exception occurs */
 	while (1)
@@ -149,8 +149,8 @@ void MemManage_Handler(void)
 void BusFault_Handler(void)
 {
 	asm ("MOV		R0, #3\n\t"
-			"MOV 	R1, SP\n\t"
-			"B       PANIC_ReadStack\n\t");
+		 "MOV 	R1, SP\n\t"
+		 "B       PANIC_ReadStack\n\t");
 
 	/* Go to infinite loop when Bus Fault exception occurs */
 	while (1)

@@ -36,7 +36,7 @@ void MAIN_SystemInit(void);
 void SYSTEM_ShowSystemVersion(int MajV, int MinV);
 
 int return_val;
-
+uint32_t *rebootFlag=(uint32_t*)(0xC0000000+4*1024*1024-4);
 //char RunAutoTest=0;
 //extern const uint32_t* __stack_end;
 //extern const uint32_t* __interrupt_stack_end;
@@ -348,9 +348,13 @@ void CPU_EnableFaultHandler(void)
 void init_bsp(void)
 {
   Pipo();
-  
+
   /* Configure the system clock to 200 Mhz */
   SystemClock_Config();
+
+  CPU_CACHE_Enable();
+  CPU_EnableFPU();
+  CPU_EnableFaultHandler();
 
   HAL_Init();
 
@@ -368,7 +372,10 @@ void init_bsp(void)
   lv_task_handler();
   HAL_Delay(200);
   
-  SYSTEM_ShowSystemVersion(BL_MAJOR_VERSION, BL_MINOR_VERSION);
+  if (*rebootFlag != 0xDEADBEEF) {
+	  *rebootFlag = 0xDEADBEEF;
+	  SYSTEM_ShowSystemVersion(BL_MAJOR_VERSION, BL_MINOR_VERSION);
+  }
 }
 
 void SYSTEM_ShowSystemVersion(int MajV, int MinV)
@@ -379,7 +386,7 @@ void SYSTEM_ShowSystemVersion(int MajV, int MinV)
   LV_IMG_DECLARE(logo);
   
   lv_obj_t *label1 = lv_label_create(lv_scr_act(),NULL);
-    lv_label_set_text(label1, str);
+  lv_label_set_text(label1, str);
   lv_obj_set_width(label1, 150);  /*Set smaller width to make the lines wrap*/
   lv_label_set_align(label1, LV_LABEL_ALIGN_CENTER);
   lv_obj_align(label1, NULL, LV_ALIGN_CENTER, 0, 80);

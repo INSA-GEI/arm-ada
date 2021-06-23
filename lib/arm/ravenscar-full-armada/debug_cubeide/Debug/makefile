@@ -10,7 +10,6 @@ RM := rm -rf
 -include sources.mk
 -include startup/subdir.mk
 -include src/subdir.mk
--include bsp/wrapper/GUI/subdir.mk
 -include bsp/wrapper/subdir.mk
 -include bsp/res/subdir.mk
 -include bsp/lvgl/tests/lv_test_widgets/subdir.mk
@@ -28,7 +27,6 @@ RM := rm -rf
 -include bsp/lvgl/examples/porting/subdir.mk
 -include bsp/hal_stm_lvgl/touchpad/subdir.mk
 -include bsp/hal_stm_lvgl/tft/subdir.mk
--include bsp/Utilities/Fonts/subdir.mk
 -include bsp/STM32F7xx_HAL_Driver/Src/Legacy/subdir.mk
 -include bsp/STM32F7xx_HAL_Driver/Src/subdir.mk
 -include bsp/BSP/STM32746G-Discovery/subdir.mk

@@ -1,5 +1,5 @@
 /*
- * legacy.c
+ * wrapper.c
  *
  *  Created on: 19 juin 2019
  *      Author: dimercur
@@ -13,19 +13,18 @@
 #include "stm32746g_discovery_eeprom.h"
 #include "stm32746g_discovery_keys.h"
 #include "stm32746g_discovery_audio.h"
-//#include "stm32746g_discovery_lcd_dma2d.h"
 #include "stm32746g_discovery_mag.h"
 #include "stm32746g_discovery_rng.h"
 #include "stm32746g_discovery_sdram.h"
 #include "stm32746g_discovery_ts.h"
 
-#include "GUI/progressbar.h"
-#include "GUI/window.h"
+//#include "GUI/progressbar.h"
+//#include "GUI/window.h"
 /*#include "audio-synth/audio.h"
 #include "audio-synth/audio-synth.h"
 #include "audio-synth/audio-melody.h"*/
 
-#include <math.h>
+//#include <math.h>
 #include "version.h"
 
 #define LEGACY_LCD_WIDTH 	320
@@ -40,8 +39,6 @@ AUDIO_EventCallback AUDIO_Callback;*/
 #define VERTICAL_COORD_CONVERSION(y) (((RK043FN48H_HEIGHT-LEGACY_LCD_HEIGHT)/2)+y)
 
 #define ABS(x) (x>=0 ? x: -x)
-uint32_t WRAPPER_ColorConvertion_32bpp (COLOR color);
-uint16_t WRAPPER_ColorConvertion_16bpp (COLOR color);
 
 extern const uint32_t _legacysram_start; // Define allocated sram block used to simulate external ram in legacy system
 
@@ -53,7 +50,6 @@ angularRate_t ang;
 TIM_HandleTypeDef LegacyTimHandle;
 TIMER_EventCallback LegacyTimerCallback=0x0;
 
-uint8_t POT_LastVal;
 /*MELODY_Status MELODY_Init(void);*/
 
 void API_GetOSVersion(int* major, int* minor)
@@ -121,20 +117,12 @@ void WRAPPER_Init (void) {
 		HAL_TIM_Base_Start(&LegacyTimHandle);
 	}
 
-	/* Init du Touchscreen */
-//	status = BSP_TS_Init(BSP_LCD_GetXSize(), BSP_LCD_GetYSize());
-//	if (status != TS_OK) {
-//		while (1);
-//	}
-
 	/* Init audio */
 	/*AUDIO_Callback =0x0;
 	AUDIO_Init();*/
 
 	/* Init Melody timer */
 	//MELODY_Init();
-
-	POT_LastVal=1;
 }
 
 uint32_t WRAPPER_ColorConvertion_32bpp (COLOR color) {
@@ -171,190 +159,7 @@ void Delay(volatile uint32_t nTime) {
 	HAL_Delay(nTime);
 }
 
-//void GLCD_Clear (COLOR color) {
-//	uint32_t color_save;
-//
-//	/* sauvegarde la couleur en cours: GLCD_Clear ne modifie pas la couleur de premier plan */
-//	color_save=BSP_LCD_GetTextColor();
-//
-//	GLCD_SetTextColor(color);
-//	GLCD_DrawFillRectangle (0, 0, 320-1, 240-1);
-//
-//	/* Restaure la couleur de premier plan */
-//	BSP_LCD_SetTextColor(color_save);
-//}
-//
-//void GLCD_SetTextColor (COLOR color) {
-//	BSP_LCD_SetTextColor(WRAPPER_ColorConvertion_16bpp(color));
-//}
-//
-//void GLCD_SetBackColor (COLOR color) {
-//	BSP_LCD_SetBackColor(WRAPPER_ColorConvertion_16bpp(color));
-//}
-//
-//void GLCD_PutPixel (uint32_t x, uint32_t y, COLOR color) {
-//	BSP_LCD_DrawPixel(HORIZONTAL_COORD_CONVERSION(x),VERTICAL_COORD_CONVERSION(y),WRAPPER_ColorConvertion_16bpp(color));
-//}
-//
-//void GLCD_DrawChar (uint32_t x,  uint32_t y, uint8_t c) {
-//	uint8_t str[2] = {c, 0};
-//	uint32_t col,row;
-//
-//	if (x>((320/8)-1)) x= ((320/8)-1);
-//	if (y>((240/16)-1)) y= ((240/16)-1);
-//
-//	col = x*8;
-//	row = (y*16)-1;
-//
-//	BSP_LCD_SetFont(&FontLegacy);
-//	BSP_LCD_DisplayStringAt(HORIZONTAL_COORD_CONVERSION(col),VERTICAL_COORD_CONVERSION(row), (uint8_t *)str, LEFT_MODE);
-//}
-//
-//void GLCD_DrawString (uint32_t x,  uint32_t y, const char *str) {
-//	uint32_t col,row;
-//
-//	if (x>((320/8)-1)) x= ((320/8)-1);
-//	if (y>((240/16)-1)) y= ((240/16)-1);
-//	col = x*8;
-//	row = (y*16)-1;
-//
-//	BSP_LCD_SetFont(&FontLegacy);
-//	BSP_LCD_DisplayStringAt(HORIZONTAL_COORD_CONVERSION(col),VERTICAL_COORD_CONVERSION(row), (uint8_t *)str, LEFT_MODE);
-//}
-//
-//void GLCD_DrawADAString (uint32_t x, uint32_t y, uint32_t len, const char *str) {
-//	uint8_t buf[len+1];
-//	memcpy(buf,str,len);
-//	buf[len]=0;
-//
-//	GLCD_DrawString (x,  y, (const char*)buf);
-//}
-//
-//void GLCD_DrawLine (uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2) {
-//	BSP_LCD_DrawLine(HORIZONTAL_COORD_CONVERSION(x1),VERTICAL_COORD_CONVERSION(y1),HORIZONTAL_COORD_CONVERSION(x2),VERTICAL_COORD_CONVERSION(y2));
-//}
-//
-//void GLCD_DrawRectangle (uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2) {
-//	BSP_LCD_DrawRect(HORIZONTAL_COORD_CONVERSION(x1),VERTICAL_COORD_CONVERSION(y1), ABS(x2-x1)+1, ABS(y2-y1)+1);
-//}
-//
-//void GLCD_DrawFillRectangle (uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2) {
-//	BSP_LCD_FillRect(HORIZONTAL_COORD_CONVERSION(x1),VERTICAL_COORD_CONVERSION(y1), ABS(x2-x1)+1, ABS(y2-y1)+1);
-//}
-//
-//void GLCD_DrawCircle (uint32_t x, uint32_t y, uint32_t radius) {
-//	BSP_LCD_DrawCircle(HORIZONTAL_COORD_CONVERSION(x),VERTICAL_COORD_CONVERSION(y), radius);
-//}
-//
-//void GLCD_DrawFillCircle (uint32_t x, uint32_t y, uint32_t radius) {
-//	BSP_LCD_FillCircle(HORIZONTAL_COORD_CONVERSION(x),VERTICAL_COORD_CONVERSION(y), radius);
-//}
-//
-//void GLCD_DrawImage (COLOR* data, uint32_t x, uint32_t y, uint32_t w, int32_t h) {
-//	uint32_t counter_x, counter_y=0;
-//
-//	for (counter_y=0; counter_y<h; counter_y++)
-//	{
-//		for (counter_x=0; counter_x<w; counter_x++)
-//		{
-//			GLCD_PutPixel(x+counter_x, y+counter_y, data[(counter_y*w)+counter_x]);
-//		}
-//	}
-//}
-//
-// Second set of function for GLCD
-//void GLCD_DrawImagefromSRAM (uint32_t SRAM_Ptr, uint32_t x, uint32_t y, uint32_t w, int32_t h) {
-//	uint32_t counter_x, counter_y=0;
-//
-//	for (counter_y=0; counter_y<h; counter_y++)
-//	{
-//		for (counter_x=0; counter_x<w; counter_x++)
-//		{
-//			GLCD_PutPixel(x+counter_x, y+counter_y, (COLOR)SRAM_ReadByte(SRAM_Ptr + (counter_y*w) + counter_x));
-//		}
-//	}
-//}
-//
-//void GLCD_LayerScrollMode(uint8_t mode) {
-//	//
-//}
-//
-//void GLCD_SetScrollWindow (uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
-//	//
-//}
-//
-//void GLCD_ScrollVertical (uint32_t dy) {
-//	//
-//}
-//
-//void GLCD_ScrollHorizontal (uint32_t dy) {
-//	//
-//}
-//
-//void GLCD_LayerDisplayMode(uint8_t mode) {
-//	//
-//}
-//
-//void GLCD_LayerTransparency(uint8_t layer1_trans, uint8_t layer2_trans) {
-//	//	BSP_LCD_SetTransparency(LTDC_BACKGROUND_LAYER, 100-layer2_trans);
-//	//	BSP_LCD_SetTransparency(LTDC_FOREGROUND_LAYER, 100-layer1_trans);
-//}
-//
-//void GLCD_SetLayer(uint8_t layerNbr) {
-//	//	if (layerNbr==0) BSP_LCD_SelectLayer(LTDC_FOREGROUND_LAYER);
-//	//	else if (layerNbr==1) BSP_LCD_SelectLayer(LTDC_BACKGROUND_LAYER);
-//}
-//
-//void GLCD_BTESetSource(uint32_t X, uint32_t Y, uint8_t layer) {
-//	//
-//}
-//
-//void GLCD_BTESetDestination(uint32_t X, uint32_t Y, uint8_t layer) {
-//	//
-//}
-//
-//void GLCD_BTESetSize(uint32_t width, uint32_t height) {
-//	//
-//}
-//
-//void GLCD_BTESetBackgroundColor(uint32_t red, uint32_t green, uint32_t blue) {
-//	//
-//}
-//
-//void GLCD_BTESetForegroundColor(uint32_t red, uint32_t green, uint32_t blue) {
-//	//
-//}
-//
-//void GLCD_BTESetPatternNumber(uint8_t pattern) {
-//	//
-//}
-//
-//void GLCD_SetTransparentColor(COLOR color) {
-//	//	BSP_LCD_SetColorKeying(BSP_LCD_GetLayer(),WRAPPER_ColorConvertion_32bpp(color));
-//}
-//
-//void GLCD_BTEStart (uint8_t source_mode, uint8_t dest_mode, uint8_t ROP, uint8_t operation) {
-//	//
-//}
-//
-//void GLCD_BTEStartAndFillFromSRAM(uint8_t dest_mode, uint8_t ROP, uint8_t operation, uint32_t SRAM_Ptr, uint32_t size) {
-//	//
-//}
-
-// Graphics widgets
-void GUI_ProgressBar(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t val, uint8_t maxval) {
-	LEGACY_GUI_ProgressBar(x, y, w, h, val, maxval);
-}
-
-void GUI_CenterBar(uint16_t x, uint16_t y, uint16_t w, uint16_t h, int val, uint32_t absolutemaxval) {
-	LEGACY_GUI_CenterBar(x, y, w, h, val, absolutemaxval);
-}
-
-void GUI_CreateWindow(const char *title, COLOR background, COLOR titlebarText, COLOR titlebarBgnd) {
-	LEGACY_GUI_CreateWindow(title, background, titlebarText, titlebarBgnd);
-}
-
-// Keys and potar services
+// Keys services
 KEY_STATE KEYS_GetState(KEY_ID key)  {
 	KEY_STATE state=KEY_RELEASED;
 
@@ -401,32 +206,6 @@ KEY_STATE KEYS_GetState(KEY_ID key)  {
 	}
 
 	return state;
-}
-
-uint8_t POT_GetValue(POT_ID pot)  {
-	TS_StateTypeDef  TS_State;
-	uint16_t ts_x;
-
-	BSP_TS_GetState(&TS_State);
-
-	if (TS_State.touchDetected) {
-		ts_x = TS_State.touchX[0];
-
-		if (ts_x<=HORIZONTAL_COORD_CONVERSION(50)) POT_LastVal=0;
-		else if (ts_x>=HORIZONTAL_COORD_CONVERSION(270)) POT_LastVal=255;
-		else {
-			POT_LastVal = ((ts_x-HORIZONTAL_COORD_CONVERSION(50))*255)/(HORIZONTAL_COORD_CONVERSION(270)-HORIZONTAL_COORD_CONVERSION(50));
-		}
-	}
-
-	if (POT_LastVal ==0) POT_LastVal=1;
-
-	return POT_LastVal;
-}
-
-// Led services
-void LED_Set(LED_STATE state) {
-	//
 }
 
 // Random generator services
@@ -543,21 +322,11 @@ float* LSM303DLHC_GetMagneticValues (void) {
 
 float* LSM303DLHC_GetAccelerometerValues(void) {
 	float tmp;
-	//	char str[20];
-	//	volatile int val;
 
 	HAL_Delay(25);
 
 	while (BSP_ACC_ReadValues(&acc) != ACC_OK) {
 	}
-
-	//	val = (int)acc.x;
-	//	sprintf (str, "X= %i     ", val);
-	//	GLCD_DrawString(1,13, str);
-	//
-	//	val = (int)acc.y;
-	//	sprintf (str, "Y= %i     ", val);
-	//	GLCD_DrawString(1,14, str);
 
 	// invert X and Y
 	tmp = -acc.y;

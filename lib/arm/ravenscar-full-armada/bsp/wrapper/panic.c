@@ -20,20 +20,15 @@
 #include "wrapper.h"
 #include "panic.h"
 
-#include "lvgl/lvgl.h"
-
 static volatile uint32_t R0,R1,R2,R3,R12,PC,LR,XPSR,SP;
 static uint32_t IT_Source;
-#define FLASH_USER_START_ADDR   ((uint32_t)0x0800C000)   /* Start @ of user Flash area */
 
-extern const uint32_t* __stack_end;
-extern const uint32_t* __interrupt_stack_end;
 LV_EVENT_CB_DECLARE(msgbox_event_cb);
 
 void PANIC_ReadStack(uint32_t it_source, uint32_t *sp) {
 	IT_Source = it_source;
 
-	if ( (sp >= (uint32_t*)0x20000000) && (sp <= (uint32_t*)(0x20001400)))
+	if ( (sp >= (uint32_t*)0x20000000) && (sp <= (uint32_t*)(0x20000000+(320*1024)-8*8)))
 	{
 		R0 = sp[0];
 		R1 = sp[1];
@@ -51,7 +46,6 @@ void PANIC_ReadStack(uint32_t it_source, uint32_t *sp) {
 		SP = (uint32_t)sp;
 	}
 
-	//SetStack((uint32_t)&__interrupt_stack_end,(uint32_t)&__stack_end);
 	PANIC_Display();
 }
 
@@ -83,50 +77,11 @@ void PANIC_Display(void) {
 		title ="Unknown Error";
 	}
 
-	//	GUI_CreateWindow(title, Red, White, Black);
-	//
-	//	/* Affiche la backtrace */
-	//	GLCD_SetTextColor(White);
-	//	GLCD_SetBackColor(Red);
-	//
-	//	GLCD_DrawString(0, 3, "Press A to try again");
-	//
-	//	GLCD_DrawString(0, 14, "System halted !");
-	//	GLCD_DrawString(0, 10, "Backtrace :");
-	//	sprintf (str, "R0[%08X] R1[%08X] R2[%08X]", (unsigned int)R0, (unsigned int)R1, (unsigned int)R2);
-	//	GLCD_DrawString(0, 11, str);
-	//	sprintf (str, "R3[%08X] R12[%08X] LR[%08X]", (unsigned int)R3, (unsigned int)R12, (unsigned int)LR);
-	//	GLCD_DrawString(0, 12, str);
-	//	sprintf (str, "PC[%08X] XPSR[%08X]", (unsigned int)PC, (unsigned int)XPSR);
-	//	GLCD_DrawString(0, 13, str);
-	//
-	//	while (KEYS_GetState(KEY_A) != KEY_PRESSED);
-
 	static const char * btns[] ={"Reboot", ""};
+	static char buf[100];
 
-	lv_obj_t * mbox1 = lv_msgbox_create(lv_scr_act(),NULL);
-	lv_msgbox_add_btns(mbox1, btns);
-	lv_msgbox_set_text_fmt(mbox1, "%s\n%s",title,"An unrecoverable error occurred");
-	//lv_msgbox_create(NULL, title, "An unrecoverable error as occured", btns, true);
-	lv_obj_set_event_cb(mbox1, msgbox_event_cb);
-	lv_obj_align(mbox1, NULL, LV_ALIGN_CENTER, 0, 0);
-
-}
-
-void PANIC_SoftwarePanic(char *Title, char *Message) {
-	GUI_CreateWindow(Title, Yellow, White, Black);
-
-	/* Affiche la backtrace */
-	GLCD_SetTextColor(White);
-	GLCD_SetBackColor(Red);
-
-	GLCD_DrawString(0, 5, Message);
-	GLCD_DrawString(0, 14, "Press A to try again");
-
-	while (KEYS_GetState(KEY_B) != KEY_PRESSED);
-
-	/* Redemarrage de la carte */
-	NVIC_SystemReset();
+	lv_snprintf(buf, sizeof(buf), "%s\n%s\n\nFault address : 0x%08X", title,"An unrecoverable error occurred",PC);
+	UI_MESSAGEBOX_Create(buf, btns, msgbox_event_cb);
 }
 
 LV_EVENT_CB_DECLARE(msgbox_event_cb)
