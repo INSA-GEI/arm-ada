@@ -20,11 +20,9 @@
 
 #include "stm32746g_discovery.h"
 #include "stm32746g_discovery_ts.h"
-#include "stm32746g_discovery_lcd_dma2d.h"
 #include "stm32746g_discovery_sdram.h"
 #include "stm32746g_discovery_sd.h"
 #include "stm32746g_discovery_eeprom.h"
-#include "stm32746g_discovery_camera.h"
 #include "stm32746g_discovery_audio.h"
 #include "stm32746g_discovery_qspi.h"
 #include "stm32746g_discovery_keys.h"
@@ -32,7 +30,6 @@
 #include "stm32746g_discovery_rng.h"
 #include "stm32746g_discovery_acc_gyro.h"
 #include "stm32746g_discovery_pressure.h"
-#include "stm32746g_discovery_wifi.h"
 #include "stm32746g_discovery_stdio.h"
 
 #include "version.h"

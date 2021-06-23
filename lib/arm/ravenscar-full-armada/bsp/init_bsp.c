@@ -17,17 +17,14 @@
 /******************************************************************************/
 
 #include "system.h"
-//#include "tests.h"
 #include "memory_mapping.h"
 
-#include "ressources.h"
-
 #include "stm32746g_discovery_stdio.h"
-//#include "stm32746g_discovery_lcd_dma2d.h"
 #include "lvgl/lvgl.h"
 
 #include "hal_stm_lvgl/tft/tft.h"
 #include "hal_stm_lvgl/touchpad/touchpad.h"
+
 /* todo a supprimer */
 /* #include "audio-synth/audio-synth.h"       */
 /* #include "audio-synth/audio.h"             */
@@ -35,29 +32,14 @@
 /* #include "stm32746g_discovery_audio.h"     */
 /* todo a supprimer */
 
-void BSP_Init(void);
-void RUNTIME_Main(void);
 void MAIN_SystemInit(void);
-
-COLOR *data;
-const PackedBMP_Header logo_insa;
-const PackedBMP_Header logo_armada;
-
-void SYSTEM_PeripheralsReset(void);
-void SYSTEM_PeripheralsInit(void);
-void SYSTEM_SplashScreen(void);
-
-void RETARGET_Init(void);
 void SYSTEM_ShowSystemVersion(int MajV, int MinV);
-
-//int8_t  lcd_status = LCD_OK;
-extern uint32_t __vectors[116];
 
 int return_val;
 
-char RunAutoTest=0;
-extern const uint32_t* __stack_end;
-extern const uint32_t* __interrupt_stack_end;
+//char RunAutoTest=0;
+//extern const uint32_t* __stack_end;
+//extern const uint32_t* __interrupt_stack_end;
 
 //extern AUDIO_BufferTypeDef  AUDIO_Buffer;
 //volatile double tmp,value;
@@ -262,68 +244,6 @@ void MAIN_SystemInit(void)
 //}
 
 /**
- * @brief  Inserts a delay time.
- * @param  nTime: specifies the delay time length, in 10 ms.
- * @retval None
- */
-//void SYSTEM_SplashScreen(void)
-//{
-//  int dx,i;
-//  int x;
-//  char str[30];
-//
-//  GLCD_SetLayer(GLCD_LAYER2);
-//  GLCD_SetTextColor(White);
-//  GLCD_DrawFillRectangle(0,0,319,239);
-//  GLCD_SetLayer(GLCD_LAYER1);
-//  GLCD_SetTextColor(White);
-//  GLCD_DrawFillRectangle(0,0,319,239);
-//
-//  GLCD_SetTransparentColor(Green);
-//  GLCD_LayerScrollMode(GLCD_LAYER_SCROLL_BOTH);
-//  GLCD_LayerDisplayMode(GLCD_LAYER_DISPLAY_TRANSPARENT);
-//  GLCD_LayerTransparency(GLCD_LAYER_TRANSPARENT_TOTAL,GLCD_LAYER_TRANSPARENT_TOTAL);
-//
-//  if (KEYS_GetState(KEY_A)==KEY_PRESSED) 
-//    {
-//      GLCD_SetTextColor(Black);
-//      GLCD_SetBackColor(White);
-//
-//      sprintf (str, "System ver. %d.%d", BL_MAJOR_VERSION, BL_MINOR_VERSION);
-//      GLCD_DrawString((40-strlen(str))/2, 13, str);
-//    }
-//
-//  /* allocation du buffer pour l'image */
-//  //data = (COLOR*)MALLOC_GetMemory(logo_armada.height*logo_armada.width);
-//  data = (COLOR*)malloc(logo_armada.height*logo_armada.width);
-//  if (data ==0x0) while (1);
-//
-//  UnpackBMP((PackedBMP_Header *)&logo_armada, data);
-//
-//  /* Animation du logo de demarrage */
-//  GLCD_SetLayer(GLCD_LAYER2);
-//  GLCD_DrawImage(data, (320-logo_armada.width)/2, (240-logo_armada.height)/2, logo_armada.width, logo_armada.height);
-//
-//  //MALLOC_FreeMemory(data);
-//  free(data);
-//  GLCD_SetLayer(GLCD_LAYER1);
-//  GLCD_SetTextColor(Green);
-//
-//  for (i=1; i<33; i++)
-//    {
-//      dx=(logo_armada.width*i)/(2*32);
-//      x=(320/2)-dx;
-//
-//      GLCD_DrawFillRectangle(x,(240-logo_armada.height)/2,x+(dx*2),((240-logo_armada.height)/2)+logo_armada.height);
-//      Delay(20);
-//    }
-//
-//  Delay(2000);
-//
-//  BSP_LCD_ResetScreen();
-//}
-
-/**
  * @brief  System Clock Configuration
  *         The system Clock is configured as follow :
  *            System Clock source            = PLL (HSE)
@@ -442,33 +362,12 @@ void init_bsp(void)
   tft_init();
   touchpad_init();
 
-  //	/*##-1- Initialize the LCD #################################################*/
-  //	/* Initialize the LCD */
-  //	lcd_status = BSP_LCD_Init();
-  //
-  //	/* Initialize the LCD Layers */
-  //	//BSP_LCD_LayerDefaultInit(LTDC_ACTIVE_LAYER, LCD_FRAME_BUFFER);
-  //	BSP_LCD_LayerRgb565Init(LTDC_FOREGROUND_LAYER, LCD_FRAME_BUFFER_LAYER_FOREGROUND);
-  //	BSP_LCD_LayerRgb565Init(LTDC_BACKGROUND_LAYER, LCD_FRAME_BUFFER_LAYER_BACKGROUND);
-  //
-  //	BSP_LCD_ResetScreen();
-
-  /* Init du wrapper */
-  //RETARGET_Init();
   WRAPPER_Init();
-  //	BSP_LCD_ResetScreen();
-
-  //	if (PRG_CheckReprogRequest()==PRG_RESET_HARDRESET)
-  //	{
-  //		SYSTEM_SplashScreen();
-  //	}
-  //BSP_LCD_Clear(Black);
- 
-  //GLCD_Clear(White);
-  //GLCD_SetBackColor(White);
-  //GLCD_SetTextColor(Black);
   
-  //CONSOLE_GotoXY(0,0);
+  lv_obj_clean(lv_scr_act()); 
+  lv_task_handler();
+  HAL_Delay(200);
+  
   SYSTEM_ShowSystemVersion(BL_MAJOR_VERSION, BL_MINOR_VERSION);
 }
 
@@ -477,42 +376,25 @@ void SYSTEM_ShowSystemVersion(int MajV, int MinV)
   char str[30];
   sprintf (str, "System ver. %d.%d", BL_MAJOR_VERSION, BL_MINOR_VERSION);
   
+  LV_IMG_DECLARE(logo);
+  
   lv_obj_t *label1 = lv_label_create(lv_scr_act(),NULL);
-  //lv_label_set_long_mode(label1, LV_LABEL_LONG_WRAP);     /*Break the long lines*/
-  //lv_label_set_recolor(label1, true);                      /*Enable re-coloring by commands in the text*/
-  //lv_label_set_text(label1, "#0000ff Re-color# #ff00ff words# #ff0000 of a# label, align the lines to the center "
-  //                  "and wrap long text automatically.");
-  lv_label_set_text(label1, str);
+    lv_label_set_text(label1, str);
   lv_obj_set_width(label1, 150);  /*Set smaller width to make the lines wrap*/
   lv_label_set_align(label1, LV_LABEL_ALIGN_CENTER);
   lv_obj_align(label1, NULL, LV_ALIGN_CENTER, 0, 80);
 
+  lv_obj_t *img = lv_img_create(lv_scr_act(),NULL);
+  lv_img_set_src(img, &logo);
+  lv_obj_align(img, NULL, LV_ALIGN_CENTER, 0, -30);
+  
   lv_task_handler();
+  HAL_Delay(2000);
   
-  
-  //GLCD_DrawString((40-strlen(str))/2, 13, str);
-
-  //sprintf (str, "BSP init: OK");
-  //GLCD_DrawString(10, 3, str);
-  //Delay(2000);
-  //GLCD_Clear(White);
+  lv_obj_clean(lv_scr_act()); 
+  lv_task_handler(); 
+  HAL_Delay(200);
 }
-
-/* void SYSTEM_ShowSystemVersion(int MajV, int MinV)                         */
-/* {                                                                         */
-/*   char str[30];                                                           */
-/*                                                                           */
-/*   GLCD_SetBackColor(White);                                               */
-/*   GLCD_SetTextColor(Black);                                               */
-/*                                                                           */
-/*   sprintf (str, "System ver. %d.%d", BL_MAJOR_VERSION, BL_MINOR_VERSION); */
-/*   GLCD_DrawString((40-strlen(str))/2, 13, str);                           */
-/*                                                                           */
-/*   sprintf (str, "BSP init: OK");                                          */
-/*   GLCD_DrawString(10, 3, str);                                            */
-/*   //Delay(2000);                                                          */
-/*   //GLCD_Clear(White);                                                    */
-/* }                                                                         */
 
 #ifdef USE_FULL_ASSERT
 

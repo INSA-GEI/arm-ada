@@ -45,8 +45,6 @@ EndDependencies */
 /* Includes ------------------------------------------------------------------*/
 #include "stm32746g_discovery.h"
 #include "stm32746g_discovery_keys.h"
-
-#include "stm32746g_discovery_wifi.h"
 #include "stm32746g_discovery_stdio.h"
 
 /** @addtogroup BSP

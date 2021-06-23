@@ -210,11 +210,6 @@ void DebugMon_Handler(void)
 void SysTick_Handler(void)
 {
 	HAL_IncTick();
-    HAL_IncTick();
-    HAL_SYSTICK_IRQHandler();
-    lv_tick_inc(1);
-    HAL_Delay(5);
-        lv_task_handler();
 }
 
 /******************************************************************************/
@@ -301,20 +296,20 @@ void AUDIO_IN_SAIx_DMAx_IRQHandler(void)
  * @brief  Handles SDRAM DMA transfer interrupt request.
  * @retval None
  */
-void BSP_SDRAM_DMA_IRQHandler(void)
-{
-	HAL_DMA_IRQHandler(sdramHandle.hdma);
-}
+/* void BSP_SDRAM_DMA_IRQHandler(void)    */
+/* {                                      */
+/* 	HAL_DMA_IRQHandler(sdramHandle.hdma); */
+/* }                                      */
 
 /**
  * @brief  DMA interrupt handler.
  * @param  None
  * @retval None
  */
-void DMA2_Stream1_IRQHandler(void)
-{
-	BSP_CAMERA_DMA_IRQHandler();
-}
+//void DMA2_Stream1_IRQHandler(void)
+//{
+//	//BSP_CAMERA_DMA_IRQHandler();
+//}
 
 /**
  * @brief  This function handles DMA2 Stream 6 interrupt request.
@@ -331,20 +326,20 @@ void AUDIO_OUT_SAIx_DMAx_IRQHandler(void)
  * @param  None
  * @retval None
  */
-void DCMI_IRQHandler(void)
-{
-	BSP_CAMERA_IRQHandler();
-}
+//void DCMI_IRQHandler(void)
+//{
+//	//BSP_CAMERA_IRQHandler();
+//}
 
 /**
  * @brief  This function handles DMA2D Handler.
  * @param  None
  * @retval None
  */
-void DMA2D_IRQHandler(void)
-{
-	BSP_LCD_DMA2D_IRQHandler();
-}
+/* void DMA2D_IRQHandler(void)  */
+/* {                            */
+/* 	BSP_LCD_DMA2D_IRQHandler(); */
+/* }                            */
 
 //void DMA2_Stream6_IRQHandler(void)
 //{

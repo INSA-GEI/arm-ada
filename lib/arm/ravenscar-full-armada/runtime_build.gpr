@@ -5,23 +5,18 @@ project Runtime_Build is
 
    for Languages use ("Ada", "C", "Asm_Cpp");
    for Runtime ("ada") use project'Project_Dir;
-   for Runtime ("C") use project'Project_Dir;
    for Target use "arm-eabi";
    for Library_Auto_Init use "False";
    for Library_Name use "gnat";
    for Library_Kind use "static";
    for Library_Dir use "adalib";
    for Object_Dir use "obj";
-   for Source_Dirs use ("gnat_user", "gnat", "gnarl_user", "gnarl",
-                        "bsp", "bsp/STM32F7xx_HAL_Driver/Src", "bsp/STM32F7xx_HAL_Driver/Inc", "bsp/CMSIS/Include", "bsp/CMSIS/Device/ST/STM32F7xx/Include",
-                        "bsp/conf", "bsp/BSP/STM32746G-Discovery/src", "bsp/BSP/STM32746G-Discovery/inc", "bsp/BSP/Components/Common", "bsp/BSP/Components/ft5336",
-                        "bsp/BSP/Components/lis2mdl", "bsp/BSP/Components/lsm6ds3", "bsp/BSP/Components/rk043fn48h", "bsp/BSP/Components/wm8994",
-                        "bsp/BSP/Components/n25q128a", "bsp/BSP/Components/bmp280", "bsp/BSP/Components/ov9655", "bsp/Utilities/Fonts",
-                        "bsp/Middlewares/Third_Party/fatfs", "bsp/Middlewares/Third_Party/FreeRTOS/Source/include",
-                        "bsp/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS", "bsp/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7_MPU/r0p1",
-                        "bsp/Middlewares/Third_Party/FreeRTOS/Source/portable/Common", "bsp/res", "bsp/wrapper", "bsp/wrapper/GUI",
-                        "bsp/hal_stm_lvgl/tft", "bsp/hal_stm_lvgl/touchpad", "bsp/lvgl/src/lv_core", "bsp/lvgl/src/lv_draw", "bsp/lvgl/src/lv_font",
-                        "bsp/lvgl/src/lv_gpu","bsp/lvgl/src/lv_hal", "bsp/lvgl/src/lv_misc", "bsp/lvgl/src/lv_themes", "bsp/lvgl/src/lv_widgets");
+   for Source_Dirs use ("gnat_user", "gnat", "gnarl_user", "gnarl", "bsp", "bsp/STM32F7xx_HAL_Driver/Src", "bsp/STM32F7xx_HAL_Driver/Inc", "bsp/CMSIS/Include", "bsp/CMSIS/Device/ST/STM32F7xx/Include", "bsp/conf", 
+      "bsp/BSP/STM32746G-Discovery/src", "bsp/BSP/STM32746G-Discovery/inc", "bsp/BSP/Components/Common", "bsp/BSP/Components/ft5336", "bsp/BSP/Components/lis2mdl", "bsp/BSP/Components/lsm6ds3", "bsp/BSP/Components/rk043fn48h", 
+      "bsp/BSP/Components/wm8994", "bsp/BSP/Components/n25q128a", "bsp/BSP/Components/bmp280", "bsp/BSP/Components/ov9655", "bsp/Utilities/Fonts", "bsp/Middlewares/Third_Party/fatfs", 
+      "bsp/Middlewares/Third_Party/FreeRTOS/Source/include", "bsp/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS", 
+      "bsp/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7_MPU/r0p1", "bsp/Middlewares/Third_Party/FreeRTOS/Source/portable/Common", "bsp/res", "bsp/wrapper", "bsp/wrapper/GUI", "bsp/hal_stm_lvgl/tft", 
+      "bsp/hal_stm_lvgl/touchpad", "bsp/lvgl/src/lv_core", "bsp/lvgl/src/lv_draw", "bsp/lvgl/src/lv_font", "bsp/lvgl/src/lv_gpu", "bsp/lvgl/src/lv_hal", "bsp/lvgl/src/lv_misc", "bsp/lvgl/src/lv_themes", "bsp/lvgl/src/lv_widgets");
 
    package Compiler renames Target_Options.Compiler;
 

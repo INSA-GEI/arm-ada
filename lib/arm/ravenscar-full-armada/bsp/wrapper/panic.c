@@ -20,17 +20,15 @@
 #include "wrapper.h"
 #include "panic.h"
 
+#include "lvgl/lvgl.h"
+
 static volatile uint32_t R0,R1,R2,R3,R12,PC,LR,XPSR,SP;
 static uint32_t IT_Source;
 #define FLASH_USER_START_ADDR   ((uint32_t)0x0800C000)   /* Start @ of user Flash area */
 
 extern const uint32_t* __stack_end;
 extern const uint32_t* __interrupt_stack_end;
-extern void SetStack(uint32_t systemstack, uint32_t applistack);
-
-void PANIC_EraseUserProgramEntry(void) {
-
-}
+LV_EVENT_CB_DECLARE(msgbox_event_cb);
 
 void PANIC_ReadStack(uint32_t it_source, uint32_t *sp) {
 	IT_Source = it_source;
@@ -59,7 +57,6 @@ void PANIC_ReadStack(uint32_t it_source, uint32_t *sp) {
 
 void PANIC_Display(void) {
 	char *title;
-	char str[42];
 
 	title ="";
 	switch (IT_Source)
@@ -86,27 +83,34 @@ void PANIC_Display(void) {
 		title ="Unknown Error";
 	}
 
-	GUI_CreateWindow(title, Red, White, Black);
+	//	GUI_CreateWindow(title, Red, White, Black);
+	//
+	//	/* Affiche la backtrace */
+	//	GLCD_SetTextColor(White);
+	//	GLCD_SetBackColor(Red);
+	//
+	//	GLCD_DrawString(0, 3, "Press A to try again");
+	//
+	//	GLCD_DrawString(0, 14, "System halted !");
+	//	GLCD_DrawString(0, 10, "Backtrace :");
+	//	sprintf (str, "R0[%08X] R1[%08X] R2[%08X]", (unsigned int)R0, (unsigned int)R1, (unsigned int)R2);
+	//	GLCD_DrawString(0, 11, str);
+	//	sprintf (str, "R3[%08X] R12[%08X] LR[%08X]", (unsigned int)R3, (unsigned int)R12, (unsigned int)LR);
+	//	GLCD_DrawString(0, 12, str);
+	//	sprintf (str, "PC[%08X] XPSR[%08X]", (unsigned int)PC, (unsigned int)XPSR);
+	//	GLCD_DrawString(0, 13, str);
+	//
+	//	while (KEYS_GetState(KEY_A) != KEY_PRESSED);
 
-	/* Affiche la backtrace */
-	GLCD_SetTextColor(White);
-	GLCD_SetBackColor(Red);
+	static const char * btns[] ={"Reboot", ""};
 
-	GLCD_DrawString(0, 3, "Press A to try again");
+	lv_obj_t * mbox1 = lv_msgbox_create(lv_scr_act(),NULL);
+	lv_msgbox_add_btns(mbox1, btns);
+	lv_msgbox_set_text_fmt(mbox1, "%s\n%s",title,"An unrecoverable error occurred");
+	//lv_msgbox_create(NULL, title, "An unrecoverable error as occured", btns, true);
+	lv_obj_set_event_cb(mbox1, msgbox_event_cb);
+	lv_obj_align(mbox1, NULL, LV_ALIGN_CENTER, 0, 0);
 
-	GLCD_DrawString(0, 14, "System halted !");
-	GLCD_DrawString(0, 10, "Backtrace :");
-	sprintf (str, "R0[%08X] R1[%08X] R2[%08X]", (unsigned int)R0, (unsigned int)R1, (unsigned int)R2);
-	GLCD_DrawString(0, 11, str);
-	sprintf (str, "R3[%08X] R12[%08X] LR[%08X]", (unsigned int)R3, (unsigned int)R12, (unsigned int)LR);
-	GLCD_DrawString(0, 12, str);
-	sprintf (str, "PC[%08X] XPSR[%08X]", (unsigned int)PC, (unsigned int)XPSR);
-	GLCD_DrawString(0, 13, str);
-
-	while (KEYS_GetState(KEY_A) != KEY_PRESSED);
-
-	/* Redemarrage de la carte */
-	NVIC_SystemReset();
 }
 
 void PANIC_SoftwarePanic(char *Title, char *Message) {
@@ -121,6 +125,11 @@ void PANIC_SoftwarePanic(char *Title, char *Message) {
 
 	while (KEYS_GetState(KEY_B) != KEY_PRESSED);
 
-		/* Redemarrage de la carte */
+	/* Redemarrage de la carte */
+	NVIC_SystemReset();
+}
+
+LV_EVENT_CB_DECLARE(msgbox_event_cb)
+{
 	NVIC_SystemReset();
 }
