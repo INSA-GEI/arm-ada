@@ -244,7 +244,7 @@ uint8_t BSP_MAG_ReadRawValues(axis3bit16_t *data_raw_magnetic)
 	if (magSensorEnabled)
 	{
 		/* TODO: Supprimer apres test */
-		__disable_irq(); // Set PRIMASK
+		//__disable_irq(); // Set PRIMASK
 
 		/*
 		 * Read output only if new value is available
@@ -264,7 +264,7 @@ uint8_t BSP_MAG_ReadRawValues(axis3bit16_t *data_raw_magnetic)
 		}
 
 		/* TODO: Supprimer apres test */
-		__enable_irq(); // Clear PRIMASK
+		//__enable_irq(); // Clear PRIMASK
 	}
 	else status = MAG_ERROR;
 
@@ -284,7 +284,7 @@ uint8_t BSP_MAG_ReadValues(magnetic_t *magnetic)
 	if (magSensorEnabled)
 	{
 		/* TODO: Supprimer apres test */
-		__disable_irq(); // Set PRIMASK
+		//__disable_irq(); // Set PRIMASK
 
 		/*
 		 * Read output only if new value is available
@@ -308,7 +308,7 @@ uint8_t BSP_MAG_ReadValues(magnetic_t *magnetic)
 		}
 
 		/* TODO: Supprimer apres test */
-		__enable_irq(); // Clear PRIMASK
+		//__enable_irq(); // Clear PRIMASK
 
 	}
 	else status = MAG_ERROR;
@@ -329,7 +329,7 @@ uint8_t BSP_MAG_ReadTemperature(float *temperature_degC)
 	if (magSensorEnabled)
 	{
 		/* TODO: Supprimer apres test */
-		__disable_irq(); // Set PRIMASK
+		//__disable_irq(); // Set PRIMASK
 
 		/*
 		 * Read output only if new value is available
@@ -351,7 +351,7 @@ uint8_t BSP_MAG_ReadTemperature(float *temperature_degC)
 		}
 
 		/* TODO: Supprimer apres test */
-		__enable_irq(); // Clear PRIMASK
+		//__enable_irq(); // Clear PRIMASK
 
 	}
 	else status = MAG_ERROR;

@@ -26,5 +26,7 @@ lv_obj_t* UI_PROGRESSBAR_Create (int off_x, int off_y, int length, lv_align_t al
 lv_obj_t* UI_PROGRESSBAR_AddLabel(lv_obj_t* bar, int off_x, int off_y, int length, lv_align_t alignment);
 void UI_PROGRESSBAR_SetValue(lv_obj_t* bar, int16_t value);
 lv_obj_t* UI_MESSAGEBOX_Create (const char *text, const char *btns[], lv_event_cb_t event_cb);
+lv_obj_t* UI_IMAGE_Create(int off_x, int off_y, lv_align_t alignment);
+void UI_IMAGE_SetImage(lv_obj_t* img, const void *src_img);
 
 #endif /* _WRAPPER_UI_H_ */

@@ -109,3 +109,14 @@ lv_obj_t* UI_MESSAGEBOX_Create (const char *text, const char *btns[], lv_event_c
 
 	return obj;
 }
+
+lv_obj_t* UI_IMAGE_Create(int off_x, int off_y, lv_align_t alignment) {
+	lv_obj_t *obj = lv_img_create(lv_scr_act(),NULL);
+	lv_obj_align(obj, NULL, alignment, off_x, off_y);
+
+	return obj;
+}
+
+void UI_IMAGE_SetImage(lv_obj_t* img, const void *src_img) {
+	lv_img_set_src(img, src_img);
+}

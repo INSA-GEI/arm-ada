@@ -29,28 +29,28 @@ void CONSOLE_GotoXY(int x, int y)
 
 int CONSOLE_PrintChar(int c)
 {
-  if ((c=='\n') || (c=='\r')) 
-    {
-      CONSOLE_X=0;
-      CONSOLE_Y++;
-
-      if (CONSOLE_Y>=15) CONSOLE_Y--;
-    }
-  else
-    {
-      GLCD_SetTextColor(White);
-      GLCD_SetBackColor(Black);
-      GLCD_DrawChar(CONSOLE_X,CONSOLE_Y, (uint8_t)c);
-      CONSOLE_X++;
-
-      if (CONSOLE_X>=40) 
-        {
-          CONSOLE_X=0;
-          CONSOLE_Y++;
-
-          if (CONSOLE_Y>=15) CONSOLE_Y--;
-        }
-    }
+//  if ((c=='\n') || (c=='\r'))
+//    {
+//      CONSOLE_X=0;
+//      CONSOLE_Y++;
+//
+//      if (CONSOLE_Y>=15) CONSOLE_Y--;
+//    }
+//  else
+//    {
+//      GLCD_SetTextColor(White);
+//      GLCD_SetBackColor(Black);
+//      GLCD_DrawChar(CONSOLE_X,CONSOLE_Y, (uint8_t)c);
+//      CONSOLE_X++;
+//
+//      if (CONSOLE_X>=40)
+//        {
+//          CONSOLE_X=0;
+//          CONSOLE_Y++;
+//
+//          if (CONSOLE_Y>=15) CONSOLE_Y--;
+//        }
+//    }
 
   return 1;
 }

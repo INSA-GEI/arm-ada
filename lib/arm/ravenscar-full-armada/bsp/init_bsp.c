@@ -25,6 +25,8 @@
 #include "hal_stm_lvgl/tft/tft.h"
 #include "hal_stm_lvgl/touchpad/touchpad.h"
 
+#include "tests/tests.h"
+
 /* todo a supprimer */
 /* #include "audio-synth/audio-synth.h"       */
 /* #include "audio-synth/audio.h"             */
@@ -36,6 +38,7 @@ void MAIN_SystemInit(void);
 void SYSTEM_ShowSystemVersion(int MajV, int MinV);
 
 int return_val;
+/* Flag utilisé pour afficher ou pas le logo au demarrage */
 uint32_t *rebootFlag=(uint32_t*)(0xC0000000+4*1024*1024-4);
 //char RunAutoTest=0;
 //extern const uint32_t* __stack_end;
@@ -375,6 +378,11 @@ void init_bsp(void)
   if (*rebootFlag != 0xDEADBEEF) {
 	  *rebootFlag = 0xDEADBEEF;
 	  SYSTEM_ShowSystemVersion(BL_MAJOR_VERSION, BL_MINOR_VERSION);
+  }
+
+  if (BSP_PB_GetState(BUTTON_X) && BSP_PB_GetState(BUTTON_Y)) {
+	  /* Enter Test mode */
+	  tests();
   }
 }
 

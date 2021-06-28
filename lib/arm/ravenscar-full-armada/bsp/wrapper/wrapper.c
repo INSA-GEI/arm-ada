@@ -27,8 +27,8 @@
 //#include <math.h>
 #include "version.h"
 
-#define LEGACY_LCD_WIDTH 	320
-#define LEGACY_LCD_HEIGHT	240
+//#define LEGACY_LCD_WIDTH 	320
+//#define LEGACY_LCD_HEIGHT	240
 
 #define RK043FN48H_WIDTH 480
 #define RK043FN48H_HEIGHT 272
@@ -125,31 +125,31 @@ void WRAPPER_Init (void) {
 	//MELODY_Init();
 }
 
-uint32_t WRAPPER_ColorConvertion_32bpp (COLOR color) {
-	uint32_t val;
-
-	if (color == 0xFF) val = 0xFFFFFFFF;
-	else
-	{
-		/* Convertion 3:3:2 to 8:8:8:8 */
-		val = (uint32_t)0xFF000000 | (((uint32_t)(color&0xE0))<<16) | (((uint32_t)(color&0x1C))<<11) | (((uint32_t)(color&0x03))<<6);
-	}
-
-	return val;
-}
-
-uint16_t WRAPPER_ColorConvertion_16bpp (COLOR color) {
-	uint16_t val;
-
-	if (color == 0xFF) val = 0xFFFF;
-	else
-	{
-		/* Convertion 3:3:2 to 5:6:5 */
-		val = (((uint16_t)(color&0xE0))<<8) | (((uint16_t)(color&0x1C))<<6) | (((uint16_t)(color&0x03))<<3);
-	}
-
-	return val;
-}
+//uint32_t WRAPPER_ColorConvertion_32bpp (COLOR color) {
+//	uint32_t val;
+//
+//	if (color == 0xFF) val = 0xFFFFFFFF;
+//	else
+//	{
+//		/* Convertion 3:3:2 to 8:8:8:8 */
+//		val = (uint32_t)0xFF000000 | (((uint32_t)(color&0xE0))<<16) | (((uint32_t)(color&0x1C))<<11) | (((uint32_t)(color&0x03))<<6);
+//	}
+//
+//	return val;
+//}
+//
+//uint16_t WRAPPER_ColorConvertion_16bpp (COLOR color) {
+//	uint16_t val;
+//
+//	if (color == 0xFF) val = 0xFFFF;
+//	else
+//	{
+//		/* Convertion 3:3:2 to 5:6:5 */
+//		val = (((uint16_t)(color&0xE0))<<8) | (((uint16_t)(color&0x1C))<<6) | (((uint16_t)(color&0x03))<<3);
+//	}
+//
+//	return val;
+//}
 
 // Basic OS services
 // void API_InvalidFunction(void)
@@ -160,53 +160,53 @@ void Delay(volatile uint32_t nTime) {
 }
 
 // Keys services
-KEY_STATE KEYS_GetState(KEY_ID key)  {
-	KEY_STATE state=KEY_RELEASED;
-
-	switch (key)
-	{
-	case KEY_A:
-		if (BSP_PB_GetState(BUTTON_A)) state = KEY_PRESSED;
-		break;
-	case KEY_B:
-		if (BSP_PB_GetState(BUTTON_B)) state = KEY_PRESSED;
-		break;
-	case KEY_CENTER:
-		if (BSP_PB_GetState(BUTTON_Y)) state = KEY_PRESSED;
-		break;
-	case KEY_UP:
-		if (BSP_PB_GetState(BUTTON_UP)) state = KEY_PRESSED;
-		break;
-	case KEY_DOWN:
-		if (BSP_PB_GetState(BUTTON_DOWN)) state = KEY_PRESSED;
-		break;
-	case KEY_RIGHT:
-		if (BSP_PB_GetState(BUTTON_RIGHT)) state = KEY_PRESSED;
-		break;
-	case KEY_LEFT:
-		if (BSP_PB_GetState(BUTTON_LEFT)) state = KEY_PRESSED;
-		break;
-	case KEY_LEFT_UP:
-		if (BSP_PB_GetState(BUTTON_UP) && BSP_PB_GetState(BUTTON_LEFT)) state = KEY_PRESSED;
-		break;
-	case KEY_RIGHT_UP:
-		if (BSP_PB_GetState(BUTTON_UP) && BSP_PB_GetState(BUTTON_RIGHT)) state = KEY_PRESSED;
-		break;
-	case KEY_LEFT_DOWN:
-		if (BSP_PB_GetState(BUTTON_DOWN) && BSP_PB_GetState(BUTTON_LEFT)) state = KEY_PRESSED;
-		break;
-	case KEY_RIGHT_DOWN:
-		if (BSP_PB_GetState(BUTTON_DOWN) && BSP_PB_GetState(BUTTON_RIGHT)) state = KEY_PRESSED;
-		break;
-	case KEY_SYSTEM:
-		if (BSP_PB_GetState(BUTTON_X)) state = KEY_PRESSED;
-		break;
-	default:
-		break;
-	}
-
-	return state;
-}
+//KEY_STATE KEYS_GetState(KEY_ID key)  {
+//	KEY_STATE state=KEY_RELEASED;
+//
+//	switch (key)
+//	{
+//	case KEY_A:
+//		if (BSP_PB_GetState(BUTTON_A)) state = KEY_PRESSED;
+//		break;
+//	case KEY_B:
+//		if (BSP_PB_GetState(BUTTON_B)) state = KEY_PRESSED;
+//		break;
+//	case KEY_CENTER:
+//		if (BSP_PB_GetState(BUTTON_Y)) state = KEY_PRESSED;
+//		break;
+//	case KEY_UP:
+//		if (BSP_PB_GetState(BUTTON_UP)) state = KEY_PRESSED;
+//		break;
+//	case KEY_DOWN:
+//		if (BSP_PB_GetState(BUTTON_DOWN)) state = KEY_PRESSED;
+//		break;
+//	case KEY_RIGHT:
+//		if (BSP_PB_GetState(BUTTON_RIGHT)) state = KEY_PRESSED;
+//		break;
+//	case KEY_LEFT:
+//		if (BSP_PB_GetState(BUTTON_LEFT)) state = KEY_PRESSED;
+//		break;
+//	case KEY_LEFT_UP:
+//		if (BSP_PB_GetState(BUTTON_UP) && BSP_PB_GetState(BUTTON_LEFT)) state = KEY_PRESSED;
+//		break;
+//	case KEY_RIGHT_UP:
+//		if (BSP_PB_GetState(BUTTON_UP) && BSP_PB_GetState(BUTTON_RIGHT)) state = KEY_PRESSED;
+//		break;
+//	case KEY_LEFT_DOWN:
+//		if (BSP_PB_GetState(BUTTON_DOWN) && BSP_PB_GetState(BUTTON_LEFT)) state = KEY_PRESSED;
+//		break;
+//	case KEY_RIGHT_DOWN:
+//		if (BSP_PB_GetState(BUTTON_DOWN) && BSP_PB_GetState(BUTTON_RIGHT)) state = KEY_PRESSED;
+//		break;
+//	case KEY_SYSTEM:
+//		if (BSP_PB_GetState(BUTTON_X)) state = KEY_PRESSED;
+//		break;
+//	default:
+//		break;
+//	}
+//
+//	return state;
+//}
 
 // Random generator services
 uint16_t RNG_GetValue(void) {

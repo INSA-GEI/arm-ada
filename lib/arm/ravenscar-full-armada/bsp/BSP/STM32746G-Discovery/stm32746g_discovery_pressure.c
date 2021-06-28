@@ -201,7 +201,7 @@ uint8_t BSP_PRESSURE_ReadValues(uint32_t *pressure)
 	if (pressureSensorEnabled)
 	{
 		/* TODO: Supprimer apres test */
-		__disable_irq(); // Set PRIMASK
+		//__disable_irq(); // Set PRIMASK
 
 		/*
 		 * Read output only if new value is available
@@ -214,7 +214,7 @@ uint8_t BSP_PRESSURE_ReadValues(uint32_t *pressure)
 		}
 
 		/* TODO: Supprimer apres test */
-		__enable_irq(); // Clear PRIMASK
+		//__enable_irq(); // Clear PRIMASK
 	}
 	else
 	{
@@ -238,7 +238,7 @@ uint8_t BSP_PRESSURE_ReadTemperature(int32_t *temperature_degC)
 	if (pressureSensorEnabled)
 	{
 		/* TODO: Supprimer apres test */
-		__disable_irq(); // Set PRIMASK
+		//__disable_irq(); // Set PRIMASK
 
 		/*
 		 * Read output only if new value is available
@@ -251,7 +251,7 @@ uint8_t BSP_PRESSURE_ReadTemperature(int32_t *temperature_degC)
 		}
 
 		/* TODO: Supprimer apres test */
-		__enable_irq(); // Clear PRIMASK
+		//__enable_irq(); // Clear PRIMASK
 	}
 	else
 	{ *temperature_degC=0;
@@ -273,7 +273,7 @@ uint8_t BSP_PRESSURE_ReadCompensatedValues(float *pressure, float *temperature)
 	if (pressureSensorEnabled)
 	{
 		/* TODO: Supprimer apres test */
-		__disable_irq(); // Set PRIMASK
+		//__disable_irq(); // Set PRIMASK
 
 		/*
 		 * Read output only if new value is available
@@ -286,7 +286,7 @@ uint8_t BSP_PRESSURE_ReadCompensatedValues(float *pressure, float *temperature)
 		}
 
 		/* TODO: Supprimer apres test */
-		__enable_irq(); // Clear PRIMASK
+		//__enable_irq(); // Clear PRIMASK
 	}
 	else
 	{

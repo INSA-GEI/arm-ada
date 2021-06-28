@@ -190,7 +190,7 @@ uint8_t BSP_ACC_GYRO_Init(void)
 	 * Set full scale
 	 */
 	lsm6ds3_xl_full_scale_set(&sensorCtx, LSM6DS3_4g);
-	lsm6ds3_gy_full_scale_set(&sensorCtx, LSM6DS3_1000dps);
+	lsm6ds3_gy_full_scale_set(&sensorCtx, LSM6DS3_250dps);
 
 	/*
 	 * Set Output Data Rate
@@ -234,7 +234,7 @@ uint8_t BSP_ACC_ReadRawValues(axis3bit16_t *data_raw_acceleration)
 	if (accSensorEnabled)
 	{
 		/* TODO: Supprimer apres test */
-		__disable_irq(); // Set PRIMASK
+		//__disable_irq(); // Set PRIMASK
 
 		/*
 		 * Read status register
@@ -251,7 +251,7 @@ uint8_t BSP_ACC_ReadRawValues(axis3bit16_t *data_raw_acceleration)
 		}
 
 		/* TODO: Supprimer apres test */
-		__enable_irq(); // Clear PRIMASK
+		//__enable_irq(); // Clear PRIMASK
 	} else status = ACC_ERROR;
 
 	return status;
@@ -269,7 +269,7 @@ uint8_t BSP_GYRO_ReadRawValues(axis3bit16_t *data_raw_angular_rate)
 	if (accSensorEnabled)
 	{
 		/* TODO: Supprimer apres test */
-		__disable_irq(); // Set PRIMASK
+		//__disable_irq(); // Set PRIMASK
 
 		lsm6ds3_gy_flag_data_ready_get(&sensorCtx, &reg);
 
@@ -283,7 +283,7 @@ uint8_t BSP_GYRO_ReadRawValues(axis3bit16_t *data_raw_angular_rate)
 		}
 
 		/* TODO: Supprimer apres test */
-		__enable_irq(); // Clear PRIMASK
+		//__enable_irq(); // Clear PRIMASK
 	} else status = ACC_ERROR;
 
 	return status;
@@ -301,23 +301,23 @@ uint8_t BSP_ACC_ReadValues(acceleration_t *acceleration)
 	if (accSensorEnabled)
 	{
 		/* TODO: Supprimer apres test */
-		__disable_irq(); // Set PRIMASK
+		//__disable_irq(); // Set PRIMASK
 
 		status = BSP_ACC_ReadRawValues(&data_raw_acceleration);
 
 		if (status == ACC_OK)
 		{
 			acceleration->x =
-					lsm6ds3_from_fs2g_to_mg(data_raw_acceleration.i16bit[0]);
+					lsm6ds3_from_fs4g_to_mg(data_raw_acceleration.i16bit[0]);
 			acceleration->y =
-					lsm6ds3_from_fs2g_to_mg(data_raw_acceleration.i16bit[1]);
+					lsm6ds3_from_fs4g_to_mg(data_raw_acceleration.i16bit[1]);
 			acceleration->z =
-					lsm6ds3_from_fs2g_to_mg(data_raw_acceleration.i16bit[2]);
+					lsm6ds3_from_fs4g_to_mg(data_raw_acceleration.i16bit[2]);
 
 		}
 
 		/* TODO: Supprimer apres test */
-		__enable_irq(); // Clear PRIMASK
+		//__enable_irq(); // Clear PRIMASK
 	} else status = ACC_ERROR;
 
 	return status;
@@ -335,7 +335,7 @@ uint8_t BSP_GYRO_ReadValues(angularRate_t *angular_rate)
 	if (accSensorEnabled)
 	{
 		/* TODO: Supprimer apres test */
-		__disable_irq(); // Set PRIMASK
+		//__disable_irq(); // Set PRIMASK
 
 		status = BSP_GYRO_ReadRawValues(&data_raw_angular_rate);
 
@@ -346,16 +346,16 @@ uint8_t BSP_GYRO_ReadValues(angularRate_t *angular_rate)
 			 */
 
 			angular_rate->x =
-					lsm6ds3_from_fs2000dps_to_mdps(data_raw_angular_rate.i16bit[0]);
+					lsm6ds3_from_fs250dps_to_mdps(data_raw_angular_rate.i16bit[0]);
 			angular_rate->y =
-					lsm6ds3_from_fs2000dps_to_mdps(data_raw_angular_rate.i16bit[1]);
+					lsm6ds3_from_fs250dps_to_mdps(data_raw_angular_rate.i16bit[1]);
 			angular_rate->z =
-					lsm6ds3_from_fs2000dps_to_mdps(data_raw_angular_rate.i16bit[2]);
+					lsm6ds3_from_fs250dps_to_mdps(data_raw_angular_rate.i16bit[2]);
 
 		}
 
 		/* TODO: Supprimer apres test */
-		__enable_irq(); // Clear PRIMASK
+		//__enable_irq(); // Clear PRIMASK
 	} else status = ACC_ERROR;
 
 	return status;
@@ -374,7 +374,7 @@ uint8_t BSP_ACC_ReadTemperature(float *temperature_degC)
 	if (accSensorEnabled)
 	{
 		/* TODO: Supprimer apres test */
-		__disable_irq(); // Set PRIMASK
+		//__disable_irq(); // Set PRIMASK
 
 		/*
 		 * Read output only if new value is available
@@ -399,7 +399,7 @@ uint8_t BSP_ACC_ReadTemperature(float *temperature_degC)
 
 
 		/* TODO: Supprimer apres test */
-		__enable_irq(); // Clear PRIMASK
+		//__enable_irq(); // Clear PRIMASK
 	} else status = ACC_ERROR;
 
 	return status;
