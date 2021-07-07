@@ -96,9 +96,9 @@ void USART1_IRQHandler(void) __attribute__((section(".interrupt_handlers")));*/
  */
 void NMI_Handler(void)
 {
-	asm ("MOV		R0, #0\n\t"
-			"MOV 	R1, SP\n\t"
-			"B       PANIC_ReadStack\n\t");
+	asm ("MOV R0, #0\n\t"
+         "MOV R1, SP\n\t"
+         "B   PANIC_ReadStack\n\t");
 
 	/* Go to infinite loop when Hard Fault exception occurs */
 	while (1)
@@ -113,10 +113,9 @@ void NMI_Handler(void)
  */
 void HardFault_Handler(void)
 {
-	asm ("MOV		R0, #1\n\t"
-			"MOV 	R1, SP\n\t"
-			"B       PANIC_ReadStack\n\t");
-
+	asm ("MOV R0, #1\n\t"
+         "MOV R1, SP\n\t"
+         "B   PANIC_ReadStack\n\t");
 
 	/* Go to infinite loop when Hard Fault exception occurs */
 	while (1)
@@ -131,9 +130,9 @@ void HardFault_Handler(void)
  */
 void MemManage_Handler(void)
 {
-	asm ("MOV		R0, #2\n\t"
-		 "MOV 	R1, SP\n\t"
-		 "B       PANIC_ReadStack\n\t");
+	asm ("MOV R0, #2\n\t"
+         "MOV R1, SP\n\t"
+         "B   PANIC_ReadStack\n\t");
 
 	/* Go to infinite loop when Memory Manage exception occurs */
 	while (1)
@@ -148,9 +147,9 @@ void MemManage_Handler(void)
  */
 void BusFault_Handler(void)
 {
-	asm ("MOV		R0, #3\n\t"
-		 "MOV 	R1, SP\n\t"
-		 "B       PANIC_ReadStack\n\t");
+	asm ("MOV R0, #3\n\t"
+         "MOV R1, SP\n\t"
+         "B   PANIC_ReadStack\n\t");
 
 	/* Go to infinite loop when Bus Fault exception occurs */
 	while (1)
@@ -165,9 +164,9 @@ void BusFault_Handler(void)
  */
 void UsageFault_Handler(void)
 {
-	asm ("MOV		R0, #4\n\t"
-			"MOV 	R1, SP\n\t"
-			"B       PANIC_ReadStack\n\t");
+	asm ("MOV R0, #4\n\t"
+         "MOV R1, SP\n\t"
+         "B   PANIC_ReadStack\n\t");
 
 	/* Go to infinite loop when Usage Fault exception occurs */
 	while (1)

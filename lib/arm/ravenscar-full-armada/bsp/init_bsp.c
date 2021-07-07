@@ -38,8 +38,11 @@ void MAIN_SystemInit(void);
 void SYSTEM_ShowSystemVersion(int MajV, int MinV);
 
 int return_val;
+uint8_t lv_init_finished=0;
+
 /* Flag utilisé pour afficher ou pas le logo au demarrage */
 uint32_t *rebootFlag=(uint32_t*)(0xC0000000+4*1024*1024-4);
+
 //char RunAutoTest=0;
 //extern const uint32_t* __stack_end;
 //extern const uint32_t* __interrupt_stack_end;
@@ -80,47 +83,47 @@ void Pipo(void);
  */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)        
 {                                                     
-  static uint32_t debounce_time = 0;                   
-  static volatile uint32_t counter_mag=0;              
-  static volatile uint32_t counter_acc_gyro=0;         
-                                                       
-  switch (GPIO_Pin)                                    
-    {                                                    
-      case KEY_BUTTON_PIN:                                 
-        /* Prevent debounce effect for user key */
-        if ((HAL_GetTick() - debounce_time) > 50)           
-          {                                                   
-            debounce_time = HAL_GetTick();                     
-          }                                                                                                   
-        break;                                              
-      case AUDIO_IN_INT_GPIO_PIN:                          
-        /* Audio IN interrupt */                            
-        break;                                              
-      case MAG_DRDY_PIN:                                   
-        /* MAG DRDY interrupt */                            
-        counter_mag++;                                      
-        break;                                              
-      case ACC_GYRO_DRDY_PIN:                              
-        /* ACC and Gyro DRDY interrupt */                   
-        counter_acc_gyro++;                                 
-        break;                                              
-      case SD_DETECT_PIN:                                  
-        /* SD Detect and TS interrupt (shared) */           
-        if (HAL_GPIO_ReadPin(TS_INT_GPIO_PORT, TS_INT_PIN)) 
-          {                                                   
-            /* Touchscreen it */                               
-            BSP_TS_ITClear();                                  
-          }                                                   
-        else                                                
-          {                                                   
-            /* SD Detect it */                                 
-          }                                                   
-        break;                                              
-                                                       
-      default:                                             
-        /* Unknown interrupt */                             
-        break;                                             
-    }                                                    
+	static uint32_t debounce_time = 0;
+	static volatile uint32_t counter_mag=0;
+	static volatile uint32_t counter_acc_gyro=0;
+
+	switch (GPIO_Pin)
+	{
+	case KEY_BUTTON_PIN:
+		/* Prevent debounce effect for user key */
+		if ((HAL_GetTick() - debounce_time) > 50)
+		{
+			debounce_time = HAL_GetTick();
+		}
+		break;
+	case AUDIO_IN_INT_GPIO_PIN:
+		/* Audio IN interrupt */
+		break;
+	case MAG_DRDY_PIN:
+		/* MAG DRDY interrupt */
+		counter_mag++;
+		break;
+	case ACC_GYRO_DRDY_PIN:
+		/* ACC and Gyro DRDY interrupt */
+		counter_acc_gyro++;
+		break;
+	case SD_DETECT_PIN:
+		/* SD Detect and TS interrupt (shared) */
+		if (HAL_GPIO_ReadPin(TS_INT_GPIO_PORT, TS_INT_PIN))
+		{
+			/* Touchscreen it */
+			BSP_TS_ITClear();
+		}
+		else
+		{
+			/* SD Detect it */
+		}
+		break;
+
+	default:
+		/* Unknown interrupt */
+		break;
+	}
 }                                                     
 
 /**
@@ -130,36 +133,36 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
  */
 void MAIN_SystemInit(void)              
 {   
-  /* Init standard IO serial link */            
-  BSP_STDIO_Init();                             
-                                                
-  /* Init led1 */                               
-  BSP_LED_Init(LED1);                           
-                                                
-  /* Configure the User Button in GPIO Mode */  
-  BSP_PB_Init(BUTTON_KEY, BUTTON_MODE_GPIO);    
-                 
-  /* Init External SRAM */
-  BSP_SDRAM_Init();
-  
-  /* Init QSPI */                               
-  BSP_QSPI_Init();                              
-  BSP_QSPI_EnableMemoryMappedMode();            
-                                                
-  /* Init Keys */                               
-  BSP_KEYS_Init();                              
-                                                
-  /* Init magnetic sensor */                    
-  BSP_MAG_Init();                               
-                                                
-  /* Init accelerometer and gyroscope sensor */ 
-  BSP_ACC_GYRO_Init();                          
-                                                
-  /* Init pressure sensor */                    
-  BSP_PRESSURE_Init();                                                                                            
-                                                
-  /* Init RNG */                                
-  BSP_RNG_InitGenerator();
+	/* Init standard IO serial link */
+	BSP_STDIO_Init();
+
+	/* Init led1 */
+	BSP_LED_Init(LED1);
+
+	/* Configure the User Button in GPIO Mode */
+	BSP_PB_Init(BUTTON_KEY, BUTTON_MODE_GPIO);
+
+	/* Init External SRAM */
+	BSP_SDRAM_Init();
+
+	/* Init QSPI */
+	BSP_QSPI_Init();
+	BSP_QSPI_EnableMemoryMappedMode();
+
+	/* Init Keys */
+	BSP_KEYS_Init();
+
+	/* Init magnetic sensor */
+	BSP_MAG_Init();
+
+	/* Init accelerometer and gyroscope sensor */
+	BSP_ACC_GYRO_Init();
+
+	/* Init pressure sensor */
+	BSP_PRESSURE_Init();
+
+	/* Init RNG */
+	BSP_RNG_InitGenerator();
 }
 
 //void RUNTIME_Main(void)
@@ -268,45 +271,45 @@ void MAIN_SystemInit(void)
  */
 void SystemClock_Config(void)
 {
-  RCC_ClkInitTypeDef RCC_ClkInitStruct;
-  RCC_OscInitTypeDef RCC_OscInitStruct;
-  HAL_StatusTypeDef ret = HAL_OK;
+	RCC_ClkInitTypeDef RCC_ClkInitStruct;
+	RCC_OscInitTypeDef RCC_OscInitStruct;
+	HAL_StatusTypeDef ret = HAL_OK;
 
-  /* Enable HSE Oscillator and activate PLL with HSE as source */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
-  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLM = 25;
-  RCC_OscInitStruct.PLL.PLLN = 400;
-  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
-  RCC_OscInitStruct.PLL.PLLQ = 8;
+	/* Enable HSE Oscillator and activate PLL with HSE as source */
+	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+	RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+	RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+	RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+	RCC_OscInitStruct.PLL.PLLM = 25;
+	RCC_OscInitStruct.PLL.PLLN = 400;
+	RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+	RCC_OscInitStruct.PLL.PLLQ = 8;
 
-  ret = HAL_RCC_OscConfig(&RCC_OscInitStruct);
-  if(ret != HAL_OK)
-    {
-      while(1) { ; }
-    }
+	ret = HAL_RCC_OscConfig(&RCC_OscInitStruct);
+	if(ret != HAL_OK)
+	{
+		while(1) { ; }
+	}
 
-  /* Activate the OverDrive to reach the 216 MHz Frequency */
-  ret = HAL_PWREx_EnableOverDrive();
-  if(ret != HAL_OK)
-    {
-      while(1) { ; }
-    }
+	/* Activate the OverDrive to reach the 216 MHz Frequency */
+	ret = HAL_PWREx_EnableOverDrive();
+	if(ret != HAL_OK)
+	{
+		while(1) { ; }
+	}
 
-  /* Select PLL as system clock source and configure the HCLK, PCLK1 and PCLK2 clocks dividers */
-  RCC_ClkInitStruct.ClockType = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2);
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
+	/* Select PLL as system clock source and configure the HCLK, PCLK1 and PCLK2 clocks dividers */
+	RCC_ClkInitStruct.ClockType = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2);
+	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+	RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
+	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
 
-  ret = HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5);
-  if(ret != HAL_OK)
-    {
-      while(1) { ; }
-    }
+	ret = HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5);
+	if(ret != HAL_OK)
+	{
+		while(1) { ; }
+	}
 }
 
 /**
@@ -316,11 +319,11 @@ void SystemClock_Config(void)
  */
 void CPU_CACHE_Enable(void)
 {
-  /* Enable I-Cache */
-  SCB_EnableICache();
+	/* Enable I-Cache */
+	SCB_EnableICache();
 
-  /* Enable D-Cache */
-  SCB_EnableDCache();
+	/* Enable D-Cache */
+	SCB_EnableDCache();
 }
 
 /**
@@ -330,7 +333,7 @@ void CPU_CACHE_Enable(void)
  */
 void CPU_EnableFPU(void)
 {
-  SCB->CPACR=(0x3<<20)+(0x3<<22); // Enable full access to CP11 and CP10 FPU
+	SCB->CPACR=(0x3<<20)+(0x3<<22); // Enable full access to CP11 and CP10 FPU
 }
 
 /**
@@ -340,7 +343,7 @@ void CPU_EnableFPU(void)
  */
 void CPU_EnableFaultHandler(void)
 {
-  SCB->SHCSR = SCB->SHCSR | (SCB_SHCSR_BUSFAULTENA_Msk + SCB_SHCSR_MEMFAULTENA_Msk + SCB_SHCSR_USGFAULTENA_Msk);
+	SCB->SHCSR = SCB->SHCSR | (SCB_SHCSR_BUSFAULTENA_Msk + SCB_SHCSR_MEMFAULTENA_Msk + SCB_SHCSR_USGFAULTENA_Msk);
 }
 
 /**
@@ -350,65 +353,72 @@ void CPU_EnableFaultHandler(void)
  */
 void init_bsp(void)
 {
-  Pipo();
+	lv_init_finished=0;
 
-  /* Configure the system clock to 200 Mhz */
-  SystemClock_Config();
+	/* Configure the system clock to 200 Mhz */
+	SystemClock_Config();
 
-  CPU_CACHE_Enable();
-  CPU_EnableFPU();
-  CPU_EnableFaultHandler();
+	/* Init HAL framework */
+	HAL_Init();
 
-  HAL_Init();
+	/* Configure system and BSP peripherals (except LCD) */
+	MAIN_SystemInit();
 
-  /* Configure system and BSP peripherals (except LCD) */
-  MAIN_SystemInit();
+	lv_init();
 
-  lv_init();
+	tft_init();
+    touchpad_init();
 
-  tft_init();
-  touchpad_init();
+    lv_init_finished=1;
 
-  WRAPPER_Init();
+	WRAPPER_Init();
+
+	lv_obj_clean(lv_scr_act());
+	lv_task_handler();
+    HAL_Delay(200);
   
-  lv_obj_clean(lv_scr_act()); 
-  lv_task_handler();
-  HAL_Delay(200);
   
-  if (*rebootFlag != 0xDEADBEEF) {
-	  *rebootFlag = 0xDEADBEEF;
-	  SYSTEM_ShowSystemVersion(BL_MAJOR_VERSION, BL_MINOR_VERSION);
-  }
+    SYSTEM_ShowSystemVersion(BL_MAJOR_VERSION, BL_MINOR_VERSION);
 
-  if (BSP_PB_GetState(BUTTON_X) && BSP_PB_GetState(BUTTON_Y)) {
-	  /* Enter Test mode */
-	  tests();
-  }
+	/*if (*rebootFlag != 0xDEADBEEF) {
+		*rebootFlag = 0xDEADBEEF;
+		SYSTEM_ShowSystemVersion(BL_MAJOR_VERSION, BL_MINOR_VERSION);
+	}*/
+
+	if (BSP_PB_GetState(BUTTON_X) && BSP_PB_GetState(BUTTON_Y)) {
+		//Enter Test mode
+		tests();
+	}
+
+	Pipo();
 }
 
 void SYSTEM_ShowSystemVersion(int MajV, int MinV)
 {
-  char str[30];
-  sprintf (str, "System ver. %d.%d", BL_MAJOR_VERSION, BL_MINOR_VERSION);
-  
-  LV_IMG_DECLARE(logo);
-  
-  lv_obj_t *label1 = lv_label_create(lv_scr_act(),NULL);
-  lv_label_set_text(label1, str);
-  lv_obj_set_width(label1, 150);  /*Set smaller width to make the lines wrap*/
-  lv_label_set_align(label1, LV_LABEL_ALIGN_CENTER);
-  lv_obj_align(label1, NULL, LV_ALIGN_CENTER, 0, 80);
+	char str[30];
+	sprintf (str, "System ver. %d.%d", BL_MAJOR_VERSION, BL_MINOR_VERSION);
 
-  lv_obj_t *img = lv_img_create(lv_scr_act(),NULL);
-  lv_img_set_src(img, &logo);
-  lv_obj_align(img, NULL, LV_ALIGN_CENTER, 0, -30);
-  
-  lv_task_handler();
-  HAL_Delay(2000);
-  
-  lv_obj_clean(lv_scr_act()); 
-  lv_task_handler(); 
-  HAL_Delay(200);
+	LV_IMG_DECLARE(logo);
+
+	lv_obj_t *label1 = lv_label_create(lv_scr_act(),NULL); /* Crée un label dont le parent est l'ecran */
+	lv_label_set_text(label1, str); /* Fait afficher le texte créé avec sprintf (system ver. 3.1, par exemple) */
+	lv_obj_set_width(label1, 150);  /* retaille la longueur du label (pas obligatoire) */
+	lv_label_set_align(label1, LV_LABEL_ALIGN_CENTER); /* Centre le texte au milieu du label */
+	lv_obj_align(label1, NULL, LV_ALIGN_CENTER, 0, 80); /* de base, centre le label au milieu de l'ecran,
+	                                                       mais en le decalant de 0 pixel en X et de 80 pixel en Y, vers le bas */
+
+	lv_obj_t *img = lv_img_create(lv_scr_act(),NULL);   /* Creer une image associé à l'ecran (enfin, un widget capable d'afficher une image) */
+	lv_img_set_src(img, &logo); /* Fourni l'image a afficher (logo est defini ailleurs ) */
+	lv_obj_align(img, NULL, LV_ALIGN_CENTER, 0, -30);   /* De base, centre l'image sur l'ecran mais le deplace de 0 pixel en X
+	                                                       et de 30 pixel en Y vers le haut (la valeur est negative) */
+
+	lv_task_handler();
+	HAL_Delay(2000);
+
+	lv_obj_clean(lv_scr_act());  /* efface l'ecran (au plutôt, supprime les widgets associés à l'ecran) */
+	lv_task_handler();
+	HAL_Delay(200);
+
 }
 
 #ifdef USE_FULL_ASSERT
@@ -422,13 +432,13 @@ void SYSTEM_ShowSystemVersion(int MajV, int MinV)
  */
 void assert_failed(uint8_t* file, uint32_t line)
 {
-  /* User can add his own implementation to report the file name and line number,
+	/* User can add his own implementation to report the file name and line number,
      ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
 
-  /* Infinite loop */
-  while (1)
-    {
-    }
+	/* Infinite loop */
+	while (1)
+	{
+	}
 }
 #endif /* USE_FULL_ASSERT */
 

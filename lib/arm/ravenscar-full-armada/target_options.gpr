@@ -21,7 +21,9 @@ abstract project Target_Options is
      --  Per language flags (COMFLAGS will be added later)
      ADAFLAGS := ("-gnatg", "-nostdinc", "-fno-delete-null-pointer-checks");
      ASMFLAGS := ("");
-     CFLAGS := ("-DIN_RTS","-Dinhibit_libc", "-Werror", "-Wall", "-DSTM32F746xx", "-DUSE_HAL_DRIVER");
+      CFLAGS := ("-DIN_RTS","-Dinhibit_libc", "-Werror", "-Wall", "-DSTM32F746xx",
+                 "-DUSE_HAL_DRIVER", "-DLV_EX_CONF_INCLUDE_SIMPLE", "-DDEBUG",
+                 "-DSTM32F746G_DISCO", "-DSTM32F746NGHx", "-DSTM32F7");
      case Build is
         when "Production" =>
 	   --  Optimize
@@ -29,8 +31,8 @@ abstract project Target_Options is
            ADAFLAGS := ADAFLAGS & ("-gnatp", "-gnatn2");
         when "Debug" =>
 	   --  Disable optimization and add debug symbols
-           COMFLAGS := COMFLAGS & ("-O0", "-g");
-           ASMFLAGS := ASMFLAGS & ("-g");
+           COMFLAGS := COMFLAGS & ("-O0", "-dwarf", "-g3");
+           ASMFLAGS := ASMFLAGS & ("-g3");
 	when "Assert" =>
 	   --  Possibly enable assertions. This might use too much memory on
 	   --  some systems or could be too slow.
@@ -52,14 +54,14 @@ abstract project Target_Options is
 
      --  Some runtime files need to be compiled with debug info, so that gdb
      --  is not blind.
-     for Switches ("s-traceb.adb") use ALL_ADAFLAGS & ("-g")
+     for Switches ("s-traceb.adb") use ALL_ADAFLAGS & ("-g3")
        & ("-fno-optimize-sibling-calls", "-fno-inline-functions-called-once");
-     for Switches ("s-tasdeb.adb") use ALL_ADAFLAGS & ("-g", "-O0");
+     for Switches ("s-tasdeb.adb") use ALL_ADAFLAGS & ("-g3", "-O0");
      for Switches ("a-except.adb") use ALL_ADAFLAGS
        & ("-g", "-O1", "-fno-inline", "-fno-toplevel-reorder");
-     for Switches ("s-excdeb.adb") use ALL_ADAFLAGS & ("-g", "-O0");
-     for Switches ("s-assert.adb") use ALL_ADAFLAGS & ("-g");
-     for Switches ("a-tags.adb") use ALL_ADAFLAGS & ("-g");
+     for Switches ("s-excdeb.adb") use ALL_ADAFLAGS & ("-g3", "-O0");
+     for Switches ("s-assert.adb") use ALL_ADAFLAGS & ("-g3");
+     for Switches ("a-tags.adb") use ALL_ADAFLAGS & ("-g3");
      for Switches ("raise-gcc.c") use ALL_CFLAGS & ("-fexceptions");
 
      --  Don't inline System.Machine_Reset otherwise we can loose our common
