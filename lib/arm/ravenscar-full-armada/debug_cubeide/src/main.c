@@ -2,9 +2,12 @@
 #include "lvgl/lvgl.h"
 #include "wrapper.h"
 
+#include <stdlib.h>
+
 void init_bsp(void);
 void test_ui(void);
 void test_ui2(void);
+void test_malloc(void);
 
 LV_EVENT_CB_DECLARE(slider_1_event_cb);
 LV_EVENT_CB_DECLARE(button_event_cb);
@@ -47,6 +50,8 @@ int main(void)
 {
 	init_bsp();
 
+	test_malloc();
+
 	test_ui();
 
 	while (1)
@@ -54,6 +59,29 @@ int main(void)
 		HAL_Delay(50);
 		//animate_progressbar();
 	}
+}
+
+void test_malloc(void)
+{
+	//uint32_t *p;
+	uint32_t **array_of_pointer;
+    uint32_t element_size = sizeof(*array_of_pointer);
+
+	array_of_pointer = (uint32_t **)malloc(100*element_size);
+
+	element_size = sizeof(**array_of_pointer);
+	for (uint8_t i=0; i<100; i++) {
+		array_of_pointer[i] = (uint32_t *)malloc(500*element_size);
+	}
+
+	array_of_pointer[0][0] = 0xDEADBEEF;
+
+	for (uint8_t i=0; i<100; i++) {
+			free(array_of_pointer[i]);
+		}
+
+	free (array_of_pointer);
+
 }
 
 void test_ui_screen1(void)
@@ -219,7 +247,7 @@ LV_EVENT_CB_DECLARE(button_event_cb)
 {
 	if (e == LV_EVENT_CLICKED)
 	{
-		__IO uint32_t *p=0x30000001;
+		__IO uint32_t *p=(__IO uint32_t *)0x30000001UL;
 		*p=0x1;
 	}
 }
