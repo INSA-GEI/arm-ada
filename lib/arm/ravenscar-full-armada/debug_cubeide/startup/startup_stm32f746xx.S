@@ -94,8 +94,8 @@ _fill_stack:
         .size _fill_stack, . - _fill_stack
 
 /**
- * @brief  This code fill stack with pattern for computing usage
- * @param  None
+ * @brief  : This code copy vector table from flash to ram
+ * @param  : None
  * @retval : None
 */
         .section  .text._copy_vector_table
@@ -107,15 +107,16 @@ _copy_vector_table:
         ldr   r1, =_evector_table
         ldr   r2, =_sivector_table
 
-1:	cmp   r0, r1
-	beq   0f
+1:      cmp   r0, r1
+        beq   0f
 
-	ldr   r3, [r2], #4
-	str   r3, [r0], #4
-	b     1b
+        ldr   r3, [r2], #4
+        str   r3, [r0], #4
+        b     1b
 
 0:      bx    lr
         .size _copy_vector_table, . - _copy_vector_table
+
 /**
  * @brief  This is the code that gets called when the processor first
  *          starts execution following a reset event. Only the absolutely
@@ -126,7 +127,7 @@ _copy_vector_table:
 */
         .section  .text._stm32_start_common
       	.thumb_func
-	.globl	_stm32_start_common
+        .globl	_stm32_start_common
         .type   _stm32_start_common, #function
 _stm32_start_common:
 
@@ -158,7 +159,7 @@ _stm32_start_common:
         dsb
         isb
 
-	/*************************/
+        /*************************/
         /* Enable Fault handlers */
         /*************************/
         .set     SHCSR, 0xE000ED24

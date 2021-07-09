@@ -163,7 +163,7 @@
                             							
                             <tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.522512025" name="MCU GCC Linker" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker">
                                 								
-                                <option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.option.script.1554117413" name="Linker Script (-T)" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.option.script" useByScannerDiscovery="false" value="/home/dimercur/Travail/git/arm-ada/lib/arm/ravenscar-full-armada/ld/common-cubeide.ld" valueType="string"/>
+                                <option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.option.script.1554117413" name="Linker Script (-T)" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.option.script" useByScannerDiscovery="false" value="/home/dimercur/Travail/git/arm-ada/lib/arm/ravenscar-full-armada/ld/common-ROM.ld" valueType="string"/>
                                 								
                                 <option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.option.gcsections.891300967" name="Discard unused sections (-Wl,--gc-sections)" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.option.gcsections" useByScannerDiscovery="false" value="true" valueType="boolean"/>
                                 								
@@ -205,25 +205,9 @@
                         					
                     </folderInfo>
                     					
-                    <fileInfo id="com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.debug.1033316828.1064232832" name="tft.c" rcbsApplicability="disable" resourcePath="bsp/hal_stm_lvgl/tft/tft.c" toolsToInvoke="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.309496850.30277830">
+                    <fileInfo id="com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.debug.1033316828.2029959098" name="startup_stm32f746xx.s" rcbsApplicability="disable" resourcePath="startup/startup_stm32f746xx.s" toolsToInvoke="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.assembler.100928562.2122706822">
                         						
-                        <tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.309496850.30277830" name="MCU GCC Compiler" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.309496850">
-                            							
-                            <inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c.1218481549" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c"/>
-                            						
-                        </tool>
-                        						
-                        <tool customBuildStep="true" id="org.eclipse.cdt.managedbuilder.ui.rcbs.1763919550" name="Resource Custom Build Step">
-                            							
-                            <inputType id="org.eclipse.cdt.managedbuilder.ui.rcbs.inputtype.116972108" name="Resource Custom Build Step Input Type">
-                                								
-                                <additionalInput kind="additionalinputdependency"/>
-                                							
-                            </inputType>
-                            							
-                            <outputType id="org.eclipse.cdt.managedbuilder.ui.rcbs.outputtype.1854575111" name="Resource Custom Build Step Output Type"/>
-                            						
-                        </tool>
+                        <tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.assembler.100928562.2122706822" name="MCU GCC Assembler" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.assembler.100928562"/>
                         					
                     </fileInfo>
                     					
@@ -337,7 +321,7 @@
                         						
                         <entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
                         						
-                        <entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="startup"/>
+                        <entry excluding="startup_stm32f746xx.s" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="startup"/>
                         						
                         <entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="wrapper"/>
                         					
