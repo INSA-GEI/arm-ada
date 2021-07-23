@@ -8,12 +8,17 @@ void init_bsp(void);
 void test_ui(void);
 void test_ui2(void);
 void test_malloc(void);
+int test_panic(int val);
+void enable_unpriviledged_mode(uint32_t base_user_stack_addr, uint32_t base_interrupt_stack_addr);
 
 LV_EVENT_CB_DECLARE(slider_1_event_cb);
 LV_EVENT_CB_DECLARE(button_event_cb);
 LV_EVENT_CB_DECLARE(button_screen_event_cb);
 void animate_progressbar(void);
 void animate_pacman(void);
+
+extern void* __interrupt_stack_end;
+extern void* __stack_end;
 
 static lv_obj_t * slider_label_1;
 static lv_obj_t * progressbar_label_2;
@@ -48,9 +53,14 @@ LV_IMG_DECLARE(orange);
 
 int main(void)
 {
+	int val;
+
 	init_bsp();
+	enable_unpriviledged_mode((uint32_t)((void *)&__stack_end), (uint32_t)((void *)&__interrupt_stack_end));
 
 	test_malloc();
+
+	val=test_panic(2);
 
 	test_ui();
 
@@ -82,6 +92,23 @@ void test_malloc(void)
 
 	free (array_of_pointer);
 
+}
+
+void enable_unpriviledged_mode(uint32_t topOfProcStack, uint32_t topOfMainStack)
+{
+	__set_PSP(topOfProcStack);
+	__set_MSP(topOfMainStack);
+
+	uint32_t control= __get_CONTROL() + (1<<CONTROL_SPSEL_Pos) + (1<<CONTROL_nPRIV_Pos);
+	__set_CONTROL(control);
+
+	__ISB();
+}
+
+int test_panic(int val)
+{
+	if (val>100) return val;
+	else return test_panic(val);
 }
 
 void test_ui_screen1(void)

@@ -8,13 +8,17 @@ package body Insa.Sensors is
    type WRAPPER_ACCESS is access WRAPPER_VALUES;
    
    -- GetGyroscopicValues
-   -- return an array of 3 uncalibrated float values (axis X, Y and Z) corresponding to gyroscopic sensor 
+   -- return an array of 3 float values (axis X, Y and Z) corresponding to gyroscopic sensor 
+   -- values are given in mdps (milli degree of rotation per seconde)
+   -- for example, if sensor has 5 degrees per seconde of rotation around X axis,
+   -- returned value will be 5000.0
+   
    -- gyroscope => speed of rotation around an axis
-   -- values are from -256.0 to 256.0
+   
    function GetGyroscopicValues return SENSOR_VALUES is
    
      function Wrapper_GetGyroscopicValues return WRAPPER_ACCESS;
-     pragma Import (C, Wrapper_GetGyroscopicValues, "L3GD20_GetGyroscopicValues");
+     pragma Import (C, Wrapper_GetGyroscopicValues, "BSP_GYRO_ReadValues");
      
      Values: SENSOR_VALUES;
      Wrapper_Values: WRAPPER_ACCESS;
@@ -32,13 +36,13 @@ package body Insa.Sensors is
    end GetGyroscopicValues;
    
    -- GetMagneticValues
-   -- return an array of 3 uncalibrated float values (axis X, Y and Z) corresponding to magnetic sensor 
+   -- return an array of 3 float values (axis X, Y and Z) corresponding to magnetic sensor 
    -- magnetic sensor => sense the magnetic field seen by an axis
-   -- values are from -512.0 to 512.0
+   -- values are givien in milligauss
    function GetMagneticValues return SENSOR_VALUES is
       
      function Wrapper_GetMagneticValues return WRAPPER_ACCESS;
-     pragma Import (C, Wrapper_GetMagneticValues, "LSM303DLHC_GetMagneticValues");
+     pragma Import (C, Wrapper_GetMagneticValues, "BSP_MAG_ReadValues");
      
      Values: SENSOR_VALUES;
      Wrapper_Values: WRAPPER_ACCESS;
@@ -55,13 +59,13 @@ package body Insa.Sensors is
    end GetMagneticValues;
    
    -- GetAccelerometerValues
-   -- return an array of 3 uncalibrated float values (axis X, Y and Z) corresponding to accelerometer sensor 
+   -- return an array of 3 float values (axis X, Y and Z) corresponding to accelerometer sensor 
    -- accelerometer sensor => sense the acceleration as seen by an axis
-   -- values are from -1024.0 to 1024.0
+   -- values are given in milliG (G, acceleration of earth attraction, 0,98 m/s)
    function GetAccelerometerValues return SENSOR_VALUES is
       
      function Wrapper_GetAccelerometerValues return WRAPPER_ACCESS;
-     pragma Import (C, Wrapper_GetAccelerometerValues, "LSM303DLHC_GetAccelerometerValues");
+     pragma Import (C, Wrapper_GetAccelerometerValues, "BSP_ACC_ReadValues");
      
      Values: SENSOR_VALUES;
      Wrapper_Values: WRAPPER_ACCESS;
@@ -76,5 +80,34 @@ package body Insa.Sensors is
       
       return Values;
    end GetAccelerometerValues;
+   
+   -- GetPressure
+   -- return a float value corresponding to atmospheric pressure 
+   -- value is given in pascal
+   function GetPressure return FLOAT is
+      
+     procedure Wrapper_GetPressureValue (Pressure: out Float; Temperature: out Float);
+     pragma Import (C, Wrapper_GetPressureValue, "BSP_PRESSURE_ReadCompensatedValues");
+     
+     Pressure,Temperature: FLOAT;
+   begin
+      Wrapper_GetPressureValue(Pressure, Temperature);
+      
+      return Pressure;
+   end GetPressure;
 
+   -- GetTemperature
+   -- return a float value corresponding to temperature inside case 
+   -- value is given in celsius degree
+   function GetTemperature return FLOAT is
+      
+     procedure Wrapper_GetTemperatureValue (Pressure: out Float; Temperature: out Float);
+     pragma Import (C, Wrapper_GetTemperatureValue, "BSP_PRESSURE_ReadCompensatedValues");
+     
+     Pressure,Temperature: FLOAT;
+   begin
+      Wrapper_GetTemperatureValue(Pressure, Temperature);
+      
+      return Temperature;
+   end GetTemperature;
 end Insa.Sensors;

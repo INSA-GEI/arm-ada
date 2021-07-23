@@ -9,7 +9,7 @@ package body Insa.Random_Number is
    function GetValue return RANDOM_VALUE is
       
       function Wrapper_GetValue return RANDOM_VALUE;
-      pragma Import (C, Wrapper_GetValue, "RNG_GetValue");
+      pragma Import (C, Wrapper_GetValue, "BSP_RNG_GetNumber");
       
    begin
       return Wrapper_GetValue;

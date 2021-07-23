@@ -205,9 +205,51 @@
                         					
                     </folderInfo>
                     					
-                    <fileInfo id="com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.debug.1033316828.2029959098" name="startup_stm32f746xx.s" rcbsApplicability="disable" resourcePath="startup/startup_stm32f746xx.s" toolsToInvoke="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.assembler.100928562.2122706822">
+                    <fileInfo id="com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.debug.1033316828.1607656339" name="main.c" rcbsApplicability="disable" resourcePath="src/main.c" toolsToInvoke="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.309496850.575694304">
                         						
-                        <tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.assembler.100928562.2122706822" name="MCU GCC Assembler" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.assembler.100928562"/>
+                        <tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.309496850.575694304" name="MCU GCC Compiler" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.309496850">
+                            							
+                            <option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.option.optimization.level.1471233963" name="Optimization level" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.option.optimization.level" useByScannerDiscovery="false" value="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.option.optimization.level.value.o0" valueType="enumerated"/>
+                            							
+                            <inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c.584649780" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c"/>
+                            						
+                        </tool>
+                        						
+                        <tool customBuildStep="true" id="org.eclipse.cdt.managedbuilder.ui.rcbs.345763624" name="Resource Custom Build Step">
+                            							
+                            <inputType id="org.eclipse.cdt.managedbuilder.ui.rcbs.inputtype.2106605276" name="Resource Custom Build Step Input Type">
+                                								
+                                <additionalInput kind="additionalinputdependency" paths=""/>
+                                							
+                            </inputType>
+                            							
+                            <outputType id="org.eclipse.cdt.managedbuilder.ui.rcbs.outputtype.1696935858" name="Resource Custom Build Step Output Type"/>
+                            						
+                        </tool>
+                        					
+                    </fileInfo>
+                    					
+                    <fileInfo id="com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.debug.1033316828.1716375481" name="panic.c" rcbsApplicability="disable" resourcePath="bsp/wrapper/panic.c" toolsToInvoke="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.309496850.311211641">
+                        						
+                        <tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.309496850.311211641" name="MCU GCC Compiler" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.309496850">
+                            							
+                            <option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.option.optimization.level.1400153894" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.option.optimization.level" useByScannerDiscovery="false" value="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.option.optimization.level.value.o0" valueType="enumerated"/>
+                            							
+                            <inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c.292508044" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c"/>
+                            						
+                        </tool>
+                        						
+                        <tool customBuildStep="true" id="org.eclipse.cdt.managedbuilder.ui.rcbs.1145720899" name="Resource Custom Build Step">
+                            							
+                            <inputType id="org.eclipse.cdt.managedbuilder.ui.rcbs.inputtype.2113344295" name="Resource Custom Build Step Input Type">
+                                								
+                                <additionalInput kind="additionalinputdependency" paths=""/>
+                                							
+                            </inputType>
+                            							
+                            <outputType id="org.eclipse.cdt.managedbuilder.ui.rcbs.outputtype.1177796236" name="Resource Custom Build Step Output Type"/>
+                            						
+                        </tool>
                         					
                     </fileInfo>
                     					

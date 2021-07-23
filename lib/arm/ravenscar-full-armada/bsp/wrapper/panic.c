@@ -19,16 +19,31 @@
 #include "stm32746g_discovery.h"
 #include "wrapper.h"
 #include "panic.h"
+#include "stdlib.h"
 
-static volatile uint32_t R0,R1,R2,R3,R12,PC,LR,XPSR,SP;
+static volatile uint32_t R0,R1,R2,R3,R12,PC,LR,XPSR,SP,PSP;
 static uint32_t IT_Source;
+
+extern void* __interrupt_stack_start;
+extern void* __interrupt_stack_end;
+extern void* __stack_start;
+extern void* __stack_end;
+
+char* panic_storage_error = "STORAGE ERROR";
+char* panic_abort_signal = "ABORT SIGNAL";
 
 LV_EVENT_CB_DECLARE(msgbox_event_cb);
 
+/**
+ * @brief  This function retrieves information on stack.
+ * @retval None
+ */
 void PANIC_ReadStack(uint32_t it_source, uint32_t *sp) {
 	IT_Source = it_source;
+	SP = (uint32_t)sp;
+	PSP = __get_PSP();
 
-	if ( (sp >= (uint32_t*)0x20000000) && (sp <= (uint32_t*)(0x20000000+(320*1024)-8*8)))
+	if (((void*)sp >= (void *)&__interrupt_stack_start) && ((void*)sp <= (void *)&__interrupt_stack_end))
 	{
 		R0 = sp[0];
 		R1 = sp[1];
@@ -43,47 +58,95 @@ void PANIC_ReadStack(uint32_t it_source, uint32_t *sp) {
 	{
 		IT_Source = 5;
 		R0=R1=R2=R3=R12=LR=PC=XPSR=0x0;
-		SP = (uint32_t)sp;
+	}
+
+	if ((PSP < (uint32_t)((void *)&__stack_start)) || (PSP > (uint32_t)((void *)&__stack_end)))
+	{
+		IT_Source = 6;
 	}
 
 	PANIC_Display();
 }
 
+/**
+ * @brief  This function gather information and compose mainingfull message for user,
+ * eventually displaying a popup window.
+ * @retval None
+ */
 void PANIC_Display(void) {
-	char *title;
 
-	title ="";
+	char* title;
+	title = panic_abort_signal;
+	char message[150];
+
 	switch (IT_Source)
 	{
 	case 0:
-		title ="NMI Error";
+		lv_snprintf(message, sizeof(message),"%s\n\nNMI fault raised\n\nFault address : 0x%08X\nStack address : 0x%08X",title,PC, PSP);
 		break;
 	case 1:
-		title ="Hard Fault";
+		lv_snprintf(message, sizeof(message),"%s\n\nHard fault raised\n\nFault address : 0x%08X\nStack address : 0x%08X",title,PC, PSP);
 		break;
 	case 2:
-		title ="Memory Fault";
+		lv_snprintf(message, sizeof(message),"%s\n\nMemory fault raised\n\nFault address : 0x%08X\nStack address : 0x%08X",title,PC, PSP);
 		break;
 	case 3:
-		title ="Bus Fault";
+		lv_snprintf(message, sizeof(message),"%s\n\nBus fault raised\n\nFault address : 0x%08X\nStack address : 0x%08X",title,PC, PSP);
 		break;
 	case 4:
-		title ="Usage Fault";
+		lv_snprintf(message, sizeof(message),"%s\n\nUsage fault raised\n\nFault address : 0x%08X\nStack address : 0x%08X",title,PC, PSP);
 		break;
 	case 5:
-		title ="Stack Error";
+		lv_snprintf(message, sizeof(message),"%s\n\nStack error raised\n\nFault address : 0x%08X\nStack address : 0x%08X",title,PC, PSP);
+		break;
+	case 6:
+		title = panic_storage_error;
+
+		if (SCB->CFSR & (1<<15)) // bit BFAR_VALID =1; l'adresse de la faute est dans BFAR
+			lv_snprintf(message, sizeof(message),"%s\n\nStack memory exhausted,\nprobably due to recursive function\n\nFault address : 0x%08X\nStack address : 0x%08X",title,SCB->BFAR, PSP);
+		else /* aucune adresse valide */
+			lv_snprintf(message, sizeof(message),"%s\n\nStack memory exhausted,\nprobably due to recursive function\n\nFault address : N/A\nStack address : 0x%08X",title, PSP);
 		break;
 	default:
-		title ="Unknown Error";
+		lv_snprintf(message, sizeof(message),"%s\n\nUndefined fault raised\n\nFault address : 0x%08X\nStack address : 0x%08X",title,PC, PSP);
 	}
 
-	static const char * btns[] ={"Reboot", ""};
-	static char buf[100];
+	static const char *btns[] ={"Reboot", ""};
 
-	lv_snprintf(buf, sizeof(buf), "%s\n%s\n\nFault address : 0x%08X", title,"An unrecoverable error occurred",PC);
-	UI_MESSAGEBOX_Create(buf, btns, msgbox_event_cb);
+	UI_MESSAGEBOX_Create(message, btns, msgbox_event_cb);
+
+	volatile uint32_t counter=0;
+	volatile uint32_t counter2=0;
+	while (1)
+	{
+		counter++;
+		counter2++;
+
+		if (counter>100000) {
+			lv_tick_inc(1);
+			counter=0;
+		}
+
+		if (counter2>500000) {
+			lv_task_handler();
+			counter2=0;
+		}
+	}
 }
 
+/**
+ * @brief  function for rebooting system, used by last_chance_handler.
+ * @retval None
+ */
+void Reboot_System (void)
+{
+  NVIC_SystemReset();
+}
+
+/**
+ * @brief  Handler for messagebox, reset system.
+ * @retval None
+ */
 LV_EVENT_CB_DECLARE(msgbox_event_cb)
 {
 	NVIC_SystemReset();

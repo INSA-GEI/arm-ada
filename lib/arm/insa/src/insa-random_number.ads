@@ -5,7 +5,7 @@
 package Insa.Random_Number is
    pragma Warnings (Off);
 
-   subtype RANDOM_VALUE is INTEGER range 0 .. 65535;
+   type RANDOM_VALUE is new Interfaces.Unsigned_32;
    
    -- GetValue
    -- return a random number from 0 to 65535

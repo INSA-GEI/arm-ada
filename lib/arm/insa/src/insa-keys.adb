@@ -11,7 +11,7 @@ package body Insa.Keys is
       
       -- Wrapper to corresponding OS function
       function Wrapper_GetKeyState (key: KEY_ID) return KEY_STATE;
-      pragma Import (C, Wrapper_GetKeyState, "KEYS_GetState");
+      pragma Import (C, Wrapper_GetKeyState, "BSP_PB_GetState");
       
    begin
       return Wrapper_GetKeyState(Key);
@@ -22,28 +22,16 @@ package body Insa.Keys is
    function GetAllKeys return KEY_LIST is
       Keys: KEY_LIST;
    begin
-      Keys.A:=GetKeyState(KEY_A);
-      Keys.B:=GetKeyState(KEY_B);
-      Keys.Center:=GetKeyState(KEY_CENTER);
-      Keys.Up:=GetKeyState(KEY_UP);
-      Keys.Down:=GetKeyState(KEY_DOWN);
-      Keys.Left:=GetKeyState(KEY_LEFT);
-      Keys.Right:=GetKeyState(KEY_RIGHT);
+      Keys.A:=GetKeyState(Key_A);
+      Keys.B:=GetKeyState(Key_B);
+      Keys.A:=GetKeyState(Key_X);
+      Keys.B:=GetKeyState(Key_Y);
+      Keys.Up:=GetKeyState(Key_Up);
+      Keys.Down:=GetKeyState(Key_Down);
+      Keys.Left:=GetKeyState(Key_Left);
+      Keys.Right:=GetKeyState(Key_Right);
       
       return Keys;
    end GetAllKeys;
-   
-   -- GetPotentiometerValue
-   -- Return the current value (range 0 to 255) of a given potentiometer (Potentiometer_Left or Potentiometer_Right)
-   -- Incorrect potentiometer id will raise CONSTRAINT_ERROR  
-   function GetPotentiometerValue(pot: POTENTIOMETER_ID) return POTENTIOMETER_VALUE is
-      
-      -- Wrapper to corresponding OS function
-      function Wrapper_GetPotentiometerValue(pot: POTENTIOMETER_ID) return POTENTIOMETER_VALUE;
-      pragma Import (C, Wrapper_GetPotentiometerValue, "POT_GetValue");
-      
-   begin
-      return Wrapper_GetPotentiometerValue(Pot);
-   end GetPotentiometerValue;
    
 end Insa.Keys;

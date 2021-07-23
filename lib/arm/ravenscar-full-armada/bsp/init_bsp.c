@@ -377,13 +377,10 @@ void init_bsp(void)
 	lv_task_handler();
     HAL_Delay(200);
   
-  
-    SYSTEM_ShowSystemVersion(BL_MAJOR_VERSION, BL_MINOR_VERSION);
-
-	/*if (*rebootFlag != 0xDEADBEEF) {
+	if (*rebootFlag != 0xDEADBEEF) {
 		*rebootFlag = 0xDEADBEEF;
 		SYSTEM_ShowSystemVersion(BL_MAJOR_VERSION, BL_MINOR_VERSION);
-	}*/
+	}
 
 	if (BSP_PB_GetState(BUTTON_X) && BSP_PB_GetState(BUTTON_Y)) {
 		//Enter Test mode
