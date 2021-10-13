@@ -1,0 +1,13 @@
+# Header
+Name: Generic project
+Category: TPs ADA 2IMACS
+Project: @_project_name_@.gpr
+
+# Variables
+Project_Name: Generic_Prj: Nom du projet.
+Main_Name: generic_prj: Nom du fichier principal du projet. 
+
+# Description
+[Description]
+Projet generique sur base arm-ada.
+

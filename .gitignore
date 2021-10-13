@@ -86,11 +86,17 @@ TP/TP2/obj/
 TP/TP3.1/obj/
 TP/TP3.2/obj/
 TP/TP4.1/obj/
-
 TP/TP4.2/obj/
+TP/Tests_runtime/obj
+lib/arm/insa/obj/
 exemples/declaration/obj/
 exemples/exceptions/obj/
 exemples/template/obj/
+
+obj/
+donotuse/
+lib/arm/ravenscar-full-armada/ld/common-ROM.ld.new
+lib/arm/ravenscar-full-armada/ld/common-ROM.ld.org
 
 # Misc
 *.db

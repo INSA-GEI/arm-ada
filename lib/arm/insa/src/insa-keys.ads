@@ -41,5 +41,9 @@ package Insa.Keys is
    -- GetAllKeys
    -- Return all keys state in a single structure
    function GetAllKeys return KEY_LIST;
+   
+   -- WaitForKey
+   -- Wait until key given in parameter has been pressed then release
+   procedure WaitForKey(key: KEY_ID);
 
 end Insa.Keys;

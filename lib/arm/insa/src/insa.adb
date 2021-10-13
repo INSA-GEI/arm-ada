@@ -28,7 +28,7 @@ package body Insa is
    -- Wait during 'Time' millisecondes
    procedure SysDelay(Time: Positive) is
       procedure Wrapper_SysDelay(Time: Positive);
-      pragma Import (C, Wrapper_SysDelay, "C_Delay");
+      pragma Import (C, Wrapper_SysDelay, "HAL_Delay");
    begin
       Wrapper_SysDelay(Time);
    end SysDelay;

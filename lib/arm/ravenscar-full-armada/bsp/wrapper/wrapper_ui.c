@@ -8,6 +8,8 @@
 #include <wrapper_ui.h>
 #include "lvgl/lvgl.h"
 
+#include <stdlib.h>
+
 void UI_ClearScreen(void) {
 	lv_obj_clean(lv_scr_act());
 }
@@ -23,6 +25,10 @@ void UI_AlignObject(lv_obj_t *obj, lv_obj_t *parent, int off_x, int off_y, lv_al
 void UI_ResizeObject(lv_obj_t *obj, int width, int height) {
 	if (width !=-1) lv_obj_set_width(obj, width);
 	if (height != -1) lv_obj_set_height(obj, height);
+}
+
+lv_obj_t* UI_GetScreenId(void) {
+	return lv_scr_act();
 }
 
 lv_obj_t* UI_LABEL_Create(int off_x, int off_y, int length, lv_align_t alignment) {
@@ -49,7 +55,7 @@ lv_obj_t* UI_SLIDER_Create(int off_x, int off_y, int length, lv_align_t alignmen
 lv_obj_t* UI_SLIDER_AddLabel(lv_obj_t* slider, int off_x, int off_y, int length, lv_align_t alignment) {
 	lv_obj_t *obj = lv_label_create(lv_scr_act(),NULL);
 	lv_obj_set_width(obj, length);
-	lv_obj_align(obj, slider, alignment, 0, 10);
+	lv_obj_align(obj, slider, alignment, off_x, off_y);
 
 	return obj;
 }
@@ -119,4 +125,13 @@ lv_obj_t* UI_IMAGE_Create(int off_x, int off_y, lv_align_t alignment) {
 
 void UI_IMAGE_SetImage(lv_obj_t* img, const void *src_img) {
 	lv_img_set_src(img, src_img);
+}
+
+lv_style_t *UI_GetEmptyStyle() {
+	lv_style_t *tmp;
+
+	tmp = (lv_style_t*)malloc(sizeof(lv_style_t));
+	lv_style_init(tmp);
+	
+	return tmp;
 }

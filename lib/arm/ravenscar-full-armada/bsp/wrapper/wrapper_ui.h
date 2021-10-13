@@ -11,6 +11,7 @@
 #include "lvgl/lvgl.h"
 
 void UI_ClearScreen(void);
+lv_obj_t* UI_GetScreenId(void);
 void UI_RemoveObject(lv_obj_t *obj);
 void UI_AlignObject(lv_obj_t *obj, lv_obj_t *parent, int off_x, int off_y, lv_align_t alignment);
 void UI_ResizeObject(lv_obj_t *obj, int width, int height);
