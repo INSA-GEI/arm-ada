@@ -90,10 +90,10 @@ package body Insa.Graphics is
    -- Remove a widget and free its allocation and all of its child
    -- Widget access is set to null
    procedure DestroyWidget (Widget: in out Pwidget) is
-      procedure Wrp_Lv_Obj_Clean(Widget: PWidget);
-      pragma Import (C, Wrp_Lv_Obj_Clean, "lv_obj_clean");
+      procedure Wrp_Lv_Obj_Del(Widget: PWidget);
+      pragma Import (C, Wrp_Lv_Obj_Del, "lv_obj_del");
    begin
-      Wrp_Lv_Obj_Clean(Widget);
+      Wrp_Lv_Obj_Del(Widget);
       
       Widget := null;
    end DestroyWidget;
@@ -101,9 +101,11 @@ package body Insa.Graphics is
    -- ClearScreen
    -- Empty screen, remove all widgets
    procedure ClearScreen is
+      procedure Wrp_Lv_Obj_Clean(Widget: PWidget);
+      pragma Import (C, Wrp_Lv_Obj_Clean, "lv_obj_clean");
       Main_Screen: PWidget := GetScreenId;
    begin
-      DestroyWidget(Main_Screen);
+      Wrp_Lv_Obj_Clean(Main_Screen);
    end ClearScreen;
    
    -- GetScreenId
@@ -120,6 +122,24 @@ package body Insa.Graphics is
    
    procedure Wrp_lv_msgbox_start_auto_close(Mbx: PWidget; Tempo: WORD);
    pragma Import (C, Wrp_lv_msgbox_start_auto_close, "lv_msgbox_start_auto_close");
+   
+----------------------------------------------------
+   -- Generic container (modal window)
+   ----------------------------------------------------
+   function CreateModalWindow(Width: Integer; Height: Integer) return Pwidget is
+      procedure Wrp_lv_obj_set_pos(obj: PWidget; X: Integer; Y: Integer);
+      pragma Import (C, Wrp_lv_obj_set_pos, "lv_obj_set_pos");
+      
+      Window: Pwidget;
+   begin
+      Window:= Wrp_Lv_Obj_Create(GetScreenId, null);
+      
+      SetWidgetSize(Window, Width, Height);
+      --SetWidgetPosition(Window,-Width/2,-Height/2);
+      Wrp_Lv_Obj_Set_Pos(Window, (SCREEN_WIDTH-Width)/2, (SCREEN_HEIGHT-Height)/2);
+      
+      return Window;
+   end CreateModalWindow;
    
    -----------------------------------------------------
    -- Messagebox
@@ -223,15 +243,22 @@ package body Insa.Graphics is
    
    -- CreateLabel
    -- Create a label widget for writing text, and move it to given position
-   function CreateLabel (X: Integer; Y: Integer) return PWidget is
+   function CreateLabel (Parent: not null Pwidget; X: Integer; Y: Integer) return PWidget is
       Tmp: PWidget;
    begin
-      Tmp := Wrp_lv_label_create(GetScreenId,null);
+      Tmp := Wrp_lv_label_create(Parent,null);
       SetWidgetPosition(Tmp,X,Y);
       
       return Tmp;
    end CreateLabel;
    
+   -- CreateLabel
+   -- Create a label widget for writting text, and move it to given position
+   function CreateLabel (X: Integer; Y: Integer) return PWidget is
+   begin
+      return CreateLabel (GetScreenId, X, Y);
+   end CreateLabel;
+      
    -- SetLabelText
    -- Change label text
    procedure SetLabelText (Label: PWidget; Text: String) is
@@ -251,12 +278,12 @@ package body Insa.Graphics is
    
    -- CreateSlider
    -- Create a slider widget for selecting values
-   function CreateSlider (X: Integer; Y: Integer; Length: Integer) return PWidget is
+   function CreateSlider (Parent: not null Pwidget; X: Integer; Y: Integer; Length: Integer:=0) return PWidget is
       function Wrp_lv_slider_create(Parent: PWidget; Copy: PWidget) return PWidget;
       pragma Import (C, Wrp_lv_slider_create, "lv_slider_create");
       Tmp: PWidget;
    begin
-      Tmp:= Wrp_lv_slider_create(GetScreenId,null);
+      Tmp:= Wrp_lv_slider_create(Parent,null);
       if Length>0 then 
          SetWidgetWidth(Tmp,Length);
       end if;
@@ -266,9 +293,16 @@ package body Insa.Graphics is
       return Tmp;
    end CreateSlider;
    
+   -- CreateSlider
+   -- Create a slider widget for selecting values
+   function CreateSlider (X: Integer; Y: Integer; Length: Integer:=0) return PWidget is
+   begin
+      return CreateSlider(GetScreenId, X, Y, Length);
+   end CreateSlider;
+      
    -- AddLabelToSlider
    -- Add a label under a slider
-   function AddLabelToSlider (Slider: PWidget; X: Integer; Y: Integer; Length: Integer) return PWidget is
+   function AddLabelToSlider (Slider: PWidget; X: Integer; Y: Integer; Length: Integer:=0) return PWidget is
       Tmp: PWidget;
    begin
       Tmp:=Wrp_Lv_Label_Create(GetScreenId, null);
@@ -297,12 +331,12 @@ package body Insa.Graphics is
    
    -- CreateButton
    -- Create a button widget
-   function CreateButton (X: Integer; Y: Integer; Length: Integer) return PWidget is
+   function CreateButton (Parent: not null Pwidget; X: Integer; Y: Integer; Length: Integer:=0) return PWidget is
       function Wrp_lv_btn_create(Parent: PWidget; Copy: PWidget) return PWidget;
       pragma Import (C, Wrp_lv_btn_create, "lv_btn_create");
       Tmp: PWidget;
    begin
-      Tmp := Wrp_lv_btn_create(GetScreenId, null);
+      Tmp := Wrp_lv_btn_create(Parent, null);
       if Length>0 then 
          SetWidgetWidth(Tmp,Length);
       end if;
@@ -312,6 +346,13 @@ package body Insa.Graphics is
       return Tmp;
    end CreateButton;
    
+   -- CreateButton
+   -- Create a button widget
+   function CreateButton (X: Integer; Y: Integer; Length: Integer:=0) return PWidget is
+   begin
+      return CreateButton(GetScreenId, X, Y, Length);
+   end CreateButton;
+      
    -- AddLabelToButton
    -- Add a label in a button
    function AddLabelToButton (Button: PWidget) return PWidget is
@@ -335,7 +376,7 @@ package body Insa.Graphics is
       end if;
    end GetButtonState;
    
-      -- WaitforButton
+   -- WaitforButton
    -- Wait until given button was pressed THEN released (to avoid multiple keypress)
    procedure WaitForButton (Button: PWidget) is
    begin
@@ -354,12 +395,12 @@ package body Insa.Graphics is
    
    -- CreateProgressbar
    -- Create a progress bar widget
-   function CreateProgressbar (X: Integer; Y: Integer; Length: Integer) return PWidget is
+   function CreateProgressbar (Parent: not null Pwidget; X: Integer; Y: Integer; Length: Integer:=0) return PWidget is
       function Wrp_lv_bar_create(Parent: PWidget; Copy: PWidget) return PWidget;
       pragma Import (C, Wrp_lv_bar_create, "lv_bar_create");
       Tmp: PWidget;
    begin
-      Tmp := Wrp_Lv_Bar_Create(GetScreenId, null);
+      Tmp := Wrp_Lv_Bar_Create(Parent, null);
       if Length>0 then 
          SetWidgetWidth(Tmp,Length);
       end if;
@@ -369,9 +410,16 @@ package body Insa.Graphics is
       return Tmp;
    end CreateProgressbar;
    
+   -- CreateProgressbar
+   -- Create a progress bar widget
+   function CreateProgressbar (X: Integer; Y: Integer; Length: Integer:=0) return PWidget is
+   begin
+      return CreateProgressbar(GetScreenId, X, Y, Length);
+   end CreateProgressbar;
+   
    -- AddLabelToProgressbar
    -- Add a label under a progressbar
-   function AddLabelToProgressbar (Progressbar: PWidget; X: Integer; Y: Integer; Length: Integer) return PWidget is
+   function AddLabelToProgressbar (Progressbar: PWidget; X: Integer; Y: Integer; Length: Integer:=0) return PWidget is
      Tmp: PWidget;
    begin
       Tmp:=Wrp_Lv_Label_Create(GetScreenId, null);

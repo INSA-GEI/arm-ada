@@ -76,52 +76,16 @@ package Insa.Graphics.Images is
    type PImg_Dsc_T is access constant Img_Dsc_T;
    
    -- CreateImage
-   -- Create a new image widget
-   function CreateImage (X: PIXEL_Y; Y: PIXEL_Y; Alignement: Integer) return PWidget;
+   -- Create a new image widget into a parent widget
+   function CreateImage (Parent: not null Pwidget; X: Integer; Y: Integer; Length: Integer:=0) return PWidget;
+   
+   -- CreateImage
+   -- Create a new image widget on main screen
+   function CreateImage (X: Integer; Y: Integer; Length: Integer:=0) return PWidget;
      
    -- DrawImage
    -- Draw an image in an already created widget
    procedure DrawImage(Widget: not null PWidget; Image: not null PImg_Dsc_T);
    pragma Import (C, DrawImage, "lv_img_set_src");
-
-   --  type BITMAP is array(NATURAL range <>) of COLOR;
-   --  type BITMAP_ACCESS is access all BITMAP;
-   --  type IMAGE is
-   --     record
-   --        Width: NATURAL := 0;
-   --        Height: NATURAL := 0;
-   --        Data : BITMAP_ACCESS;
-   --     end record;
-   --  
-   --  type PACK_BITMAP_ELEMENT is
-   --     record
-   --        Pixel : COLOR;
-   --        Length : BYTE;
-   --     end record;
-   --  
-   --  type PACK_BITMAP is array(NATURAL range <>) of PACK_BITMAP_ELEMENT;
-   --  type PACK_BITMAP_ACCESS is access constant PACK_BITMAP;
-   --  type PACK_IMAGE is
-   --     record
-   --        Width: NATURAL := 0;
-   --        Height: NATURAL := 0;
-   --        Data : PACK_BITMAP_ACCESS;
-   --     end record;
-   --  
-   --  -- NewImage
-   --  -- Create a new, empty image with a given width and height
-   --  function NewImage(W: NATURAL; H: NATURAL) return IMAGE;
-   --  
-   --  -- FreeImage
-   --  -- Destroy an image and free memory used
-   --  procedure FreeImage (Img: in out IMAGE);
-  
-   -- DrawImage
-   -- Draw an image at position (x,y) on screen
-   --  procedure DrawImage(Widget: PWidget; Image: IMAGE);
-   
-   --  -- UnpackImage
-   --  -- Unpack a compressed image to an usable image
-   --  function UnpackImage(Pack_Img: PACK_IMAGE) return IMAGE;
 
 end Insa.Graphics.Images;

@@ -344,7 +344,16 @@ LoopFillZerobss:
         
         /* Call the application's entry point.*/
         bl   main
-        bx   lr
+        /*bx   lr*/
+
+        /* 
+         * TODO
+         * Should call some kind of system function
+         * to tell user program has ended 
+         */
+
+        b    .  /* Halt system here */
+        
         .size  Reset_Handler, .-Reset_Handler
 
 /**

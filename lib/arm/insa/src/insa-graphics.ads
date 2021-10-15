@@ -143,6 +143,12 @@ package Insa.Graphics is
    -- GetScreenId
    -- Get reference ID of Screen (for alignement)
    function GetScreenId return PWidget;
+   
+   ----------------------------------------------------
+   -- Generic container (modal window)
+   ----------------------------------------------------
+   function CreateModalWindow(Width: Integer; Height: Integer) return Pwidget;
+   
    -----------------------------------------------------
    -- Messagebox
    ----------------------------------------------------
@@ -159,6 +165,10 @@ package Insa.Graphics is
    -- Create a label widget for writting text, and move it to given position
    function CreateLabel (X: Integer; Y: Integer) return PWidget;
    
+   -- CreateLabel
+   -- Create a label widget into a parent widget, for writting text, and move it to given position
+   function CreateLabel (Parent: not null Pwidget; X: Integer; Y: Integer) return PWidget;
+   
    -- SetLabelText
    -- Change label text
    procedure SetLabelText (Label: PWidget; Text: String);
@@ -169,11 +179,15 @@ package Insa.Graphics is
    
    -- CreateSlider
    -- Create a slider widget for selecting values
-   function CreateSlider (X: Integer; Y: Integer; Length: Integer) return PWidget;
+   function CreateSlider (Parent: not null Pwidget; X: Integer; Y: Integer; Length: Integer:=0) return PWidget;
+   
+   -- CreateSlider
+   -- Create a slider widget for selecting values
+   function CreateSlider (X: Integer; Y: Integer; Length: Integer:=0) return PWidget;
    
    -- AddLabelToSlider
    -- Add a label under a slider
-   function AddLabelToSlider (Slider: PWidget; X: Integer; Y: Integer; Length: Integer) return PWidget;
+   function AddLabelToSlider (Slider: PWidget; X: Integer; Y: Integer; Length: Integer:=0) return PWidget;
    
    -- GetSliderValue
    -- Get current slider value
@@ -185,7 +199,11 @@ package Insa.Graphics is
    
    -- CreateButton
    -- Create a button widget
-   function CreateButton (X: Integer; Y: Integer; Length: Integer) return PWidget;
+   function CreateButton (Parent: not null Pwidget; X: Integer; Y: Integer; Length: Integer:=0) return PWidget;
+   
+   -- CreateButton
+   -- Create a button widget
+   function CreateButton (X: Integer; Y: Integer; Length: Integer:=0) return PWidget;
    
    -- AddLabelToButton
    -- Add a label in a button
@@ -205,11 +223,15 @@ package Insa.Graphics is
    
    -- CreateProgressbar
    -- Create a progress bar widget
-   function CreateProgressbar (X: Integer; Y: Integer; Length: Integer) return PWidget;
+   function CreateProgressbar (Parent: not null Pwidget; X: Integer; Y: Integer; Length: Integer:=0) return PWidget;
+   
+   -- CreateProgressbar
+   -- Create a progress bar widget
+   function CreateProgressbar (X: Integer; Y: Integer; Length: Integer:=0) return PWidget;
    
    -- AddLabelToProgressbar
    -- Add a label under a progressbar
-   function AddLabelToProgressbar (Progressbar: PWidget; X: Integer; Y: Integer; Length: Integer) return PWidget;
+   function AddLabelToProgressbar (Progressbar: PWidget; X: Integer; Y: Integer; Length: Integer:=0) return PWidget;
    
    -- SetProgressbarValue
    -- Set current progressbar value state
