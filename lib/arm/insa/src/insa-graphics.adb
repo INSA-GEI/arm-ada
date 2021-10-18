@@ -317,12 +317,12 @@ package body Insa.Graphics is
    
    -- GetSliderValue
    -- Get current slider value
-   function GetSliderValue (Slider: PWidget) return Interfaces.C.short is
+   function GetSliderValue (Slider: PWidget) return Natural is
       --  function Wrp_UI_SLIDER_GetValue(Slider: PWidget) return Integer_16;
       function Wrp_UI_SLIDER_GetValue(Slider: PWidget) return Interfaces.C.short;
       pragma Import (C, Wrp_UI_SLIDER_GetValue, "UI_SLIDER_GetValue");
    begin
-      return Wrp_UI_SLIDER_GetValue(Slider);
+      return Natural(Wrp_UI_SLIDER_GetValue(Slider));
    end GetSliderValue;
    
    -----------------------------------------------------

@@ -49,7 +49,7 @@ procedure Mission_Pacman is
       Mettreazerotimer ;
    end GererFinPartie ;
 
-   procedure GererContactMur (P : in out T_Pacman ; L : in out T_Lab ) is
+   procedure GererContactMur (P : in out T_Pacman ; L : in T_Lab ) is
    begin
       P.NbreVies := P.NbreVies -1 ;
       if P.NbreVies > 0 then

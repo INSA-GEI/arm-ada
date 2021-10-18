@@ -5,6 +5,8 @@
 with System;
 with Insa.Graphics;
 
+with Interfaces.C;
+
 package Insa.Graphics.Images is
    pragma Warnings (Off);
    

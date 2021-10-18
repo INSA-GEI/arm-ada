@@ -10,9 +10,6 @@
 -- Cet acteur fourni les routines necessaires pour le TP sur Simon
 --
 
-with Insa.Audio.Synthesizer;
-use Insa.Audio.Synthesizer;
-
 with Ada.Characters.Latin_1;
 
 package Simon is
@@ -20,6 +17,10 @@ package Simon is
    -- ###############################
    -- GESTION SEQUENCE
    -- ###############################
+   -- Utiliser newline pour faire un retour à la ligne (dans EcrireInfos)
+   --
+   -- Exemple:
+   -- EcrireInfos("Ma premiere ligne" & NewLine & "Ma deuxieme ligne");
    Newline: constant Character := Ada.Characters.Latin_1.LF;
    
    type T_Direction is (Jaune, Bleu, Vert, Rouge, Immobile); 
@@ -32,9 +33,8 @@ package Simon is
    -- Efface tous les paves
    procedure EffaceTout;
    
-   -- Attend jusqu'a l'appui de la touche A
-   -- que l'utilisateur saisisse la taille du vecteur
-   -- a l'aide de la valeur du potentiometre de droite
+   -- Affiche une fenetre pour que l'utilisateur saisisse 
+   -- la taille du vecteur
    function SaisirLongueurSequence return Integer;  
       
    -- Genere une sequence aleatoire de la taille de S'Length
@@ -60,51 +60,18 @@ package Simon is
    -- attend un appui sur la touche A
    procedure AttendreToucheA ;
    
-   -- Efface un ecran 
-   --  procedure EffacerEcran ;
-   --  
-   --  -- Ecrit la chaine S
-   --  -- avec le 1er caractere a la colonne C et ligne L
-   --  -- C appartient a [0..39] et L appartient a [0..14]
-   --  procedure EcrireEcran (C : in Integer; L : in Integer; S : in String) ;
-   --  
-   --  -- Efface la ligne L de l'ecran
-   --  procedure EffacerLigne (L : in Integer) ;
+   -- Ecrit la chaine S dans le champ "Information"
+   -- Pensez à inserer des newline pour eviter que les chaines soient trop longues
+   procedure EcrireInfos(S: String);
    
-
-   -- Affiche l'image du simon a l'écran
-   procedure AfficherSimon;
+   -- Ecrit la valeur V dans le champ "longueur sequence"
+   procedure EcrireLongueurSequence(V: Integer);
 
    -- Affiche l'ecran "perdu"
    procedure AfficherGameOver;
 
    -- Affiche l'ecran "gagné"
    procedure AfficherGagne;
-
-   -- effacement de l'ecran à la fin du jeu
-   procedure EffaceEcranFinDuJeu;
-
-   --  Sinus : aliased constant SYNTH_WAVE :=
-   --    (
-   --     128, 142, 156, 171, 184, 197, 209, 219, 229, 237, 244, 249, 253,
-   --     255, 255, 254, 251, 247, 241, 233, 224, 214, 203, 190, 177, 164,
-   --     149, 135, 121, 107, 92, 79, 66, 53, 42, 32, 23, 15, 9, 5, 2, 1,
-   --     1, 3, 7, 12, 19, 27, 37, 47, 59, 72, 85, 100, 114
-   --    );
-   --  
-   --  Sinus_Access : SYNTH_WAVE_ACCESS := Sinus'Access;
-   --  
-   --  Sinus_Instr: aliased constant SYNTH_INSTRUMENT := (
-   --                                                     0,
-   --                                                     NATURAL(0.4/TickAudio),
-   --                                                     TickAudio/0.01,
-   --                                                     TickAudio/0.005,
-   --                                                     0.5,
-   --                                                     TickAudio/0.1,
-   --                                                     Sinus_Access
-   --                                                    );
-   --  
-   --  Sinus_Instr_Access : SYNTH_INSTRUMENT_ACCESS := Sinus_Instr'Access;
    
 end Simon ;
 

@@ -74,6 +74,7 @@ Project Logs for*/
 # kicad
 *.bak
 *.kicad_pcb-bak
+*.sch-bak
 
 # temporary
 firmware/obj/
@@ -119,4 +120,8 @@ __pycache__/
 *.tiff
 *.gif
 *.ico
+*.xcf
+*.old
+
+sprites/
 

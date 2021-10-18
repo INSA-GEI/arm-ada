@@ -15,6 +15,8 @@ package Insa.Audio is
    type AUDIO_BUFFER is array(1..512) of BUFFER_ELEMENT;
 
    type AUDIO_CALLBACK is access procedure (Buffer_Nbr: BUFFER_NUMBER);
+
+   AUDIO_EXCEPTION: exception;
    
    -- StartAudio
    -- Lauch audio processing, which will call Event_Callback every half-audio buffer processed

@@ -16,9 +16,7 @@ package Insa.Audio.Synthesizer is
    type SYNTH_WAVE is array(NATURAL range <>) of SYNTH_WAVE_ELEMENT;
    type SYNTH_WAVE_ACCESS is access constant SYNTH_WAVE;
    subtype SYNTH_NOTE is BYTE;
-   subtype SYNTH_STATUS is BYTE;
-   subtype MELODY_STATUS is BYTE;
-
+   
    type SYNTH_INSTRUMENT is
       record
          Hold_Time:          NATURAL;
@@ -199,24 +197,20 @@ package Insa.Audio.Synthesizer is
 
    MUTE            : constant SYNTH_NOTE := 255;
 
-   MELODY_SUCCESS  : constant MELODY_STATUS := 0;
-   MELODY_ERROR    : constant MELODY_STATUS := 1;
+   SYNTH_ERROR: exception;
+   MELODY_ERROR: exception;
 
-   SYNTH_SUCCESS   : constant SYNTH_STATUS := 0;
-   SYNTH_ERROR     : constant SYNTH_STATUS := 1;
-   SYNTH_INVALID_CHANNEL   : constant SYNTH_STATUS := 2;
-
-   function SYNTH_Start return SYNTH_STATUS;
-   function SYNTH_Stop return SYNTH_STATUS;
+   procedure SYNTH_Start;
+   procedure SYNTH_Stop;
    
-   function SYNTH_SetMainVolume(Volume: INTEGER) return SYNTH_Status;
-   function SYNTH_SetVolume(Channel: INTEGER; Volume: INTEGER) return SYNTH_Status;
-   function SYNTH_SetInstrument(Channel: INTEGER; Instrument : SYNTH_INSTRUMENT_ACCESS) return SYNTH_Status;
-   function SYNTH_NoteOn(Channel: INTEGER; Note: SYNTH_NOTE) return SYNTH_STATUS;
-   function SYNTH_NoteOff(Channel: INTEGER) return SYNTH_Status;
+   procedure SYNTH_SetMainVolume(Volume: INTEGER);
+   procedure SYNTH_SetVolume(Channel: INTEGER; Volume: INTEGER);
+   procedure SYNTH_SetInstrument(Channel: INTEGER; Instrument : SYNTH_INSTRUMENT_ACCESS);
+   procedure SYNTH_NoteOn(Channel: INTEGER; Note: SYNTH_NOTE);
+   procedure SYNTH_NoteOff(Channel: INTEGER);
 
-   function MELODY_Start(Music: MELODY_NOTES; Length: NATURAL) return MELODY_Status;
-   function MELODY_Stop return MELODY_Status;
+   procedure MELODY_Start(Music: MELODY_NOTES; Length: NATURAL);
+   procedure MELODY_Stop;
    function MELODY_GetPosition return BYTE;
 
 end Insa.Audio.Synthesizer;

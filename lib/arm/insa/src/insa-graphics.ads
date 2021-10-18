@@ -5,7 +5,6 @@
 -- pragma Ada_95;
 -- with System;
 with Interfaces;
-with Interfaces.C;
 
 use Interfaces;
 
@@ -191,7 +190,7 @@ package Insa.Graphics is
    
    -- GetSliderValue
    -- Get current slider value
-   function GetSliderValue (Slider: PWidget) return Interfaces.C.Short;
+   function GetSliderValue (Slider: PWidget) return Natural;
    
    -----------------------------------------------------
    -- Button
