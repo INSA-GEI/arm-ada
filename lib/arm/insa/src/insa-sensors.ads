@@ -5,7 +5,12 @@
 package Insa.Sensors is
    pragma Warnings (Off);
    
-   type SENSOR_VALUES is array(1 .. 3) of Float;
+   -- type SENSOR_VALUES is array(1 .. 3) of Float;
+   type SENSOR_VALUES is record
+      X: Float;
+      Y: Float;
+      Z: Float;
+   end record;
    
    -- GetGyroscopicValues
    -- return an array of 3 float values (axis X, Y and Z) corresponding to gyroscopic sensor 

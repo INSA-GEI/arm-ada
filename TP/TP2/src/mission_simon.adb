@@ -9,6 +9,8 @@
 with Simon ;
 use Simon ;
 
+with Toto;
+
 procedure Mission_Simon is
    LongueurSequence : Integer ;
    PositionSeqGlobale : Integer ;
@@ -21,6 +23,7 @@ procedure Mission_Simon is
 begin
    loop
       LongueurSequence := SaisirLongueurSequence ;
+      Toto.Truc;
 
       declare
          MaSeq : T_Sequence (1..LongueurSequence);

@@ -1,0 +1,18 @@
+# Header
+Name: TP4.1
+Category: TPs ADA 2IMACS
+Project: @_project_name_@.gpr
+
+# Variables
+Project_Name: TP4.1_Capteurs: Nom du projet.
+Main_Name: mission_capteurs: Nom du fichier principal du projet. 
+
+# Description
+[Description]
+Réalisation d'un systeme d'acquisition de mouvement.
+---------
+Mesurez et enregistrez les mouvements de la console
+---------
+Ce TP permet de mettre en application les listes chainées,
+l'ajout en fin de liste et la recherche recursive 
+d'element dans une liste chainée.

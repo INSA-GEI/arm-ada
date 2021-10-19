@@ -4,9 +4,6 @@
 
 package body Insa.Sensors is
    
-   type WRAPPER_VALUES is array(0..2) of FLOAT;
-   type WRAPPER_ACCESS is access WRAPPER_VALUES;
-   
    -- GetGyroscopicValues
    -- return an array of 3 float values (axis X, Y and Z) corresponding to gyroscopic sensor 
    -- values are given in mdps (milli degree of rotation per seconde)
@@ -17,21 +14,21 @@ package body Insa.Sensors is
    
    function GetGyroscopicValues return SENSOR_VALUES is
    
-     function Wrapper_GetGyroscopicValues return WRAPPER_ACCESS;
+     procedure Wrapper_GetGyroscopicValues(Val: out SENSOR_VALUES);
      pragma Import (C, Wrapper_GetGyroscopicValues, "BSP_GYRO_ReadValues");
      
      Values: SENSOR_VALUES;
-     Wrapper_Values: WRAPPER_ACCESS;
-     
+     --  Wrapper_Values: WRAPPER_ACCESS;
    begin 
-      Wrapper_Values := Wrapper_GetGyroscopicValues;
+      --  Wrapper_Values := Wrapper_GetGyroscopicValues;
+      --  
+      --  pragma Warnings (Off);
+      --  Values.X := Wrapper_Values(0);
+      --  Values.Y := Wrapper_Values(1);
+      --  Values.Z := Wrapper_Values(2);
+      --  pragma Warnings (On);
       
-      pragma Warnings (Off);
-      Values(1) := Wrapper_Values(0);
-      Values(2) := Wrapper_Values(1);
-      Values(3) := Wrapper_Values(2);
-      pragma Warnings (On);
-      
+      Wrapper_GetGyroscopicValues(Values);
       return Values;
    end GetGyroscopicValues;
    
@@ -41,20 +38,21 @@ package body Insa.Sensors is
    -- values are givien in milligauss
    function GetMagneticValues return SENSOR_VALUES is
       
-     function Wrapper_GetMagneticValues return WRAPPER_ACCESS;
+     procedure Wrapper_GetMagneticValues(Val: out SENSOR_VALUES);
      pragma Import (C, Wrapper_GetMagneticValues, "BSP_MAG_ReadValues");
      
      Values: SENSOR_VALUES;
-     Wrapper_Values: WRAPPER_ACCESS;
+     -- Wrapper_Values: WRAPPER_ACCESS;
    begin
-      Wrapper_Values := Wrapper_GetMagneticValues;
+      --  Wrapper_Values := Wrapper_GetMagneticValues;
+      --  
+      --  pragma Warnings (Off);
+      --  Values.X := Wrapper_Values(0);
+      --  Values.Y := Wrapper_Values(1);
+      --  Values.Z := Wrapper_Values(2);
+      --  pragma Warnings (On);
       
-      pragma Warnings (Off);
-      Values(1) := Wrapper_Values(0);
-      Values(2) := Wrapper_Values(1);
-      Values(3) := Wrapper_Values(2);
-      pragma Warnings (On);
-      
+      Wrapper_GetMagneticValues(Values);
       return Values;
    end GetMagneticValues;
    
@@ -64,20 +62,21 @@ package body Insa.Sensors is
    -- values are given in milliG (G, acceleration of earth attraction, 0,98 m/s)
    function GetAccelerometerValues return SENSOR_VALUES is
       
-     function Wrapper_GetAccelerometerValues return WRAPPER_ACCESS;
+     procedure Wrapper_GetAccelerometerValues(Val: out SENSOR_VALUES);
      pragma Import (C, Wrapper_GetAccelerometerValues, "BSP_ACC_ReadValues");
      
      Values: SENSOR_VALUES;
-     Wrapper_Values: WRAPPER_ACCESS;
+     --Wrapper_Values: WRAPPER_ACCESS;
    begin
-      Wrapper_Values := Wrapper_GetAccelerometerValues;
+      --  Wrapper_Values := Wrapper_GetAccelerometerValues;
+      --  
+      --  pragma Warnings (Off);
+      --  Values.X := Wrapper_Values(0);
+      --  Values.Y := Wrapper_Values(1);
+      --  Values.Z := Wrapper_Values(2);
+      --  pragma Warnings (On);
       
-      pragma Warnings (Off);
-      Values(1) := Wrapper_Values(0);
-      Values(2) := Wrapper_Values(1);
-      Values(3) := Wrapper_Values(2);
-      pragma Warnings (On);
-      
+      Wrapper_GetAccelerometerValues(Values);
       return Values;
    end GetAccelerometerValues;
    

@@ -1,12 +1,15 @@
 ------------------------------------------------------------------------------
 --                                                                          --
---                             Mission Pacman                               --
+--                             Mission Simon                                --
 --                                                                          --
 --                                                                          --
 ------------------------------------------------------------------------------
 
+with Simon;
+use Simon;
+
 procedure @_Main_Name_@ is
-   -- pragma Priority (System.Priority'First);
+   
 begin
    loop
       null;

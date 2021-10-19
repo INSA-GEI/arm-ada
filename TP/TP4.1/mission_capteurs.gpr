@@ -1,11 +1,11 @@
 with "/mnt/commetud/2eme Annee IMACS/ADA/lib/arm/insa/insa.gpr";
 
-project @_project_name_@ is
+project mission_capteurs is
 
    for Languages use ("ada");
 
-   for Main use ("@_main_name_@.adb");
-   for Source_Dirs use ("src","/mnt/commetud/2eme Annee IMACS/ADA/lib/lib_TP/TP2");
+   for Main use ("mission_capteurs.adb");
+   for Source_Dirs use ("src","/mnt/commetud/2eme Annee IMACS/ADA/lib/lib_TP/TP4.1");
    for Object_Dir use "obj";
 
    package Compiler is
@@ -29,4 +29,4 @@ project @_project_name_@ is
    package Linker is
       for Switches ("ada") use ("-g", "-Wl,--gc-sections");
    end Linker;
-end @_project_name_@;
+end mission_capteurs;

@@ -5,7 +5,7 @@ project mission_simon is
    for Languages use ("ada");
 
    for Main use ("mission_simon.adb");
-   for Source_Dirs use ("src");
+   for Source_Dirs use ("src","/mnt/commetud/2eme Annee IMACS/ADA/lib/lib_TP/TP2");
    for Object_Dir use "obj";
 
    package Compiler is

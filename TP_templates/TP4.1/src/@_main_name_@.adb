@@ -1,12 +1,12 @@
 ------------------------------------------------------------------------------
 --                                                                          --
---                             Mission Pacman                               --
+--                             Mission Capteurs                             --
 --                                                                          --
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Ecran, Lab, Carte;
-use Ecran, Lab, Carte;
+with Sensors;
+use Sensors;
 
 procedure @_Main_Name_@ is
    
