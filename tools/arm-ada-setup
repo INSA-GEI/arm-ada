@@ -1,0 +1,53 @@
+#!/bin/bash
+
+echo "arm-ada-setup v5"
+echo "Mise a jour du path dans .bashrc"
+fichier=~/.bashrc
+
+if [ ! -f "$fichier" ]; then
+    touch "$fichier"
+else
+    cp "$fichier" "$fichier".bak
+fi
+
+var1=$(cat $fichier | grep "insa/GNAT")
+
+if [ "$var1" = "" ]; then
+    echo " " >> "$fichier"
+    echo "var1=\$(echo \$PATH | grep \"insa/GNAT\")"  >> "$fichier"
+    echo " " >> "$fichier"
+    echo "if [ \"\$var1\" = \"\" ]; then" >> "$fichier"
+    echo "   PATH=\$PATH:/usr/local/insa/GNAT/2020/arm-elf/bin/:/usr/local/insa/GNAT/2020/x86_64/bin:/usr/local/insa/STM32CubeProgrammer/bin/:/mnt/commetud/2eme\\ Annee\\ IMACS/ADA/bin/" >> "$fichier"
+    echo "fi" >> "$fichier"
+
+    echo "$fichier mis à jour"
+else
+    echo "$fichier déjà à jour"
+fi
+
+echo ""
+echo "Recopie de la configuration de gnatstudio dans ~/.gnatstudio"
+
+if [ ! -e ~/.gnatstudio/plug-ins ]; then
+    mkdir -p ~/.gnatstudio/plug-ins
+fi
+
+cp -rv /mnt/commetud/2eme\ Annee\ IMACS/ADA/tools/gnatstudio/plug-ins/* ~/.gnatstudio/plug-ins
+
+echo ""
+echo "Rajoute les racourcies des applications et les associations de fichier"
+
+if [ ! -e ~/.local/share/applications ]; then
+    mkdir -p ~/.local/share/applications
+fi
+
+cp -v /mnt/commetud/2eme\ Annee\ IMACS/ADA/tools/gnome/applications/* ~/.local/share/applications
+update-desktop-database ~/.local/share/applications
+
+echo ""
+echo "Fini"
+read -p "Press Enter to exit"
+
+
+
+

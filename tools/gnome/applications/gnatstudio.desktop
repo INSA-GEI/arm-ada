@@ -1,0 +1,14 @@
+[Desktop Entry]
+Name=GNAT Studio
+Comment=ADA development environment
+GenericName=IDE
+Exec=/usr/local/insa/GNAT/2020/x86_64/bin/gnatstudio
+Icon=/usr/local/insa/GNAT/2020/x86_64/share/gnatstudio/icons/hicolor/32x32/apps/gnatstudio_logo.png
+Type=Application
+StartupNotify=false
+Categories=TextEditor;Development;IDE;
+MimeType=text/ads;text/adb;
+Keywords=gnatstudio;gps;ada;
+
+X-Desktop-File-Install-Version=0.1
+
