@@ -444,6 +444,63 @@ package body Insa.Graphics is
    end SetProgressbarValue;
    
    ----------------------------------------------------
+   -- Chart
+   ----------------------------------------------------
+         
+   -- CreateChart
+   -- Create a chart widget in a parent widget
+   function CreateChart (Parent: not null Pwidget; X: Integer; Y: Integer) return PWidget is
+      function Wrp_Lv_Chart_Create(Parent: PWidget; Copy: PWidget) return PWidget;
+      pragma Import (C, Wrp_Lv_Chart_Create, "lv_chart_create");
+      Tmp: PWidget;
+   begin
+      Tmp := Wrp_Lv_Chart_Create(Parent, null);
+      SetWidgetPosition(Tmp,X,Y);
+      
+      return Tmp;
+   end CreateChart;
+   
+   -- CreateChart
+   -- Create a chart widget
+   function CreateChart (X: Integer; Y: Integer) return PWidget is 
+   begin
+      return CreateChart(GetScreenId, X, Y);
+   end CreateChart;
+   
+   -- SetXAxisLabel
+   -- Set the x-axis tick count and labels of a chart
+   procedure SetXAxisLabel(Chart: PWidget; List_Of_Values: String; Num_Tick_Marks: Byte; Options: Byte) is 
+      procedure Wrp_lv_chart_set_x_tick_texts(Label: PWidget; List_Of_Values: Interfaces.C.Strings.Chars_Ptr; Num_Tick_Marks: Byte; Options: Byte);
+      pragma Import (C, Wrp_lv_chart_set_x_tick_texts, "lv_chart_set_x_tick_texts");
+      Tmp_String: Interfaces.C.Strings.Chars_Ptr:=  Interfaces.C.Strings.New_String (List_Of_Values);
+   begin
+      Wrp_lv_chart_set_x_tick_texts(Chart, Tmp_String, Num_Tick_Marks, Options);
+      
+      Interfaces.C.Strings.Free (Tmp_String);
+   end SetXAxisLabel;
+   
+   -- SetYAxisLabel
+   -- Set the y-axis tick count and labels of a chart
+   procedure SetYAxisLabel(Chart: PWidget; List_Of_Values: String; Num_Tick_Marks: Byte; Options: Byte) is
+      procedure Wrp_lv_chart_set_y_tick_texts(Label: PWidget; Text: Interfaces.C.Strings.Chars_Ptr; Num_Tick_Marks: Byte; Options: Byte);
+      pragma Import (C, Wrp_lv_chart_set_y_tick_texts, "lv_chart_set_y_tick_texts");
+      Tmp_String: Interfaces.C.Strings.Chars_Ptr:=  Interfaces.C.Strings.New_String (List_Of_Values);
+   begin
+      Wrp_lv_chart_set_y_tick_texts(Chart, Tmp_String, Num_Tick_Marks, Options);
+      
+      Interfaces.C.Strings.Free (Tmp_String);
+   end SetYAxisLabel;
+   
+   -- AddDataToSeries
+   -- Shift all data right and set the most right data on a data line
+   procedure AddDataToSeries(Chart: not null PWidget; Series: not null PChart_Series; Data: Integer) is
+      procedure Wrp_lv_chart_set_next(Chart: not null PWidget; Series: not null PChart_Series; Data: Interfaces.C.short);
+      pragma Import (C, Wrp_lv_chart_set_next, "lv_chart_set_next");
+   begin
+      Wrp_Lv_Chart_Set_Next(Chart, Series, Interfaces.C.Short(Data));
+   end AddDataToSeries;
+   
+   ----------------------------------------------------
    -- Private part
    ----------------------------------------------------
    
@@ -472,5 +529,6 @@ package body Insa.Graphics is
          MessageBoxFlag:=True;
       end if;
    end MessageBox2Callback;
+   
    
 end Insa.Graphics;

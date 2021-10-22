@@ -7,6 +7,9 @@
 
 typedef void (*it_handler)(void);
 
+extern unsigned int IT_Source;
+void PANIC_Display(void);
+
 void __gnat_irq_trap(void) __attribute__ ((weak));
 void __gnat_irq_trap(void)
 {
@@ -24,6 +27,9 @@ void fault(void)
 void NMI_Handler(void) __attribute__ ((weak)); /* 2 NMI */
 void NMI_Handler(void)
 {
+	IT_Source=0;
+	PANIC_Display();
+
 	while (1)
 		;
 }
@@ -31,6 +37,9 @@ void NMI_Handler(void)
 void HardFault_Handler(void) __attribute__ ((weak)); /* 3 HardFault */
 void HardFault_Handler(void)
 {
+	IT_Source=1;
+	PANIC_Display();
+
 	while (1)
 		;
 }
@@ -38,6 +47,9 @@ void HardFault_Handler(void)
 void MemManageFault_Handler(void) __attribute__ ((weak)); /* 4 MemManageFault */
 void MemManageFault_Handler(void)
 {
+	IT_Source=2;
+	PANIC_Display();
+
 	while (1)
 		;
 }
@@ -45,6 +57,9 @@ void MemManageFault_Handler(void)
 void BusFault_Handler(void) __attribute__ ((weak)); /* 5 BusFault */
 void BusFault_Handler(void)
 {
+	IT_Source=3;
+	PANIC_Display();
+
 	while (1)
 		;
 }
@@ -52,6 +67,9 @@ void BusFault_Handler(void)
 void UsageFault_Handler(void) __attribute__ ((weak));
 void UsageFault_Handler(void)
 {
+	IT_Source=4;
+	PANIC_Display();
+
 	while (1)
 		;
 }

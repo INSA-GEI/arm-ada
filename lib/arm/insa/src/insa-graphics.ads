@@ -41,7 +41,11 @@ package Insa.Graphics is
    White:      constant Color := 16#FFFF#;
    
    type PWidget is access all Integer;
-   type PStyle is access all Integer;
+   
+   type Style is record
+      Map: access Byte;
+   end record;
+   type PStyle is access all Style;
    
    ALIGNEMENT_CENTER : constant Integer := 0;
    ALIGNEMENT_IN_TOP_LEFT: constant Integer := 1;
@@ -90,6 +94,7 @@ package Insa.Graphics is
             
    PART_MAIN: constant Byte:= 0;
    PART_ALL: constant Byte := 255;
+   PART_CHART_BG: constant Byte:=PART_MAIN;
 
    STATE_DEFAULT: constant Byte:= 16#00#;
    STATE_CHECKED: constant Byte:=16#01#;
@@ -142,6 +147,11 @@ package Insa.Graphics is
    -- GetScreenId
    -- Get reference ID of Screen (for alignement)
    function GetScreenId return PWidget;
+   
+   -- AddStyle
+   -- Add en empty style to a widget
+   procedure AddStyle (Widget: PWidget; Part: Byte; Style: not null PStyle);
+   pragma Import(C,AddStyle,"lv_obj_add_style");
    
    ----------------------------------------------------
    -- Generic container (modal window)
@@ -216,7 +226,7 @@ package Insa.Graphics is
    -- Wait until given button was pressed THEN released (to avoid multiple keypress)
    procedure WaitForButton (Button: PWidget);
    
-   -----------------------------------------------------
+   ----------------------------------------------------
    -- Progressbar
    ----------------------------------------------------
    
@@ -235,5 +245,74 @@ package Insa.Graphics is
    -- SetProgressbarValue
    -- Set current progressbar value state
    procedure SetProgressbarValue (Progressbar: PWidget; Value: Integer);
+   
+   ----------------------------------------------------
+   -- Chart
+   ----------------------------------------------------
+   
+   CHART_TYPE_NONE: constant Byte:=0; -- Don't draw the series
+   CHART_TYPE_LINE: constant Byte:=1; -- Connect the points with lines
+   CHART_TYPE_COLUMN: constant Byte:=2; -- Draw columns
+   
+   CHART_AXIS_SKIP_LAST_TICK : constant Byte:=00;            -- don't draw the last tick
+   CHART_AXIS_DRAW_LAST_TICK : constant Byte:=01;            -- draw the last tick
+   CHART_AXIS_INVERSE_LABELS_ORDER : constant Byte:=02;      -- draw tick labels in an inverted order
+         
+   type PChart_Series is access all Integer;
+   
+   -- CreateChart
+   -- Create a chart widget in a parent widget
+   function CreateChart (Parent: not null Pwidget; X: Integer; Y: Integer) return PWidget;
+   
+   -- CreateChart
+   -- Create a chart widget
+   function CreateChart (X: Integer; Y: Integer) return PWidget;
+   
+   -- SetDivLineCount
+   -- Set the number of horizontal and vertical division lines
+   procedure SetDivLineCount(Chart: PWidget; Horizontal_Div: Byte; Vertical_Div: Byte);
+   pragma Import (C, SetDivLineCount, "lv_chart_set_div_line_count");
+   
+   -- SetPointCount
+   -- Set the number of points on a data line on a chart
+   procedure SetPointCount(Chart: Pwidget; Nbr_Points: Natural);
+   pragma Import (C, SetPointCount, "lv_chart_set_point_count");
+   
+   -- SetChartType
+   -- Define type of chart to display
+   procedure SetChartType(Chart: PWidget; Chart_Type: Byte);
+   pragma Import (C, SetChartType, "lv_chart_set_type");
+   
+   -- SetXTickLength
+   -- Set the length of the tick marks on the X axis
+   procedure SetXTickLength(Chart: PWidget; Major_Tick_Len: Byte; Minor_Tick_Len: Byte);
+   pragma Import (C, SetXTickLength, "lv_chart_set_x_tick_length");
+   
+   -- SetYTickLength
+   -- Set the length of the tick marks on the y axis
+   procedure SetYTickLength(Chart: PWidget; Major_Tick_Len: Byte; Minor_Tick_Len: Byte);
+   pragma Import (C, SetYTickLength, "lv_chart_set_y_tick_length");
+   
+   -- SetXAxisLabel
+   -- Set the x-axis tick count and labels of a chart
+   procedure SetXAxisLabel(Chart: PWidget; List_Of_Values: String; Num_Tick_Marks: Byte; Options: Byte);
+   
+   -- SetYAxisLabel
+   -- Set the y-axis tick count and labels of a chart
+   procedure SetYAxisLabel(Chart: PWidget; List_Of_Values: String; Num_Tick_Marks: Byte; Options: Byte);
+   
+   -- AddChartSeries
+   -- Allocate and add a data series to the chart
+   function AddChartSeries(Chart: PWidget; Color_Series: Color) return PChart_Series;
+   pragma Import (C, AddChartSeries, "lv_chart_add_series");
+   
+   -- ClearChartSeries
+   -- Clear the point of a series
+   procedure ClearChartSeries(Chart: not null PWidget; Series: not null PChart_Series);
+   pragma Import (C, ClearChartSeries, "lv_chart_clear_series");
+   
+   -- AddDataToSeries
+   -- Shift all data right and set the most right data on a data line
+   procedure AddDataToSeries(Chart: not null PWidget; Series: not null PChart_Series; Data: Integer);
 
 end Insa.Graphics;

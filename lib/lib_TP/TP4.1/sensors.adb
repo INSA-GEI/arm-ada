@@ -37,58 +37,17 @@ package body Sensors is
       return Integer(Sqrt(Float(N)));
    end CalculerRacineCarre ;
     
-   function Attendre2secondesOuB return Boolean is
+   function Attendre1secondesOuB return Boolean is
       Compteur : Natural := 0;
    begin
-      while (GetKeyState(KEY_B) /= Key_Pressed) and Compteur < 20 loop
-         --  DrawString(10, 7, "Enregistrement -");
-         --  Insa.SysDelay(100); -- Attente
-         --  DrawString(10, 7, "Enregistrement \");
-         --  Insa.SysDelay(100); -- Attente
-         --  DrawString(10, 7, "Enregistrement |");
-         --  Insa.SysDelay(100); -- Attente
-         --  DrawString(10, 7, "Enregistrement /");
-         --  Insa.SysDelay(100); -- Attente
+      while (GetKeyState(KEY_B) /= Key_Pressed) and Compteur < 10 loop
          Insa.SysDelay(100);
          Compteur := Compteur +1 ;
       end loop ;
 
       return GetKeyState(KEY_B) = Key_Pressed ;
-   end Attendre2secondesOuB ;
+   end Attendre1secondesOuB ;
     
-   --  procedure EffacerEcran is
-   --  begin
-   --     --     ClearScreen(White);
-   --     null;
-   --  end EffacerEcran;
-   --  
-   --  procedure EcrireEcran (C : in Integer;L : in Integer;S : in String) is
-   --  begin
-   --     --  SetTextColor(BLack);
-   --     --  SetBackColor(White);
-   --     --  DrawString(C,L,S);
-   --     null;
-   --  end EcrireEcran;
-   --  
-   --  procedure DessinerEcran (C : in Integer;L : in Integer;Coul : in Integer ) is
-   --     -- Coul_Loc : Integer;
-   --  begin
-   --     --  Coul_Loc := Coul;
-   --     --
-   --     --  if Coul_Loc > 255 then
-   --     --     Coul_Loc := 255;
-   --     --  end if;
-   --     --
-   --     --  if Coul_Loc <0 then
-   --     --     Coul_Loc := 0;
-   --     --  end if;
-   --     --
-   --     --  SetPenColor(Color(Coul_Loc));
-   --     --  DrawFillRectangle(C*8,L*16,C*8+8,L*16+16);
-   --     --  SetTextColor(Black);
-   --     null;
-   --  end DessinerEcran ;
-   
    procedure AttendreToucheA is
    begin
       -- EcrireEcran(2,Text_Y'LAST,"Appuyer sur A pour continuer");
@@ -99,24 +58,153 @@ package body Sensors is
    begin
       WaitForKey(Key_B);
    end AttendreToucheB;
-       
-   LabelHautEnregistrement, labelBasEnregistrement: Pwidget;
+     
+   --
+   -- Routines pour l'ecran d'enregistrement
+   --
+   
+   ChartEnregistrement: PWidget;
+   SeriesEnregistrement: PChart_Series;
    
    procedure AfficherEcranEnregistrement is
+      Label: Pwidget;
    begin
-      LabelHautEnregistrement:=CreateLabel(0,-110);
-      labelBasEnregistrement:=CreateLabel(0,110);
-
-      SetLabelText(LabelHautEnregistrement, "Enregistrement capteur");
-      SetLabelText(LabelBasEnregistrement, "Appuyez sur B pour quitter");
+      Label:=CreateLabel(0,-110);
+      SetLabelText(Label, "Enregistrement capteur");
+      
+      Label:=CreateLabel(0,110);
+      SetLabelText(Label, "Appuyez sur B pour quitter");
+      
+      ChartEnregistrement:=CreateChart(0,0);
+      -- AddStyle(ChartEnregistrement,PART_CHART_BG,StyleEnregistrement'Access);
+      SetWidgetSize(ChartEnregistrement, SCREEN_WIDTH-100, SCREEN_HEIGHT-100);
+      RealignWidget(ChartEnregistrement);
+      SetDivLineCount(ChartEnregistrement, 3, 0);
+      SetPointCount(ChartEnregistrement, 10);
+      SetChartType(ChartEnregistrement,CHART_TYPE_LINE);
+      SetYTickLength(ChartEnregistrement,0,0);
+      SetXTickLength(ChartEnregistrement,0,0);
+      SetYAxisLabel(ChartEnregistrement,"2g", 0, CHART_AXIS_DRAW_LAST_TICK);
+      SeriesEnregistrement:= AddChartSeries(ChartEnregistrement, Black);
    end AfficherEcranEnregistrement;
    
+   procedure AjouterEcranEnregistrement(Val:Integer) is
+   begin
+      AddDataToSeries(ChartEnregistrement, SeriesEnregistrement, (Val*100)/2000);
+   end AjouterEcranEnregistrement;
+  
+   --
+   -- Routines pour l'affichage des resultast bruts
+   --
+   
+   ChartAffichagePremier,ChartAffichageDernier: PWidget;
+   SeriesAffichagePremier,SeriesAffichageDernier: PChart_Series;
+   
+   procedure AfficherEcranResultatsBruts(N:Integer) is
+      Label: Pwidget;
+   begin
+      Label:=CreateLabel(0,-110);
+      SetLabelText(Label, "Affichage des valeurs brutes");
+      
+      Label:=CreateLabel(0,110);
+      SetLabelText(Label, "Appuyez sur A pour continuer");
+      
+      Label:=CreateLabel(-110,-80);
+      SetLabelText(Label, "N premiers");
+      
+      Label:=CreateLabel(110,-80);
+      SetLabelText(Label, "N derniers");
+      
+      ChartAffichagePremier:=CreateChart(-110,10);
+      SetWidgetSize(ChartAffichagePremier, SCREEN_WIDTH/2-30, SCREEN_HEIGHT-120);
+      RealignWidget(ChartAffichagePremier);
+      SetDivLineCount(ChartAffichagePremier, 3, 0);
+      SetPointCount(ChartAffichagePremier, N);
+      SetChartType(ChartAffichagePremier,CHART_TYPE_LINE);
+      SetYTickLength(ChartAffichagePremier,0,0);
+      SetXTickLength(ChartAffichagePremier,0,0);
+      SetYAxisLabel(ChartAffichagePremier,"2g", 0, CHART_AXIS_DRAW_LAST_TICK);
+      SeriesAffichagePremier:= AddChartSeries(ChartAffichagePremier, Black);
+      
+      ChartAffichageDernier:=CreateChart(110,10);
+      SetWidgetSize(ChartAffichageDernier, SCREEN_WIDTH/2-30, SCREEN_HEIGHT-120);
+      RealignWidget(ChartAffichageDernier);
+      SetDivLineCount(ChartAffichageDernier, 3, 0);
+      SetPointCount(ChartAffichageDernier, N);
+      SetChartType(ChartAffichageDernier,CHART_TYPE_LINE);
+      SetYTickLength(ChartAffichageDernier,0,0);
+      SetXTickLength(ChartAffichageDernier,0,0);
+      SetYAxisLabel(ChartAffichageDernier,"2g", 0, CHART_AXIS_DRAW_LAST_TICK);
+      SeriesAffichageDernier:= AddChartSeries(ChartAffichageDernier, Black);
+      
+      RealignWidget(ChartAffichagePremier);
+      RealignWidget(ChartAffichageDernier);
+      
+   end AfficherEcranResultatsBruts;
+   
+   procedure AfficherEcranResultatsFiltre(N:Integer; Nb_Supprime: Integer) is
+      Label: Pwidget;
+   begin
+      Label:=CreateLabel(0,-110);
+      SetLabelText(Label, "Affichage des valeurs filtrees [" & Integer'Image(Nb_Supprime) & "] supprimes");
+      
+      Label:=CreateLabel(0,110);
+      SetLabelText(Label, "Appuyez sur A pour continuer");
+      
+      Label:=CreateLabel(-110,-80);
+      SetLabelText(Label, "N premiers");
+      
+      Label:=CreateLabel(110,-80);
+      SetLabelText(Label, "N derniers");
+      
+      ChartAffichagePremier:=CreateChart(-110,10);
+      SetWidgetSize(ChartAffichagePremier, SCREEN_WIDTH/2-30, SCREEN_HEIGHT-120);
+      RealignWidget(ChartAffichagePremier);
+      SetDivLineCount(ChartAffichagePremier, 3, 0);
+      SetPointCount(ChartAffichagePremier, N);
+      SetChartType(ChartAffichagePremier,CHART_TYPE_LINE);
+      SetYTickLength(ChartAffichagePremier,0,0);
+      SetXTickLength(ChartAffichagePremier,0,0);
+      SetYAxisLabel(ChartAffichagePremier,"2g", 0, CHART_AXIS_DRAW_LAST_TICK);
+      SeriesAffichagePremier:= AddChartSeries(ChartAffichagePremier, Black);
+      
+      ChartAffichageDernier:=CreateChart(110,10);
+      SetWidgetSize(ChartAffichageDernier, SCREEN_WIDTH/2-30, SCREEN_HEIGHT-120);
+      RealignWidget(ChartAffichageDernier);
+      SetDivLineCount(ChartAffichageDernier, 3, 0);
+      SetPointCount(ChartAffichageDernier, N);
+      SetChartType(ChartAffichageDernier,CHART_TYPE_LINE);
+      SetYTickLength(ChartAffichageDernier,0,0);
+      SetXTickLength(ChartAffichageDernier,0,0);
+      SetYAxisLabel(ChartAffichageDernier,"2g", 0, CHART_AXIS_DRAW_LAST_TICK);
+      SeriesAffichageDernier:= AddChartSeries(ChartAffichageDernier, Black);
+      
+      RealignWidget(ChartAffichagePremier);
+      RealignWidget(ChartAffichageDernier);
+      
+   end AfficherEcranResultatsFiltre;
+   
+   procedure AjouterPremier(Val:Integer) is
+   begin
+      AddDataToSeries(ChartAffichagePremier, SeriesAffichagePremier, (Val*100)/2000);
+   end AjouterPremier;
+   
+   procedure AjouterDernier(Val:Integer) is
+   begin
+      AddDataToSeries(ChartAffichageDernier, SeriesAffichageDernier, (Val*100)/2000);
+   end AjouterDernier;
+   
+      
    procedure EffacerEcran is
    begin
       ClearScreen;
       
-      LabelHautEnregistrement:=null;
-      LabelBasEnregistrement:=null;
+      ChartEnregistrement:=null;
+      SeriesEnregistrement:=null;
+      ChartAffichagePremier:=null;
+      ChartAffichageDernier:=null;
+      SeriesAffichagePremier:=null;
+      SeriesAffichageDernier:=null;
    end EffacerEcran;
    
    -- Affiche une fenetre 'popup' avec un message et un bouton OK

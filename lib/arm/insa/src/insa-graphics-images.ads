@@ -45,14 +45,6 @@ package Insa.Graphics.Images is
    end record with Atomic;
    pragma Convention (C, Img_Header_T);
    
-   --  for Img_Header_T use
-   --     record
-   --        Cf          at 0 range 0 .. 4;
-   --        Always_Zero at 0 range 5 .. 7;
-   --        Reserved    at 0 range 8 .. 9;
-   --        W           at 0 range 10 .. 20;
-   --        H           at 0 range 21 .. 31;
-   --     end record;
    for Img_Header_T use
       record
          Cf          at 0 range 0 .. 4;             
@@ -89,5 +81,64 @@ package Insa.Graphics.Images is
    -- Draw an image in an already created widget
    procedure DrawImage(Widget: not null PWidget; Image: not null PImg_Dsc_T);
    pragma Import (C, DrawImage, "lv_img_set_src");
+   
+   ------------------------------------------------------------------
+   -- Routines pour l'objet Canvas
+   --
+   -- L'objet canvas sert a dessiner de maniere arbitraire (point, lignes, images)
+   --
+   --  type T_CanvasBuffer is array (Natural range <>, Natural range <>) of Insa.Graphics.Color;
+   --  pragma Convention (C, T_CanvasBuffer);
+   --  type PCanvasBuffer is access all T_CanvasBuffer;
+   
+   type PCanvasBuffer is access all Integer;
+   
+   -- CreateCanvas
+   -- Create a canvas object into a parent widget
+   function CreateCanvas (Parent: not null Pwidget; X: Integer; Y: Integer) return PWidget;
+   
+   -- CreateCanvas
+   -- Create a canvas object on main screen
+   function CreateCanvas (X: Integer; Y: Integer) return PWidget;
 
+   -- AddBufferToCanvas
+   -- Set a buffer for the canvas.
+   -- buf a buffer where the content of the canvas will be.
+   --  The required size is (lv_img_color_format_get_px_size(cf) * w) / 8 * h)
+   --  It can be allocated with `lv_mem_alloc()` or
+   --  it can be statically allocated array (e.g. static lv_color_t buf[100*50]) or
+   --  it can be an address in RAM or external SRAM
+   procedure AddBufferToCanvas (Canvas: PWidget; W: Natural; H: Natural; C: Color);
+   
+   -- AllocateBufferforCanvas
+   -- Set a buffer for the canvas.
+   -- buf a buffer where the content of the canvas will be.
+   --  The required size is (lv_img_color_format_get_px_size(cf) * w) / 8 * h)
+   --  It can be allocated with `lv_mem_alloc()` or
+   --  it can be statically allocated array (e.g. static lv_color_t buf[100*50]) or
+   --  it can be an address in RAM or external SRAM
+   function AllocateBufferforCanvas (W: Natural; H: Natural; C: Color) return PCanvasBuffer;
+   
+   type T_Point is record
+      X: Interfaces.C.Short;
+      Y: Interfaces.C.Short;
+   end record;
+   pragma Convention (C, T_Point);
+   
+   type T_PointArray is array (Natural range <>) of T_Point;
+   pragma Convention (C, T_PointArray);
+   
+   type T_Line is record
+      Color: Insa.Graphics.Color;      -- Color of the line
+      Width: Interfaces.C.Short;       -- width (in pixel) of the line
+      Dash_Width: Interfaces.C.Short;  -- Dash length, in pixel
+      Dash_Gap: Interfaces.C.Short;    -- Dash space, in pixel
+      Opa : Byte;                      -- OPA = Transparency: 0=>Fully transparent, 255 => not transparent at all
+      Other: Byte;                     -- unknown use
+   end record;
+   pragma Convention (C, T_Line);
+     
+   type P_Line is access all T_Line;
+   
+   procedure DrawLine(Canvas: PWidget; Points: T_PointArray; Point_Cnt: Integer; Line_Attr: P_Line);
 end Insa.Graphics.Images;

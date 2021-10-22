@@ -22,7 +22,7 @@
 #include "stdlib.h"
 
 static volatile uint32_t R0,R1,R2,R3,R12,PC,LR,XPSR,SP,PSP;
-static uint32_t IT_Source;
+uint32_t IT_Source;
 
 extern void* __interrupt_stack_start;
 extern void* __interrupt_stack_end;

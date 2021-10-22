@@ -135,3 +135,19 @@ lv_style_t *UI_GetEmptyStyle() {
 	
 	return tmp;
 }
+
+lv_color_t* UI_CANVAS_AllocateBuffer(lv_coord_t w, lv_coord_t h, lv_color_t c) {
+	lv_color_t *buf =(lv_color_t*)malloc(LV_CANVAS_BUF_SIZE_TRUE_COLOR(w, h));
+
+	for (uint32_t i=0; i<(w*h); i++) {
+		buf[i]=c;
+	}
+
+	return buf;
+}
+
+void UI_CANVAS_AddBuffer(lv_obj_t* canvas, lv_coord_t w, lv_coord_t h, lv_color_t c) {
+	lv_color_t *buf =UI_CANVAS_AllocateBuffer(w, h, c);
+
+	lv_canvas_set_buffer(canvas, (void*) buf, w, h, LV_IMG_CF_TRUE_COLOR);
+}

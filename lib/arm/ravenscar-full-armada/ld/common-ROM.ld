@@ -47,7 +47,7 @@ MEMORY
   SRAM_EXT (rw ) : ORIGIN = 0xC0000000, LENGTH = 4M-4
 }
 
-_DEFAULT_STACK_SIZE = 4*1024;
+_DEFAULT_STACK_SIZE = 8*1024;
 _INTERRUPT_STACK_SIZE = 1024;
 _Min_Heap_Size = 0x800;      /* required amount of heap  */
 

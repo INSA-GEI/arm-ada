@@ -30,11 +30,10 @@ package Sensors is
    function CalculerRacineCarre (N: Integer) return Integer ;
    
    -- fonction bloquante qui attend le 1er evenement entre
-   -- soit que 2 secondes se soient ecoulees
+   -- soit que 1 seconde se soient ecoulees
    -- soit que l'utilisateur ait appuye sur la touche B
-   -- un message s'affiche sur la ligne 10
    -- le boolean est vrai si la touche B a ete appuyee
-   function Attendre2secondesOuB return Boolean ;
+   function Attendre1secondesOuB return Boolean ;
    
    --  -- efface l'ecran
    --  procedure EffacerEcran ;
@@ -54,8 +53,28 @@ package Sensors is
    -- blocante jusqu'a l'appui de la touche B
    procedure AttendreToucheB;
    
+   --
+   -- Routines pour l'ecran d'enregistrement
+   --
+   
    procedure AfficherEcranEnregistrement;
    
+   procedure AjouterEcranEnregistrement(Val:Integer);
+      
+   --
+   -- Routines pour l'affichage des resultats
+   --
+    
+   procedure AfficherEcranResultatsBruts(N:Integer);
+   
+   procedure AfficherEcranResultatsFiltre(N:Integer; Nb_Supprime: Integer);
+   
+   procedure AjouterPremier(Val:Integer);
+   
+   procedure AjouterDernier(Val:Integer);
+   
+  
+      
    procedure EffacerEcran;
    
    procedure AfficheMessage(Titre: String; Message: String);

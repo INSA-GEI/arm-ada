@@ -41,10 +41,14 @@ package body Insa.Keys is
       while GetKeyState(Key) /= Key_Pressed loop
          null;
       end loop;
-
+      
+      Insa.SysDelay(100);
+      
       while GetKeyState(Key) /= Key_Released loop
          null;
       end loop;
+      
+      Insa.SysDelay(100);
    end WaitForKey;
    
 end Insa.Keys;

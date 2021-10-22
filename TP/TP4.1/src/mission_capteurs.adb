@@ -81,11 +81,11 @@ procedure Mission_Capteurs is
    begin
       AfficherEcranEnregistrement;
 
-      AfficheMessage("Demarrer l'enregistrement", "Appuyez sur OK");
+      AfficheMessage("Demarrer l'enregistrement","appuyez sur OK");
 
       L := null;
       while Continuer loop
-         if Attendre2secondesOuB then
+         if Attendre1secondesOuB then
             Continuer := False ;
          else
             Valeurs_Capteurs := ObtenirValeursCapteur;
@@ -93,6 +93,7 @@ procedure Mission_Capteurs is
             --Ajouter_Fin(L, Val, Num);
             Ajouter_Croissant_Rec(L, Val, Num);
             Num := Num + 1;
+            AjouterEcranEnregistrement(Val);
             --  EcrireEcran(5, 5, "Dernier enregistrement :  " & Integer'Image(Integer(Val))&"    ");
          end if;
       end loop;
@@ -100,11 +101,72 @@ procedure Mission_Capteurs is
       EffacerEcran;
    end Enregistrer;
 
+   procedure AfficherNPremiers(L : in P_Element; N : in Integer) is
+      Aux : P_Element := L;
+      Ligne : Integer :=1;
+   begin
+      if Aux /=null then
+         while Ligne <= N loop
+            Ligne := Ligne +1 ;
+            if Aux/= null then
+               AjouterPremier(Aux.all.Norme);
+               Aux:=Aux.all.Suiv;
+            end if;
+         end loop;
+      end if;
+   end AfficherNPremiers;
+
+   procedure AfficherNDerniers(L : in P_Element; N : in out Integer ; Max : in out Integer) is
+   begin
+      if L /= null then
+         AfficherNDerniers(L.all.Suiv,N,Max);
+         if N= 5 then
+            Max := L.all.Norme ;
+         end if;
+         if N /=0 then
+            AjouterDernier(L.all.Norme);
+            N:=N-1;
+         end if;
+      end if;
+      if L = null and N <= 0 then
+         N := N - 1 ;
+      end if;
+   end AfficherNDerniers;
+
+   procedure Afficher(L : in P_Element) is
+      NbreLignesAffichees,Max : Integer :=5 ;
+   begin
+      AfficherEcranResultatsBruts(Max);
+      AfficherNPremiers(L,NbreLignesAffichees);
+      AfficherNDerniers(L,NbreLignesAffichees,Max);
+
+      AttendreToucheA;
+      EffacerEcran;
+   end Afficher;
+
+   procedure AfficherFiltrage(L : in P_Element; Nb_Supprimes: Integer) is
+      NbreLignesAffichees,Max : Integer :=5 ;
+   begin
+      AfficherEcranResultatsFiltre(Max, Nb_Supprimes);
+      AfficherNPremiers(L,NbreLignesAffichees);
+      AfficherNDerniers(L,NbreLignesAffichees,Max);
+
+      AttendreToucheA;
+      EffacerEcran;
+   end AfficherFiltrage;
+
    Liste: P_Element:=null;
+   Nombre_Valeurs_Supprimees : Integer ;
+
 begin
    loop
-
       Enregistrer(Liste);
+
+      Afficher(Liste);
+
+      Filtrer(Liste,Nombre_Valeurs_Supprimees);
+
+      AfficherFiltrage(Liste,Nombre_Valeurs_Supprimees);
 
    end loop;
 end Mission_Capteurs;
