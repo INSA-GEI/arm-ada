@@ -90,11 +90,10 @@ procedure Mission_Capteurs is
          else
             Valeurs_Capteurs := ObtenirValeursCapteur;
             Val := CalculerRacineCarre(Valeurs_Capteurs.X**2 + Valeurs_Capteurs.Y**2 + Valeurs_Capteurs.Z**2);
-            --Ajouter_Fin(L, Val, Num);
+
             Ajouter_Croissant_Rec(L, Val, Num);
             Num := Num + 1;
             AjouterEcranEnregistrement(Val);
-            --  EcrireEcran(5, 5, "Dernier enregistrement :  " & Integer'Image(Integer(Val))&"    ");
          end if;
       end loop;
 
@@ -167,6 +166,5 @@ begin
       Filtrer(Liste,Nombre_Valeurs_Supprimees);
 
       AfficherFiltrage(Liste,Nombre_Valeurs_Supprimees);
-
    end loop;
 end Mission_Capteurs;

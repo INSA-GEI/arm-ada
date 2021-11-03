@@ -15,6 +15,10 @@ with Ada.Characters.Latin_1;
 
 package Carte is
    
+   -- Utiliser newline pour faire un retour à la ligne (dans EcrireInformation)
+   --
+   -- Exemple:
+   -- EcrireInformation("Ma premiere ligne" & NewLine & "Ma deuxieme ligne");
    Newline: constant Character := Ada.Characters.Latin_1.LF;
    
    type T_Direction is (Nord,Sud,Est,Ouest,Immobile) ;

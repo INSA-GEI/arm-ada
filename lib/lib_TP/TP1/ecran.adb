@@ -15,11 +15,6 @@ package body Ecran is
    LabelTemps: Pwidget;
    LabelInformation: Pwidget;
    
-   procedure EffacerEcran is
-   begin
-      ClearScreen;
-   end EffacerEcran;
-   
    function CreerZonedeTexte(X: Integer; Y: Integer) return Pwidget is
    begin
       return Insa.Graphics.CreateLabel((SCREEN_WIDTH/2)+X, (SCREEN_HEIGHT/2)+Y);

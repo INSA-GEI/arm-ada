@@ -14,15 +14,16 @@ with Ada.Characters.Latin_1;
 
 package Simon is
    
-   -- ###############################
-   -- GESTION SEQUENCE
-   -- ###############################
    -- Utiliser newline pour faire un retour à la ligne (dans EcrireInfos)
    --
    -- Exemple:
    -- EcrireInfos("Ma premiere ligne" & NewLine & "Ma deuxieme ligne");
    Newline: constant Character := Ada.Characters.Latin_1.LF;
    
+   -- ###############################
+   -- GESTION SEQUENCE 
+   -- ###############################   
+    
    type T_Direction is (Jaune, Bleu, Vert, Rouge, Immobile); 
 
    type T_Sequence is array (Positive range <>) of T_Direction;

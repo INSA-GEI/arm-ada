@@ -11,6 +11,10 @@ with Ada.Characters.Latin_1;
 
 package Sensors is
    
+   -- Utiliser newline pour faire un retour à la ligne (dans EcrireInfos)
+   --
+   -- Exemple:
+   -- EcrireInfos("Ma premiere ligne" & NewLine & "Ma deuxieme ligne");
    Newline: constant Character := Ada.Characters.Latin_1.LF;
    
    type COULEUR is range 0 .. 255;
@@ -35,16 +39,6 @@ package Sensors is
    -- le boolean est vrai si la touche B a ete appuyee
    function Attendre1secondesOuB return Boolean ;
    
-   --  -- efface l'ecran
-   --  procedure EffacerEcran ;
-   --  
-   --  -- ecris sur l'ecran la chaine de caractere S a la ligne L, colonne C
-   --  procedure EcrireEcran(C : in Integer;L : in Integer;S : in String) ;
-   --  
-   --  -- dessine un rectangle plein de taille d'un caractere de couleur Col
-   --  -- a la ligne L, colonne C
-   --  procedure DessinerEcran (C : in Integer;L : in Integer;Coul : in Integer ) ;
-   
    -- affiche a l'ecran un message d'attente
    -- blocante jusqu'a l'appui de la touche A
    procedure AttendreToucheA ;
@@ -57,25 +51,36 @@ package Sensors is
    -- Routines pour l'ecran d'enregistrement
    --
    
+   -- Affiche la fenetre d'enregistrement
    procedure AfficherEcranEnregistrement;
    
+   -- Ajoute une valeur sur le graphique de l'enregistreur (à droite, scroll vers la gauche)
    procedure AjouterEcranEnregistrement(Val:Integer);
       
    --
    -- Routines pour l'affichage des resultats
    --
     
+   -- Affiche la fenetre des resultats non filtrés
    procedure AfficherEcranResultatsBruts(N:Integer);
    
+   -- Affiche la fenetre des resultats filtrés
    procedure AfficherEcranResultatsFiltre(N:Integer; Nb_Supprime: Integer);
    
+   -- ajoute une valeur sur le graphique des premieres valeurs
    procedure AjouterPremier(Val:Integer);
    
+   -- ajoute une valeur sur le graphique des dernieres valeurs
    procedure AjouterDernier(Val:Integer);
    
+   --
+   -- Fonctions diverses
+   --
   
-      
+   -- Efface l'ecran
    procedure EffacerEcran;
    
+   -- Affiche une fenetre 'popup' avec un message et un bouton OK
+   -- Procedure bloquante tant que l'utilisateur n'a pas appuyé sur OK
    procedure AfficheMessage(Titre: String; Message: String);
 end Sensors;

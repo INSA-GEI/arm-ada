@@ -19,15 +19,14 @@ package body Carte is
    TempsEcoule : Integer := 0;
    pragma Volatile (TempsEcoule);
 
+   -- retourne un entier qui represente le nombre de 100ms
+   -- ecoulees depuis l'appel de la procedure InitialiserCarte
    function GetTempsEcoule return Integer is
    begin
       return TempsEcoule ;
    end GetTempsEcoule ;
    
-   procedure TraiterPeriodique is
-   begin 
-      TempsEcoule := TempsEcoule + 1 ;
-   end TraiterPeriodique ;
+   procedure TraiterPeriodique;
    
    procedure InitialiserCarte is
    begin      
@@ -36,26 +35,31 @@ package body Carte is
       StartTimer;
    end InitialiserCarte ;
    
+   -- fige le temps !!!
    procedure SuspendreTimer is
    begin
       StopTimer ;
    end SuspendreTimer ;
    
+   -- "defige" le temps !!!
    procedure ReprendreTimer is
    begin
       StartTimer ;
    end ReprendreTimer ;
    
+   -- redemarre le temps à partir de '0'
    procedure Mettreazerotimer is
    begin
       TempsEcoule := 0 ;
    end Mettreazerotimer ;
    
+   -- attend un appui sur la touche A
    procedure AttendreToucheA is
    begin
       Insa.Keys.WaitForKey(Insa.Keys.Key_A);
    end AttendreToucheA;
    
+    -- renvoie la derniere touche de direction appuyee de type T_Direction
    function DetecterDirection return T_Direction is
       Resultat : T_Direction := Immobile;
       Compteurtemps : Integer;
@@ -78,7 +82,6 @@ package body Carte is
       if Resultat /= Immobile then Compteurtemps := Compteurtemps+2;
       else Compteurtemps := Compteurtemps+1;
       end if;
-      --Compteurtemps := Compteurtemps+1;
 
       while Compteurtemps > GetTempsEcoule loop
          null;
@@ -86,5 +89,15 @@ package body Carte is
       
       return Resultat ;
    end DetecterDirection ;
+   
+   --
+   -- Fonctions privées
+   -- Ne pas appeler directement
+   --
+   
+   procedure TraiterPeriodique is
+   begin 
+      TempsEcoule := TempsEcoule + 1 ;
+   end TraiterPeriodique ;
    
 end Carte ;

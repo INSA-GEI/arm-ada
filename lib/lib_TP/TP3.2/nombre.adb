@@ -18,16 +18,19 @@ package body Nombre is
    
    LabelInfo: PWidget;
    
+   -- Efface un ecran et fixe un fond bleu fonce
    procedure EffacerEcran is
    begin
       ClearScreen;
    end EffacerEcran;
    
+   -- Ecrit la chaine S dans la zone infos de l'ecran
    procedure EcrireInfos(S: String) is
    begin
       SetLabelText(LabelInfo, S);
    end EcrireInfos;  
    
+   -- attend un appui sur la touche A
    procedure AttendreToucheA is
    begin
       WaitForKey(Key_A);

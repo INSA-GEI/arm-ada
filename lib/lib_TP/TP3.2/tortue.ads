@@ -27,8 +27,7 @@ package Tortue is
    -- procédure permettant l'ouverture d'une fenêtre graphique
    -- => PREMIERE PROCEDURE A UTILISER AVANT DE FAIRE APPEL AUX SUIVANTES DANS LE PROGRAMME DE DESSIN
    -- La tortue est positionnée en haut à gauche, coordonnées (0, 0), la tête vers le bas (orientation = 180°),
-   -- plume baissée et prête à dessiner en blanc
-
+   -- plume baissée et prête à dessiner en noir
    procedure Ouvrir_Page;
 
    -- procédure permettant la fermeture d'une fenêtre graphique

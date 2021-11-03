@@ -20,6 +20,7 @@ use Ada.Numerics.Elementary_Functions;
 
 package body Sensors is   
    
+   -- Retourne les valeurs des 3 axes de l'accelerometre
    function ObtenirValeursCapteur return T_Valeurs_Capteur is
       Valeurs_Capteur: SENSOR_VALUES;
       Resultat : T_Valeurs_Capteur ;
@@ -32,11 +33,16 @@ package body Sensors is
       return Resultat ;
    end ObtenirValeursCapteur;
     
+   -- Retourne la partie entiere de la racine carree de N
    function CalculerRacineCarre (N: Integer) return Integer is
    begin
       return Integer(Sqrt(Float(N)));
    end CalculerRacineCarre ;
     
+   -- fonction bloquante qui attend le 1er evenement entre
+   -- soit que 1 seconde se soient ecoulees
+   -- soit que l'utilisateur ait appuye sur la touche B
+   -- le boolean est vrai si la touche B a ete appuyee
    function Attendre1secondesOuB return Boolean is
       Compteur : Natural := 0;
    begin
@@ -48,12 +54,16 @@ package body Sensors is
       return GetKeyState(KEY_B) = Key_Pressed ;
    end Attendre1secondesOuB ;
     
+   -- affiche a l'ecran un message d'attente
+   -- blocante jusqu'a l'appui de la touche A
    procedure AttendreToucheA is
    begin
       -- EcrireEcran(2,Text_Y'LAST,"Appuyer sur A pour continuer");
       WaitForKey(Key_A);
    end AttendreToucheA;
    
+   -- affiche a l'ecran un message d'attente
+   -- blocante jusqu'a l'appui de la touche B
    procedure AttendreToucheB is
    begin
       WaitForKey(Key_B);
@@ -66,6 +76,7 @@ package body Sensors is
    ChartEnregistrement: PWidget;
    SeriesEnregistrement: PChart_Series;
    
+   -- Affiche la fenetre d'enregistrement
    procedure AfficherEcranEnregistrement is
       Label: Pwidget;
    begin
@@ -88,18 +99,20 @@ package body Sensors is
       SeriesEnregistrement:= AddChartSeries(ChartEnregistrement, Black);
    end AfficherEcranEnregistrement;
    
+   -- Ajoute une valeur sur le graphique de l'enregistreur (à droite, scroll vers la gauche)
    procedure AjouterEcranEnregistrement(Val:Integer) is
    begin
       AddDataToSeries(ChartEnregistrement, SeriesEnregistrement, (Val*100)/2000);
    end AjouterEcranEnregistrement;
   
    --
-   -- Routines pour l'affichage des resultast bruts
+   -- Routines pour l'affichage des resultast
    --
    
    ChartAffichagePremier,ChartAffichageDernier: PWidget;
    SeriesAffichagePremier,SeriesAffichageDernier: PChart_Series;
    
+   -- Affiche la fenetre des resultats non filtrés
    procedure AfficherEcranResultatsBruts(N:Integer) is
       Label: Pwidget;
    begin
@@ -139,9 +152,9 @@ package body Sensors is
       
       RealignWidget(ChartAffichagePremier);
       RealignWidget(ChartAffichageDernier);
-      
    end AfficherEcranResultatsBruts;
    
+   -- Affiche la fenetre des resultats filtrés
    procedure AfficherEcranResultatsFiltre(N:Integer; Nb_Supprime: Integer) is
       Label: Pwidget;
    begin
@@ -181,20 +194,21 @@ package body Sensors is
       
       RealignWidget(ChartAffichagePremier);
       RealignWidget(ChartAffichageDernier);
-      
    end AfficherEcranResultatsFiltre;
    
+   -- Affiche la fenetre des resultats non filtrés
    procedure AjouterPremier(Val:Integer) is
    begin
       AddDataToSeries(ChartAffichagePremier, SeriesAffichagePremier, (Val*100)/2000);
    end AjouterPremier;
    
+   -- ajoute une valeur sur le graphique des dernieres valeurs
    procedure AjouterDernier(Val:Integer) is
    begin
       AddDataToSeries(ChartAffichageDernier, SeriesAffichageDernier, (Val*100)/2000);
    end AjouterDernier;
    
-      
+   -- Efface l'ecran
    procedure EffacerEcran is
    begin
       ClearScreen;

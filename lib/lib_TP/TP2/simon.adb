@@ -256,7 +256,7 @@ package body Simon is
       
       ButtonLabel:=AddLabelToButton(Button);
       SetLabelText(ButtonLabel, "Ok");
-      SetLabelText(Label, "!! LOOSER !!");
+      SetLabelText(Label, "!! PERDU !!");
       
       DrawImage(GraveYard, Sprites_Graveyard.GameOver'Access);
       RealignWidget(GraveYard);
@@ -309,7 +309,7 @@ package body Simon is
       
       ButtonLabel:=AddLabelToButton(Button);
       SetLabelText(ButtonLabel, "Ok");
-      SetLabelText(Label, "!! YOU WIN !!");
+      SetLabelText(Label, "!! BRAVO !!");
 
       Mettreazerotimer;
       ReprendreTimer;

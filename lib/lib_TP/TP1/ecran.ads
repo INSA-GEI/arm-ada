@@ -17,10 +17,11 @@ with Ada.Characters.Latin_1;
 
 package Ecran is
    
+   -- Utiliser newline pour faire un retour à la ligne (dans EcrireInfos)
+   --
+   -- Exemple:
+   -- EcrireInfos("Ma premiere ligne" & NewLine & "Ma deuxieme ligne");
    Newline: constant Character := Ada.Characters.Latin_1.LF;
-   
-   -- Efface un ecran et fixe un fond bleu fonce
-   procedure EffacerEcran ;
    
    -- Cree une zone pour ecrire du texte
    -- X=0 completement à gauche de l'ecran; x = SCREEN_WIDTH: completement à droite

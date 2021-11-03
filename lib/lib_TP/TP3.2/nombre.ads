@@ -30,9 +30,8 @@ package Nombre is
    -- Ecrit la chaine S dans la zone infos de l'ecran
    procedure EcrireInfos(S: String);
      
-   -- Fonction identique a SaisirTailleVecteur
-   -- et SaisirValeurRecherchee
-   -- seul le message d'invite change
+   -- Affiche une fenetre pour que l'utilisateur saisisse 
+   -- la finesse du flocon
    function SaisirFinesse return Integer  ; 
    
 end Nombre ;

@@ -15,6 +15,10 @@ with Ada.Characters.Latin_1;
 
 package Nombre is
    
+   -- Utiliser newline pour faire un retour à la ligne (dans AjouterTexteResultats)
+   --
+   -- Exemple:
+   -- AjouterTexteResultats("Ma premiere ligne" & NewLine & "Ma deuxieme ligne");
    Newline: constant Character := Ada.Characters.Latin_1.LF;
    
    -- attend un appui sur la touche A
