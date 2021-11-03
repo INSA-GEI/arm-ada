@@ -1,0 +1,18 @@
+# Header
+Name: TP4.2
+Category: TPs ADA 2IMACS
+Project: @_project_name_@.gpr
+
+# Variables
+Project_Name: TP4.2_Snake: Nom du projet.
+Main_Name: mission_snake: Nom du fichier principal du projet. 
+
+# Description
+[Description]
+Réalisation d'un jeu de serpent.
+---------
+Mangez les cerises qui apparaissent à l'ecran et faite grandir votre serpent
+sans rentrer en collision avec vous-meme.
+---------
+Ce TP permet de mettre en application les listes chainées,
+l'ajout en tete et la suppression en fin de liste d'element.

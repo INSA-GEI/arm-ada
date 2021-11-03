@@ -1,0 +1,17 @@
+# Header
+Name: TP3.1
+Category: TPs ADA 2IMACS
+Project: @_project_name_@.gpr
+
+# Variables
+Project_Name: TP3.1_Dicho: Nom du projet.
+Main_Name: mission_dicho: Nom du fichier principal du projet. 
+
+# Description
+[Description]
+Recherche de valeur par dichotomie.
+---------
+Recherchez des valeeurs dans des vecteurs et affichez les resultats à l'ecran
+---------
+Ce TP permet de mettre en application les tableaux "en tranche"
+et la recursivité

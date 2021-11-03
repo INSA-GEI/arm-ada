@@ -1,0 +1,17 @@
+# Header
+Name: TP3.2
+Category: TPs ADA 2IMACS
+Project: @_project_name_@.gpr
+
+# Variables
+Project_Name: TP3.2_Koch: Nom du projet.
+Main_Name: mission_koch: Nom du fichier principal du projet. 
+
+# Description
+[Description]
+Tracage d'un flocon de Koch (fractale).
+---------
+Tracez un flocon de Koch à l'ecran selon une profondeur de detail (finesse) definie
+---------
+Ce TP permet de mettre en application les notions de recursivité 
+appliquées aux courbes fractales
