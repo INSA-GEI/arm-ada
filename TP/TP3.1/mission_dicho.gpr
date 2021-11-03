@@ -1,0 +1,32 @@
+with "/mnt/commetud/2eme Annee IMACS/ADA/lib/arm/insa/insa.gpr";
+
+project mission_dicho is
+
+   for Languages use ("ada");
+
+   for Main use ("mission_dicho.adb");
+   for Source_Dirs use ("src","/mnt/commetud/2eme Annee IMACS/ADA/lib/lib_TP/TP3.1");
+   for Object_Dir use "obj";
+
+   package Compiler is
+      for Switches ("ada") use ("-g", "-gnatwa", "-gnatQ", "-ffunction-sections", "-fdata-sections");
+   end Compiler;
+
+   package Builder is
+      for Switches ("ada") use ("-g", "-O0", "-j4");
+   end Builder;
+
+   for Runtime ("ada") use "/mnt/commetud/2eme Annee IMACS/ADA/lib/arm/ravenscar-full-armada";
+   for Target use "arm-eabi";
+
+   package Ide is
+      for Connection_Tool use "";
+      for Connection_Config_File use "";
+      for Program_Host use "localhost:2331";
+      for Communication_Protocol use "extended-remote";
+   end Ide;
+
+   package Linker is
+      for Switches ("ada") use ("-g", "-Wl,--gc-sections");
+   end Linker;
+end mission_dicho;
