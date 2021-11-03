@@ -5,7 +5,7 @@
 package Insa.Random_Number is
    pragma Warnings (Off);
 
-   subtype RANDOM_VALUE is Integer;
+   subtype RANDOM_VALUE is Integer range 0..65535;
    
    -- GetValue
    -- return a random number from 0 to 65535

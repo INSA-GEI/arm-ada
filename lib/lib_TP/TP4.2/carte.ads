@@ -24,9 +24,10 @@ package Carte is
    procedure InitialiserCarte ;
    
    -- renvoie la derniere  direction observee par les accelerometres
-   function  DetecterDirection return T_Direction ;         
+   function DetecterDirection return T_Direction ;         
    
-   -- Efface un ecran et fixe un fond bleu fonce
+   -- Efface l'ecran: attention, tous les widgets sont perdus apres ça.
+   -- A faire en fin de programme
    procedure EffacerEcran ;
    
    -- Ecrit un message dans la zone d'information
@@ -34,5 +35,10 @@ package Carte is
    
    -- Ecrit le score
    procedure EcrireScore(Score: Natural);
-   TempsEcoule : Integer ;
+   
+   -- Affiche une fenetre 'popup' avec un message et un bouton OK
+   -- Procedure bloquante tant que l'utilisateur n'a pas appuyé sur OK
+   procedure AfficheMessage(Titre: String; Message: String);
+   
+   TempsEcoule: Integer ;
 end Carte ;

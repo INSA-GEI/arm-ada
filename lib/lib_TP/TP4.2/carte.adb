@@ -23,11 +23,13 @@ package body Carte is
    LabelScore:PWidget;
    Label: PWidget;
    
+   -- Procedure privée, ne pas utiliser directement
    procedure TraiterPeriodique is
    begin 
       TempsEcoule := TempsEcoule + 1 ;
    end TraiterPeriodique ;
    
+   -- Initialisation de l'ecran et du timer, a faire au debut du programme
    procedure InitialiserCarte is
    begin      
       TempsEcoule := 0 ;
@@ -35,43 +37,24 @@ package body Carte is
       StartTimer;
       
       EffacerEcran;
-      Label := Insa.Graphics.CreateLabel(130, -80);
+      Label := Insa.Graphics.CreateLabel(160, -80);
       Insa.Graphics.SetLabelText(Label, "Score");
-      LabelScore := Insa.Graphics.CreateLabel(130, -60);
+      LabelScore := Insa.Graphics.CreateLabel(160, -60);
       EcrireScore(0);
       
-      LabelInformation := Insa.Graphics.CreateLabel(130, 60);
+      LabelInformation := Insa.Graphics.CreateLabel(160, 60);
       EcrireInformation("");
    end InitialiserCarte ;
-   
-   -- type T_Valeur_Accelero is array (1..3) of Integer ;
-   
-   -- Retourne les valeurs des 3 axes de=u magnetometre
-   -- function ObtenirValeursAccelero return SENSOR_VALUES ;
-    
-   --  function ObtenirValeursAccelero return SENSOR_VALUES is
-   --      Valeurs_Accelero: SENSOR_VALUES;
-   --      Resultat : SENSOR_VALUES ;
-   --   begin
-   --      Valeurs_Accelero := GetAccelerometerValues;
-   --      REsultat(1):= Integer(Valeurs_Accelero(1));
-   --      REsultat(2):= Integer(Valeurs_Accelero(2));
-   --      REsultat(3):= Integer(Valeurs_Accelero(3));
-   --      return Resultat ;
-   --   end ObtenirValeursaccelero;
-    
+       
+   -- Renvoi l'orientation de la console
    function DetecterDirection return T_Direction is            
       Resultat : T_Direction := Immobile;
       TempsEntree : constant Integer  := TempsEcoule ;
       EstOuest : Integer ;
       NordSud : Integer ;
-      
    begin
       EstOuest := Integer(GetAccelerometerValues.X);
-      NordSud := Integer(GetAccelerometerValues.Y);
-	
-      --EcrireEcran(1,1,"X: " & Integer'Image(EstOuest) & "  ");
-      --EcrireEcran(1,2,"Y: " & Integer'Image(NordSud) & "  ");
+      NordSud := Integer(-GetAccelerometerValues.Y);
 
       if abs(EstOuest) > abs(NordSud) then
          if EstOuest > SeuilEstOuest then
@@ -90,11 +73,12 @@ package body Carte is
       while  TempsEcoule - TempsEntree < 1 loop
          null ;
       end loop ;
-
-      --EcrireEcran(1,3,"R: " & T_Direction'Image(Resultat) & "     ");
+      
       return Resultat ;
    end DetecterDirection ;
     
+   -- Efface l'ecran: attention, tous les widgets sont perdus apres ça.
+   -- A faire en fin de programme
    procedure EffacerEcran is
    begin
       ClearScreen;
@@ -111,5 +95,12 @@ package body Carte is
    begin
       Insa.Graphics.SetLabelText(LabelScore, Natural'Image(Score));
    end EcrireScore;
+   
+   -- Affiche une fenetre 'popup' avec un message et un bouton OK
+   -- Procedure bloquante tant que l'utilisateur n'a pas appuyé sur OK
+   procedure AfficheMessage(Titre: String; Message: String) is
+   begin
+      Insa.Graphics.CreateMessageBox(Titre & Newline & Newline& Message, "Ok");
+   end AfficheMessage;
    
 end Carte ;

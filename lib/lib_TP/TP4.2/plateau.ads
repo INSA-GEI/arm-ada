@@ -15,7 +15,10 @@ package Plateau is
    
    type T_Bloc is (Mur,Vide,Snake,Cerise) ;
   
-   type T_Table is array (0..11,0..15) of T_Bloc ;
+   PLATEAU_LARGEUR: constant Integer := 16;
+   PLATEAU_HAUTEUR: constant Integer := 12;
+   
+   type T_Table is array (0..(PLATEAU_LARGEUR-1),0..(PLATEAU_HAUTEUR-1)) of T_Bloc ;
    
    type T_Snake is record
       PosX :     Integer ;
@@ -34,8 +37,8 @@ package Plateau is
    -- affiche ce serpent
    procedure InitialiserJeu (T: out T_Table ; S: out T_Snake) ;
    
-   -- Dessine a la Ieme ligne Jeme colonne de la table un T_Bloc defini par TypeBloc
-   procedure DessinerBloc (I,J : Integer ; TypeBloc : T_Bloc) ;
+   -- Dessine a la Xeme ligne, Yeme colonne de la table un T_Bloc defini par TypeBloc
+   procedure DessinerBloc (X,Y : Integer ; TypeBloc : T_Bloc) ;
       
    -- Libere l'espace memoire reserve a un pointeur L
    -- Attention il est indispensable d'appeler cette procedure
