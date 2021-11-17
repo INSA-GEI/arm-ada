@@ -205,6 +205,7 @@ SECTIONS
     __data_start = .;
     _sdata = .;        /* create a global symbol at data start */
     
+    *(.dma_buffers);
     *(.data)
     *(.data.*)
     *(.gnu.linkonce.d*)

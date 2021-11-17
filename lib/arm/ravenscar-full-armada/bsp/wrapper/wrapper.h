@@ -193,12 +193,13 @@ void API_GetOSVersion(int* major, int* minor);
 uint16_t RNG_GetValue(void);
 
 // Sound services
+#define AUDIO_IN_BUFFER_SIZE   128
 typedef void (*AUDIO_EventCallback)(int buffer_nbr);
 
-void AUDIO_Start(void);
-void AUDIO_Stop(void);
-void AUDIO_FillBuffer(int buffer_nbr, uint8_t* buffer);
-void AUDIO_SetEventCallback(AUDIO_EventCallback callback);
+void AUDIO_IN_Start(void);
+void AUDIO_IN_Stop(void);
+void AUDIO_IN_GetBuffer16(int buffer_nbr, int16_t* buffer);
+void AUDIO_IN_SetEventCallback(AUDIO_EventCallback callback);
 
 // Sensors services
 float* L3GD20_GetGyroscopicValues (void);

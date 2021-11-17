@@ -56,11 +56,11 @@ int main(void)
 	int val;
 
 	init_bsp();
-	enable_unpriviledged_mode((uint32_t)((void *)&__stack_end), (uint32_t)((void *)&__interrupt_stack_end));
+	//enable_unpriviledged_mode((uint32_t)((void *)&__stack_end), (uint32_t)((void *)&__interrupt_stack_end));
 
-	test_malloc();
+	//test_malloc();
 
-	val=test_panic(2);
+	//val=test_panic(2);
 
 	test_ui();
 

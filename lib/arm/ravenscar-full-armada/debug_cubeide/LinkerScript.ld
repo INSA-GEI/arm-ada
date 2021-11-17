@@ -43,6 +43,7 @@ MEMORY
 {
 RAM (xrw)      : ORIGIN = 0x20000000, LENGTH = 320K
 FLASH (rx)      : ORIGIN = 0x8000000, LENGTH = 1024K
+ERAM (xrw)     : ORIGIN = 0xC0200000, LENGTH = 2M
 }
 
 /* Define output sections */
@@ -141,7 +142,7 @@ SECTIONS
     _ebss = .;         /* define a global symbol at bss end */
     __bss_end__ = _ebss;
   } >RAM
-
+  
   /* User_heap_stack section, used to check that there is enough RAM left */
   ._user_heap_stack :
   {
@@ -153,7 +154,12 @@ SECTIONS
     . = ALIGN(8);
   } >RAM
 
-  
+   mon cul
+  .dma_section :
+  {
+    . = ALIGN(4);
+    *(.dma_buffers);
+  } >ERAM
 
   /* Remove information from the standard libraries */
   /DISCARD/ :

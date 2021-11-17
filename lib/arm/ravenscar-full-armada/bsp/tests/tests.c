@@ -43,7 +43,13 @@ lv_chart_series_t * s_mag_z;
 lv_obj_t * chart_pres;
 lv_chart_series_t * s_pres;
 
+lv_obj_t * chart_audio_in;
+lv_chart_series_t * s_audio_in_left;
+lv_chart_series_t * s_audio_in_right;
+static void TEST_AUDIO_IN_EventCallback(int buffer_nbr);
+
 static char buf[40];
+static int16_t buffer_audio_in[AUDIO_IN_BUFFER_SIZE*2];
 
 void tab_button_create(lv_obj_t * parent);
 void tab_sensors_create(lv_obj_t * parent);
@@ -71,8 +77,8 @@ void tests(void) {
 
 	tab_button_create(tbutton);
 	tab_sensors_create(tsensors);
-	tab_audio_out_create(taudio_out);
 	tab_audio_in_create(taudio_in);
+	tab_audio_out_create(taudio_out);
 
 	lv_task_create(animate_data_cb, 100, LV_TASK_PRIO_LOW, NULL);
 
@@ -251,7 +257,47 @@ void tab_audio_out_create(lv_obj_t * parent) {
 }
 
 void tab_audio_in_create(lv_obj_t * parent) {
+	lv_page_set_scrl_layout(parent, LV_LAYOUT_PRETTY_TOP);
 
+	lv_disp_size_t disp_size = lv_disp_get_size_category(NULL);
+
+	lv_coord_t grid_h_chart = lv_page_get_height_grid(parent, 1, 1);
+	lv_coord_t grid_w_chart = lv_page_get_width_grid(parent, disp_size <= LV_DISP_SIZE_LARGE ? 1 : 2, 1);
+
+	chart_audio_in = lv_chart_create(parent, NULL);
+	lv_obj_add_style(chart_audio_in, LV_CHART_PART_BG, &style_box);
+	lv_obj_set_drag_parent(chart_audio_in, true);
+	lv_obj_set_style_local_value_str(chart_audio_in, LV_CONT_PART_MAIN, LV_STATE_DEFAULT, "Microphones");
+	lv_obj_set_width_margin(chart_audio_in, grid_w_chart);
+	lv_obj_set_height_margin(chart_audio_in, grid_h_chart);
+	lv_chart_set_div_line_count(chart_audio_in, 3, 0);
+	lv_chart_set_point_count(chart_audio_in, AUDIO_IN_BUFFER_SIZE);
+	lv_chart_set_type(chart_audio_in, LV_CHART_TYPE_LINE);
+	if(disp_size > LV_DISP_SIZE_SMALL) {
+		lv_obj_set_style_local_pad_left(chart_audio_in,  LV_CHART_PART_BG, LV_STATE_DEFAULT, 4 * (LV_DPI / 10));
+		lv_obj_set_style_local_pad_bottom(chart_audio_in,  LV_CHART_PART_BG, LV_STATE_DEFAULT, 3 * (LV_DPI / 10));
+		lv_obj_set_style_local_pad_right(chart_audio_in,  LV_CHART_PART_BG, LV_STATE_DEFAULT, 2 * (LV_DPI / 10));
+		lv_obj_set_style_local_pad_top(chart_audio_in,  LV_CHART_PART_BG, LV_STATE_DEFAULT, 2 * (LV_DPI / 10));
+		lv_chart_set_y_tick_length(chart_audio_in, 0, 0);
+		lv_chart_set_x_tick_length(chart_audio_in, 0, 0);
+		lv_chart_set_y_tick_texts(chart_audio_in, "10 db\n0 G\n-10 db", 0, LV_CHART_AXIS_DRAW_LAST_TICK);
+	}
+
+	s_audio_in_left = lv_chart_add_series(chart_audio_in, CHART_COLOR_X_AXIS);
+	s_audio_in_right = lv_chart_add_series(chart_audio_in, CHART_COLOR_Y_AXIS);
+
+	AUDIO_IN_SetEventCallback(TEST_AUDIO_IN_EventCallback);
+	AUDIO_IN_Start();
+}
+
+static void TEST_AUDIO_IN_EventCallback(int buffer_nbr) {
+
+	AUDIO_IN_GetBuffer16(buffer_nbr, buffer_audio_in);
+
+	for (int i=0; i<AUDIO_IN_BUFFER_SIZE*2; i+=2) {
+		lv_chart_set_next(chart_audio_in, s_audio_in_left,50 + (int)(buffer_audio_in[i]*100/8192));
+		lv_chart_set_next(chart_audio_in, s_audio_in_right,50 + (int)(buffer_audio_in[i+1]*100/8192));
+	}
 }
 
 static void animate_data_cb(lv_task_t * task) {

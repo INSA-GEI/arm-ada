@@ -27,13 +27,16 @@
 //#include <math.h>
 #include "version.h"
 
-//#define LEGACY_LCD_WIDTH 	320
-//#define LEGACY_LCD_HEIGHT	240
-
 #define RK043FN48H_WIDTH 480
 #define RK043FN48H_HEIGHT 272
-/*ALIGN_32BYTES (AUDIO_BufferTypeDef  AUDIO_Buffer);// __attribute__((section("DMA_BUFFERS")));
-AUDIO_EventCallback AUDIO_Callback;*/
+
+typedef struct {
+	int16_t buffer1[AUDIO_IN_BUFFER_SIZE*2];
+	int16_t buffer2[AUDIO_IN_BUFFER_SIZE*2];
+}AUDIO_IN_BufferTypeDef;
+
+AUDIO_IN_BufferTypeDef  AUDIO_IN_Buffer __attribute__((aligned (32) , section(".dma_buffers")));
+AUDIO_EventCallback AUDIO_IN_Callback;
 
 #define HORIZONTAL_COORD_CONVERSION(x) (((RK043FN48H_WIDTH-LEGACY_LCD_WIDTH)/2)+x)
 #define VERTICAL_COORD_CONVERSION(y) (((RK043FN48H_HEIGHT-LEGACY_LCD_HEIGHT)/2)+y)
@@ -58,99 +61,6 @@ void API_GetOSVersion(int* major, int* minor)
 	*minor = BL_MINOR_VERSION;
 }
 
-/**
- * Init function for legacy wrapper, in charge of initializing Timer 7, for example
- */
-void WRAPPER_Init (void) {
-	RCC_ClkInitTypeDef    clkconfig;
-	uint32_t              uwTimclock, uwAPB1Prescaler = 0U;
-	uint32_t              uwPrescalerValue = 0U;
-	uint32_t              pFLatency;
-	//uint8_t  			  status = 0;
-
-	/* Configure the TIM7 IRQ priority */
-	HAL_NVIC_SetPriority(TIM7_IRQn, 0xFU ,0U);
-
-	/* Enable the TIM7 global Interrupt */
-	HAL_NVIC_EnableIRQ(TIM7_IRQn);
-
-	/* Enable TIM7 clock */
-	__HAL_RCC_TIM7_CLK_ENABLE();
-
-	/* Get clock configuration */
-	HAL_RCC_GetClockConfig(&clkconfig, &pFLatency);
-
-	/* Get APB1 prescaler */
-	uwAPB1Prescaler = clkconfig.APB1CLKDivider;
-
-	/* Compute TIM7 clock */
-	if (uwAPB1Prescaler == RCC_HCLK_DIV1)
-	{
-		uwTimclock = HAL_RCC_GetPCLK1Freq();
-	}
-	else
-	{
-		uwTimclock = 2*HAL_RCC_GetPCLK1Freq();
-	}
-
-	/* Compute the prescaler value to have TIM7 counter clock equal to 1MHz */
-	uwPrescalerValue = (uint32_t) ((uwTimclock / 1000000U) - 1U);
-
-	/* Initialize TIM7 */
-	LegacyTimHandle.Instance = TIM7;
-
-	/* Initialize TIMx peripheral as follow:
-	  + Period = [(TIM7CLK/100) - 1]. to have a (1/100) s time base.
-	  + Prescaler = (uwTimclock/100000 - 1) to have a 0.1MHz counter clock.
-	  + ClockDivision = 0
-	  + Counter direction = Up
-	 */
-	LegacyTimHandle.Init.Period = (1000000U / 100U) - 1U;
-	LegacyTimHandle.Init.Prescaler = uwPrescalerValue*10;
-	LegacyTimHandle.Init.ClockDivision = 0;
-	LegacyTimHandle.Init.CounterMode = TIM_COUNTERMODE_UP;
-	LegacyTimHandle.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-
-	if(HAL_TIM_Base_Init(&LegacyTimHandle) == HAL_OK)
-	{
-		/* Start the TIM time Base generation with interrupt disabled  */
-		HAL_TIM_Base_Start(&LegacyTimHandle);
-	}
-
-	/* Init audio */
-	/*AUDIO_Callback =0x0;
-	AUDIO_Init();*/
-
-	/* Init Melody timer */
-	//MELODY_Init();
-}
-
-//uint32_t WRAPPER_ColorConvertion_32bpp (COLOR color) {
-//	uint32_t val;
-//
-//	if (color == 0xFF) val = 0xFFFFFFFF;
-//	else
-//	{
-//		/* Convertion 3:3:2 to 8:8:8:8 */
-//		val = (uint32_t)0xFF000000 | (((uint32_t)(color&0xE0))<<16) | (((uint32_t)(color&0x1C))<<11) | (((uint32_t)(color&0x03))<<6);
-//	}
-//
-//	return val;
-//}
-//
-//uint16_t WRAPPER_ColorConvertion_16bpp (COLOR color) {
-//	uint16_t val;
-//
-//	if (color == 0xFF) val = 0xFFFF;
-//	else
-//	{
-//		/* Convertion 3:3:2 to 5:6:5 */
-//		val = (((uint16_t)(color&0xE0))<<8) | (((uint16_t)(color&0x1C))<<6) | (((uint16_t)(color&0x03))<<3);
-//	}
-//
-//	return val;
-//}
-
 // Basic OS services
 // void API_InvalidFunction(void)
 // Already defined in abi-table.c
@@ -159,155 +69,177 @@ void Delay(volatile uint32_t nTime) {
 	HAL_Delay(nTime);
 }
 
-// Keys services
-//KEY_STATE KEYS_GetState(KEY_ID key)  {
-//	KEY_STATE state=KEY_RELEASED;
-//
-//	switch (key)
-//	{
-//	case KEY_A:
-//		if (BSP_PB_GetState(BUTTON_A)) state = KEY_PRESSED;
-//		break;
-//	case KEY_B:
-//		if (BSP_PB_GetState(BUTTON_B)) state = KEY_PRESSED;
-//		break;
-//	case KEY_CENTER:
-//		if (BSP_PB_GetState(BUTTON_Y)) state = KEY_PRESSED;
-//		break;
-//	case KEY_UP:
-//		if (BSP_PB_GetState(BUTTON_UP)) state = KEY_PRESSED;
-//		break;
-//	case KEY_DOWN:
-//		if (BSP_PB_GetState(BUTTON_DOWN)) state = KEY_PRESSED;
-//		break;
-//	case KEY_RIGHT:
-//		if (BSP_PB_GetState(BUTTON_RIGHT)) state = KEY_PRESSED;
-//		break;
-//	case KEY_LEFT:
-//		if (BSP_PB_GetState(BUTTON_LEFT)) state = KEY_PRESSED;
-//		break;
-//	case KEY_LEFT_UP:
-//		if (BSP_PB_GetState(BUTTON_UP) && BSP_PB_GetState(BUTTON_LEFT)) state = KEY_PRESSED;
-//		break;
-//	case KEY_RIGHT_UP:
-//		if (BSP_PB_GetState(BUTTON_UP) && BSP_PB_GetState(BUTTON_RIGHT)) state = KEY_PRESSED;
-//		break;
-//	case KEY_LEFT_DOWN:
-//		if (BSP_PB_GetState(BUTTON_DOWN) && BSP_PB_GetState(BUTTON_LEFT)) state = KEY_PRESSED;
-//		break;
-//	case KEY_RIGHT_DOWN:
-//		if (BSP_PB_GetState(BUTTON_DOWN) && BSP_PB_GetState(BUTTON_RIGHT)) state = KEY_PRESSED;
-//		break;
-//	case KEY_SYSTEM:
-//		if (BSP_PB_GetState(BUTTON_X)) state = KEY_PRESSED;
-//		break;
-//	default:
-//		break;
-//	}
-//
-//	return state;
-//}
-
 // Random generator services
 uint16_t RNG_GetValue(void) {
 	return (uint16_t)(BSP_RNG_GetNumber());
 }
 
 // Sound services
-/* void AUDIO_Init(void) {                                                                                  */
-/* 	uint32_t freq=44100;                                                                                    */
-/*                                                                                                          */
-/* 	BSP_AUDIO_OUT_DeInit();                                                                                 */
-/* 	BSP_AUDIO_OUT_Init(OUTPUT_DEVICE_BOTH, 92, freq);                                                       */
-/* }                                                                                                        */
-/*                                                                                                          */
-/* void AUDIO_Start(void) {                                                                                 */
-// 	/* Clean Data Cache to update the content of the SRAM */                                                */
-/* 	SCB_CleanDCache_by_Addr((uint32_t*)&AUDIO_Buffer.buffer1[0], AUDIO_BUFFER_SIZE*8);                      */
-/*                                                                                                          */
-/* 	BSP_AUDIO_OUT_Play((uint16_t*)&AUDIO_Buffer.buffer1[0], AUDIO_BUFFER_SIZE*8);                           */
-/* }                                                                                                        */
-/*                                                                                                          */
-/* void AUDIO_Stop(void) {                                                                                  */
-/* 	BSP_AUDIO_OUT_Stop(CODEC_PDWN_SW);                                                                      */
-/* }                                                                                                        */
-/*                                                                                                          */
-/* void AUDIO_FillBuffer(int buffer_nbr, uint8_t* buffer) {                                                 */
-/* 	int i;                                                                                                  */
-/* 	int16_t *ptr;                                                                                           */
-/* 	int16_t tmp;                                                                                            */
-/*                                                                                                          */
-/* 	if (buffer_nbr == 1) ptr = &AUDIO_Buffer.buffer1[0];                                                    */
-/* 	else ptr =  &AUDIO_Buffer.buffer2[0];                                                                   */
-/*                                                                                                          */
-/* 	for (i=0; i<AUDIO_BUFFER_SIZE; i++)                                                                     */
-/* 	{                                                                                                       */
-/* 		tmp = buffer[i];                                                                                       */
-/* 		tmp = tmp -128;                                                                                        */
-/* 		tmp = tmp *256;                                                                                        */
-/*                                                                                                          */
-/* 		*ptr=tmp;                                                                                              */
-/* 		ptr++;                                                                                                 */
-/* 		*ptr=tmp;                                                                                              */
-/* 		ptr++;                                                                                                 */
-/* 	}                                                                                                       */
-/*                                                                                                          */
-/* 	if (buffer_nbr == 1) SCB_CleanDCache_by_Addr((uint32_t*)&AUDIO_Buffer.buffer1[0], AUDIO_BUFFER_SIZE*4); */
-/* 	else SCB_CleanDCache_by_Addr((uint32_t*)&AUDIO_Buffer.buffer2[0], AUDIO_BUFFER_SIZE*4);                 */
-/* }                                                                                                        */
-/*                                                                                                          */
-/* void AUDIO_FillBuffer16(int buffer_nbr, int16_t* buffer) {                                               */
-/* 	int i;                                                                                                  */
-/* 	int16_t *ptr;                                                                                           */
-/*                                                                                                          */
-/* 	if (buffer_nbr == 1) ptr = &AUDIO_Buffer.buffer1[0];                                                    */
-/* 	else ptr =  &AUDIO_Buffer.buffer2[0];                                                                   */
-/*                                                                                                          */
-/* 	for (i=0; i<AUDIO_BUFFER_SIZE; i++)                                                                     */
-/* 	{                                                                                                       */
-/* 		*ptr=buffer[i];                                                                                        */
-/* 		ptr++;                                                                                                 */
-/* 		*ptr=buffer[i];                                                                                        */
-/* 		ptr++;                                                                                                 */
-/* 	}                                                                                                       */
-/*                                                                                                          */
-/* 	if (buffer_nbr == 1) SCB_CleanDCache_by_Addr((uint32_t*)&AUDIO_Buffer.buffer1[0], AUDIO_BUFFER_SIZE*4); */
-/* 	else SCB_CleanDCache_by_Addr((uint32_t*)&AUDIO_Buffer.buffer2[0], AUDIO_BUFFER_SIZE*4);                 */
-/* }                                                                                                        */
-/*                                                                                                          */
-/* void AUDIO_SetEventCallback(AUDIO_EventCallback callback) {                                              */
-/* 	if (callback != 0x00)                                                                                   */
-/* 	{                                                                                                       */
-/* 		AUDIO_Callback= callback;                                                                              */
-/* 	}                                                                                                       */
-/* }                                                                                                        */
-/*                                                                                                          */
-/* */ /**                                                                                                      */
-/*  * @brief  Manages the full Transfer complete event.                                                     */
-/*  * @param  None                                                                                          */
-/*  * @retval None                                                                                          */
-//  */                                                                                                      */
-/* void BSP_AUDIO_OUT_TransferComplete_CallBack(void)                                                       */
-/* {                                                                                                        */
-/* 	if (AUDIO_Callback != 0x00)                                                                             */
-/* 	{                                                                                                       */
-/* 		AUDIO_Callback(2);                                                                                     */
-/* 	}                                                                                                       */
-/* }                                                                                                        */
-/*                                                                                                          */
-/* *//**                                                                                                      */
-/*  * @brief  Manages the DMA Half Transfer complete event.                                                 */
-/*  * @param  None                                                                                          */
-/*  * @retval None                                                                                          */
-//  */                                                                                                      */
-/* void BSP_AUDIO_OUT_HalfTransfer_CallBack(void)                                                           */
-/* {                                                                                                        */
-/* 	if (AUDIO_Callback != 0x00)                                                                             */
-/* 	{                                                                                                       */
-/* 		AUDIO_Callback(1);                                                                                     */
-/* 	}                                                                                                       */
-/* }                                                                                                        */
-/*                                                                                                          */
+// AUDIO IN  (microphones)
+
+void AUDIO_IN_Init(void) {
+ 	uint32_t freq=44100;
+
+ 	//BSP_AUDIO_IN_DeInit();
+ 	BSP_AUDIO_IN_Init(freq, 16, 2); //Frequency of 44.1Khz, 16 bits, 2 channels
+ }
+
+ void AUDIO_IN_Start(void) {
+ 	/* Clean Data Cache to update the content of the SRAM */
+ 	SCB_CleanDCache_by_Addr((uint32_t*)&AUDIO_IN_Buffer.buffer1[0], AUDIO_IN_BUFFER_SIZE*4);
+
+ 	BSP_AUDIO_IN_Record((uint16_t*)&AUDIO_IN_Buffer, AUDIO_IN_BUFFER_SIZE*4);
+ }
+
+ void AUDIO_IN_Stop(void) {
+ 	BSP_AUDIO_IN_Stop(CODEC_PDWN_SW);
+ }
+
+ void AUDIO_IN_GetBuffer16(int buffer_nbr, int16_t* buffer) {
+ 	int i;
+ 	int16_t *ptr;
+
+ 	if (buffer_nbr == 1) ptr = &AUDIO_IN_Buffer.buffer1[0];
+ 	else ptr =  &AUDIO_IN_Buffer.buffer2[0];
+
+ 	for (i=0; i<AUDIO_IN_BUFFER_SIZE*2; i++)
+ 	{
+ 		buffer[i]=*ptr;
+ 		ptr++;
+ 	}
+
+ 	if (buffer_nbr == 1) SCB_CleanDCache_by_Addr((uint32_t*)&AUDIO_IN_Buffer.buffer1[0], AUDIO_IN_BUFFER_SIZE*2);
+ 	else SCB_CleanDCache_by_Addr((uint32_t*)&AUDIO_IN_Buffer.buffer2[0], AUDIO_IN_BUFFER_SIZE*2);
+ }
+
+ void AUDIO_IN_SetEventCallback(AUDIO_EventCallback callback) {
+ 	if (callback != 0x00)
+ 	{
+ 		AUDIO_IN_Callback= callback;
+ 	}
+ }
+
+ /*
+  *
+  * @brief  Manages the full Transfer complete event (AUDIO IN).
+  * @param  None
+  * @retval None
+  */
+ void BSP_AUDIO_IN_TransferComplete_CallBack(void)
+ {
+ 	if (AUDIO_IN_Callback != 0x00)
+ 	{
+ 		AUDIO_IN_Callback(2);
+ 	}
+ }
+
+ /*
+  * @brief  Manages the DMA Half Transfer complete event (AUDIO IN).
+  * @param  None
+  * @retval None
+  */
+ void BSP_AUDIO_IN_HalfTransfer_CallBack(void)
+ {
+ 	if (AUDIO_IN_Callback != 0x00)
+ 	{
+ 		AUDIO_IN_Callback(1);
+ 	}
+ }
+
+
+// void AUDIO_Init(void) {
+// 	uint32_t freq=44100;
+//
+// 	BSP_AUDIO_OUT_DeInit();
+// 	BSP_AUDIO_OUT_Init(OUTPUT_DEVICE_BOTH, 92, freq);
+// }
+//
+// void AUDIO_Start(void) {
+// 	/* Clean Data Cache to update the content of the SRAM */
+// 	SCB_CleanDCache_by_Addr((uint32_t*)&AUDIO_Buffer.buffer1[0], AUDIO_BUFFER_SIZE*8);
+//
+// 	BSP_AUDIO_OUT_Play((uint16_t*)&AUDIO_Buffer.buffer1[0], AUDIO_BUFFER_SIZE*8);
+// }
+//
+// void AUDIO_Stop(void) {
+// 	BSP_AUDIO_OUT_Stop(CODEC_PDWN_SW);
+// }
+//
+// void AUDIO_FillBuffer(int buffer_nbr, uint8_t* buffer) {
+// 	int i;
+// 	int16_t *ptr;
+// 	int16_t tmp;
+//
+// 	if (buffer_nbr == 1) ptr = &AUDIO_Buffer.buffer1[0];
+// 	else ptr =  &AUDIO_Buffer.buffer2[0];
+//
+// 	for (i=0; i<AUDIO_BUFFER_SIZE; i++)
+// 	{
+// 		tmp = buffer[i];
+// 		tmp = tmp -128;
+// 		tmp = tmp *256;
+//
+// 		*ptr=tmp;
+// 		ptr++;
+// 		*ptr=tmp;
+// 		ptr++;
+// 	}
+//
+// 	if (buffer_nbr == 1) SCB_CleanDCache_by_Addr((uint32_t*)&AUDIO_Buffer.buffer1[0], AUDIO_BUFFER_SIZE*4);
+// 	else SCB_CleanDCache_by_Addr((uint32_t*)&AUDIO_Buffer.buffer2[0], AUDIO_BUFFER_SIZE*4);
+// }
+//
+// void AUDIO_FillBuffer16(int buffer_nbr, int16_t* buffer) {
+// 	int i;
+// 	int16_t *ptr;
+//
+// 	if (buffer_nbr == 1) ptr = &AUDIO_Buffer.buffer1[0];
+// 	else ptr =  &AUDIO_Buffer.buffer2[0];
+//
+// 	for (i=0; i<AUDIO_BUFFER_SIZE; i++)
+// 	{
+// 		*ptr=buffer[i];
+// 		ptr++;
+// 		*ptr=buffer[i];
+// 		ptr++;
+// 	}
+//
+// 	if (buffer_nbr == 1) SCB_CleanDCache_by_Addr((uint32_t*)&AUDIO_Buffer.buffer1[0], AUDIO_BUFFER_SIZE*4);
+// 	else SCB_CleanDCache_by_Addr((uint32_t*)&AUDIO_Buffer.buffer2[0], AUDIO_BUFFER_SIZE*4);
+// }
+//
+// void AUDIO_SetEventCallback(AUDIO_EventCallback callback) {
+// 	if (callback != 0x00)
+// 	{
+// 		AUDIO_Callback= callback;
+// 	}
+// }
+//
+// /*
+//  * @brief  Manages the full Transfer complete event.
+//  * @param  None
+//  * @retval None
+//  */
+// void BSP_AUDIO_OUT_TransferComplete_CallBack(void)
+// {
+// 	if (AUDIO_Callback != 0x00)
+// 	{
+// 		AUDIO_Callback(2);
+// 	}
+// }
+//
+// /*
+//  * @brief  Manages the DMA Half Transfer complete event.
+//  * @param  None
+//  * @retval None
+//  */
+// void BSP_AUDIO_OUT_HalfTransfer_CallBack(void)
+// {
+// 	if (AUDIO_Callback != 0x00)
+// 	{
+// 		AUDIO_Callback(1);
+// 	}
+// }
 
 // Sensors services
 float* L3GD20_GetGyroscopicValues (void) {
@@ -400,54 +332,71 @@ void TIMER_Stop(void) {
 void TIMER_SetEventCallback(TIMER_EventCallback callback) {
 	LegacyTimerCallback = callback;
 }
-//
-//// Soft Synthetizer
-//SYNTH_Status SYNTH_Start(void)  {
-//
-//	return SYNTH_SUCCESS;
-//}
-//
-//SYNTH_Status SYNTH_Stop(void)  {
-//
-//	return SYNTH_SUCCESS;
-//}
-//
-//SYNTH_Status SYNTH_SetMainVolume(int volume) {
-//
-//	return SYNTH_SUCCESS;
-//}
-//
-//SYNTH_Status SYNTH_SetVolume(int channel, int volume) {
-//
-//	return SYNTH_SUCCESS;
-//}
-//
-//SYNTH_Status SYNTH_SetInstrument(int channel, SYNTH_Instrument *instrument) {
-//
-//	return SYNTH_SUCCESS;
-//}
-//
-//SYNTH_Status SYNTH_NoteOn(int channel, SYNTH_Note note) {
-//
-//	return SYNTH_SUCCESS;
-//}
-//
-//SYNTH_Status SYNTH_NoteOff(int channel) {
-//
-//	return SYNTH_SUCCESS;
-//}
-//
-//MELODY_Status MELODY_Start(MELODY_Notes *music, uint32_t length) {
-//
-//	return MELODY_SUCCESS;
-//}
-//
-//MELODY_Status MELODY_Stop(void) {
-//
-//	return MELODY_SUCCESS;
-//}
-//
-//MELODY_Status MELODY_GetPosition(uint8_t *pos) {
-//
-//	return MELODY_SUCCESS;
-//}
+
+/**
+ * Init function for legacy wrapper, in charge of initializing Timer 7, for example
+ */
+void WRAPPER_Init (void) {
+	RCC_ClkInitTypeDef    clkconfig;
+	uint32_t              uwTimclock, uwAPB1Prescaler = 0U;
+	uint32_t              uwPrescalerValue = 0U;
+	uint32_t              pFLatency;
+
+	/* Configure the TIM7 IRQ priority */
+	HAL_NVIC_SetPriority(TIM7_IRQn, 0xFU ,0U);
+
+	/* Enable the TIM7 global Interrupt */
+	HAL_NVIC_EnableIRQ(TIM7_IRQn);
+
+	/* Enable TIM7 clock */
+	__HAL_RCC_TIM7_CLK_ENABLE();
+
+	/* Get clock configuration */
+	HAL_RCC_GetClockConfig(&clkconfig, &pFLatency);
+
+	/* Get APB1 prescaler */
+	uwAPB1Prescaler = clkconfig.APB1CLKDivider;
+
+	/* Compute TIM7 clock */
+	if (uwAPB1Prescaler == RCC_HCLK_DIV1)
+	{
+		uwTimclock = HAL_RCC_GetPCLK1Freq();
+	}
+	else
+	{
+		uwTimclock = 2*HAL_RCC_GetPCLK1Freq();
+	}
+
+	/* Compute the prescaler value to have TIM7 counter clock equal to 1MHz */
+	uwPrescalerValue = (uint32_t) ((uwTimclock / 1000000U) - 1U);
+
+	/* Initialize TIM7 */
+	LegacyTimHandle.Instance = TIM7;
+
+	/* Initialize TIMx peripheral as follow:
+	  + Period = [(TIM7CLK/100) - 1]. to have a (1/100) s time base.
+	  + Prescaler = (uwTimclock/100000 - 1) to have a 0.1MHz counter clock.
+	  + ClockDivision = 0
+	  + Counter direction = Up
+	 */
+	LegacyTimHandle.Init.Period = (1000000U / 100U) - 1U;
+	LegacyTimHandle.Init.Prescaler = uwPrescalerValue*10;
+	LegacyTimHandle.Init.ClockDivision = 0;
+	LegacyTimHandle.Init.CounterMode = TIM_COUNTERMODE_UP;
+	LegacyTimHandle.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+
+	if(HAL_TIM_Base_Init(&LegacyTimHandle) == HAL_OK)
+	{
+		/* Start the TIM time Base generation with interrupt disabled  */
+		HAL_TIM_Base_Start(&LegacyTimHandle);
+	}
+
+	/* Init audio */
+	/*AUDIO_Callback =0x0;
+	AUDIO_Init();*/
+	AUDIO_IN_Callback =0x0;
+	AUDIO_IN_Init();
+
+	/* Init Melody timer */
+	//MELODY_Init();
+}
