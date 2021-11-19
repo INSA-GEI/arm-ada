@@ -18,12 +18,6 @@
 #include "stm32746g_discovery_sdram.h"
 #include "stm32746g_discovery_ts.h"
 
-//#include "GUI/progressbar.h"
-//#include "GUI/window.h"
-/*#include "audio-synth/audio.h"
-#include "audio-synth/audio-synth.h"
-#include "audio-synth/audio-melody.h"*/
-
 //#include <math.h>
 #include "version.h"
 
@@ -37,6 +31,16 @@ typedef struct {
 
 AUDIO_IN_BufferTypeDef  AUDIO_IN_Buffer __attribute__((aligned (32) , section(".dma_buffers")));
 AUDIO_EventCallback AUDIO_IN_Callback;
+uint8_t AUDIO_IN_Activation;
+
+typedef struct {
+	int16_t buffer1[AUDIO_OUT_BUFFER_SIZE*2];
+	int16_t buffer2[AUDIO_OUT_BUFFER_SIZE*2];
+}AUDIO_OUT_BufferTypeDef;
+
+AUDIO_OUT_BufferTypeDef AUDIO_OUT_Buffer __attribute__((aligned (32) , section(".dma_buffers")));
+AUDIO_EventCallback AUDIO_OUT_Callback;
+uint8_t AUDIO_OUT_Activation;
 
 #define HORIZONTAL_COORD_CONVERSION(x) (((RK043FN48H_WIDTH-LEGACY_LCD_WIDTH)/2)+x)
 #define VERTICAL_COORD_CONVERSION(y) (((RK043FN48H_HEIGHT-LEGACY_LCD_HEIGHT)/2)+y)
@@ -62,9 +66,6 @@ void API_GetOSVersion(int* major, int* minor)
 }
 
 // Basic OS services
-// void API_InvalidFunction(void)
-// Already defined in abi-table.c
-
 void Delay(volatile uint32_t nTime) {
 	HAL_Delay(nTime);
 }
@@ -76,170 +77,171 @@ uint16_t RNG_GetValue(void) {
 
 // Sound services
 // AUDIO IN  (microphones)
-
 void AUDIO_IN_Init(void) {
- 	uint32_t freq=44100;
+	uint32_t freq=44100/2;
 
- 	//BSP_AUDIO_IN_DeInit();
- 	BSP_AUDIO_IN_Init(freq, 16, 2); //Frequency of 44.1Khz, 16 bits, 2 channels
- }
+	//BSP_AUDIO_IN_DeInit();
+	AUDIO_IN_Activation=0;
+	AUDIO_IN_Callback=0x0;
+	BSP_AUDIO_IN_Init(freq, 16, 2); //Frequency of 44.1Khz, 16 bits, 2 channels
+}
 
- void AUDIO_IN_Start(void) {
- 	/* Clean Data Cache to update the content of the SRAM */
- 	SCB_CleanDCache_by_Addr((uint32_t*)&AUDIO_IN_Buffer.buffer1[0], AUDIO_IN_BUFFER_SIZE*4);
+void AUDIO_IN_Start(void) {
+	if (AUDIO_IN_Activation==0) {
+		/* Clean Data Cache to update the content of the SRAM */
+		SCB_CleanDCache_by_Addr((uint32_t*)&AUDIO_IN_Buffer.buffer1[0], AUDIO_IN_BUFFER_SIZE*4);
 
- 	BSP_AUDIO_IN_Record((uint16_t*)&AUDIO_IN_Buffer, AUDIO_IN_BUFFER_SIZE*4);
- }
+		BSP_AUDIO_IN_Record((uint16_t*)&AUDIO_IN_Buffer, AUDIO_IN_BUFFER_SIZE*4);
+		AUDIO_IN_Activation=1;
+	}
+}
 
- void AUDIO_IN_Stop(void) {
- 	BSP_AUDIO_IN_Stop(CODEC_PDWN_SW);
- }
+void AUDIO_IN_Stop(void) {
+	if (AUDIO_IN_Activation!=0) {
+		BSP_AUDIO_IN_Stop(CODEC_PDWN_SW);
+		AUDIO_IN_Activation=0;
+	}
+}
 
- void AUDIO_IN_GetBuffer16(int buffer_nbr, int16_t* buffer) {
- 	int i;
- 	int16_t *ptr;
+void AUDIO_IN_GetBuffer16(int buffer_nbr, int16_t* buffer) {
+	int i;
+	int16_t *ptr;
 
- 	if (buffer_nbr == 1) ptr = &AUDIO_IN_Buffer.buffer1[0];
- 	else ptr =  &AUDIO_IN_Buffer.buffer2[0];
+	if (buffer_nbr == 1) ptr = &AUDIO_IN_Buffer.buffer1[0];
+	else ptr =  &AUDIO_IN_Buffer.buffer2[0];
 
- 	for (i=0; i<AUDIO_IN_BUFFER_SIZE*2; i++)
- 	{
- 		buffer[i]=*ptr;
- 		ptr++;
- 	}
+	for (i=0; i<AUDIO_IN_BUFFER_SIZE*2; i++)
+	{
+		buffer[i]=*ptr;
+		ptr++;
+	}
 
- 	if (buffer_nbr == 1) SCB_CleanDCache_by_Addr((uint32_t*)&AUDIO_IN_Buffer.buffer1[0], AUDIO_IN_BUFFER_SIZE*2);
- 	else SCB_CleanDCache_by_Addr((uint32_t*)&AUDIO_IN_Buffer.buffer2[0], AUDIO_IN_BUFFER_SIZE*2);
- }
+	if (buffer_nbr == 1) SCB_CleanDCache_by_Addr((uint32_t*)&AUDIO_IN_Buffer.buffer1[0], AUDIO_IN_BUFFER_SIZE*2);
+	else SCB_CleanDCache_by_Addr((uint32_t*)&AUDIO_IN_Buffer.buffer2[0], AUDIO_IN_BUFFER_SIZE*2);
+}
 
- void AUDIO_IN_SetEventCallback(AUDIO_EventCallback callback) {
- 	if (callback != 0x00)
- 	{
- 		AUDIO_IN_Callback= callback;
- 	}
- }
+void AUDIO_IN_SetEventCallback(AUDIO_EventCallback callback) {
+	if (callback != 0x00)
+	{
+		AUDIO_IN_Callback= callback;
+	}
+}
 
- /*
-  *
-  * @brief  Manages the full Transfer complete event (AUDIO IN).
-  * @param  None
-  * @retval None
-  */
- void BSP_AUDIO_IN_TransferComplete_CallBack(void)
- {
- 	if (AUDIO_IN_Callback != 0x00)
- 	{
- 		AUDIO_IN_Callback(2);
- 	}
- }
+/*
+ *
+ * @brief  Manages the full Transfer complete event (AUDIO IN).
+ * @param  None
+ * @retval None
+ */
+void BSP_AUDIO_IN_TransferComplete_CallBack(void)
+{
+	if (AUDIO_IN_Callback != 0x00)
+	{
+		AUDIO_IN_Callback(2);
+	}
+}
 
- /*
-  * @brief  Manages the DMA Half Transfer complete event (AUDIO IN).
-  * @param  None
-  * @retval None
-  */
- void BSP_AUDIO_IN_HalfTransfer_CallBack(void)
- {
- 	if (AUDIO_IN_Callback != 0x00)
- 	{
- 		AUDIO_IN_Callback(1);
- 	}
- }
+/*
+ * @brief  Manages the DMA Half Transfer complete event (AUDIO IN).
+ * @param  None
+ * @retval None
+ */
+void BSP_AUDIO_IN_HalfTransfer_CallBack(void)
+{
+	if (AUDIO_IN_Callback != 0x00)
+	{
+		AUDIO_IN_Callback(1);
+	}
+}
 
+// AUDIO OUT  (HP)
+void AUDIO_OUT_Init(void) {
+	uint32_t freq=44100;
 
-// void AUDIO_Init(void) {
-// 	uint32_t freq=44100;
-//
-// 	BSP_AUDIO_OUT_DeInit();
-// 	BSP_AUDIO_OUT_Init(OUTPUT_DEVICE_BOTH, 92, freq);
-// }
-//
-// void AUDIO_Start(void) {
-// 	/* Clean Data Cache to update the content of the SRAM */
-// 	SCB_CleanDCache_by_Addr((uint32_t*)&AUDIO_Buffer.buffer1[0], AUDIO_BUFFER_SIZE*8);
-//
-// 	BSP_AUDIO_OUT_Play((uint16_t*)&AUDIO_Buffer.buffer1[0], AUDIO_BUFFER_SIZE*8);
-// }
-//
-// void AUDIO_Stop(void) {
-// 	BSP_AUDIO_OUT_Stop(CODEC_PDWN_SW);
-// }
-//
-// void AUDIO_FillBuffer(int buffer_nbr, uint8_t* buffer) {
-// 	int i;
-// 	int16_t *ptr;
-// 	int16_t tmp;
-//
-// 	if (buffer_nbr == 1) ptr = &AUDIO_Buffer.buffer1[0];
-// 	else ptr =  &AUDIO_Buffer.buffer2[0];
-//
-// 	for (i=0; i<AUDIO_BUFFER_SIZE; i++)
-// 	{
-// 		tmp = buffer[i];
-// 		tmp = tmp -128;
-// 		tmp = tmp *256;
-//
-// 		*ptr=tmp;
-// 		ptr++;
-// 		*ptr=tmp;
-// 		ptr++;
-// 	}
-//
-// 	if (buffer_nbr == 1) SCB_CleanDCache_by_Addr((uint32_t*)&AUDIO_Buffer.buffer1[0], AUDIO_BUFFER_SIZE*4);
-// 	else SCB_CleanDCache_by_Addr((uint32_t*)&AUDIO_Buffer.buffer2[0], AUDIO_BUFFER_SIZE*4);
-// }
-//
-// void AUDIO_FillBuffer16(int buffer_nbr, int16_t* buffer) {
-// 	int i;
-// 	int16_t *ptr;
-//
-// 	if (buffer_nbr == 1) ptr = &AUDIO_Buffer.buffer1[0];
-// 	else ptr =  &AUDIO_Buffer.buffer2[0];
-//
-// 	for (i=0; i<AUDIO_BUFFER_SIZE; i++)
-// 	{
-// 		*ptr=buffer[i];
-// 		ptr++;
-// 		*ptr=buffer[i];
-// 		ptr++;
-// 	}
-//
-// 	if (buffer_nbr == 1) SCB_CleanDCache_by_Addr((uint32_t*)&AUDIO_Buffer.buffer1[0], AUDIO_BUFFER_SIZE*4);
-// 	else SCB_CleanDCache_by_Addr((uint32_t*)&AUDIO_Buffer.buffer2[0], AUDIO_BUFFER_SIZE*4);
-// }
-//
-// void AUDIO_SetEventCallback(AUDIO_EventCallback callback) {
-// 	if (callback != 0x00)
-// 	{
-// 		AUDIO_Callback= callback;
-// 	}
-// }
-//
-// /*
-//  * @brief  Manages the full Transfer complete event.
-//  * @param  None
-//  * @retval None
-//  */
-// void BSP_AUDIO_OUT_TransferComplete_CallBack(void)
-// {
-// 	if (AUDIO_Callback != 0x00)
-// 	{
-// 		AUDIO_Callback(2);
-// 	}
-// }
-//
-// /*
-//  * @brief  Manages the DMA Half Transfer complete event.
-//  * @param  None
-//  * @retval None
-//  */
-// void BSP_AUDIO_OUT_HalfTransfer_CallBack(void)
-// {
-// 	if (AUDIO_Callback != 0x00)
-// 	{
-// 		AUDIO_Callback(1);
-// 	}
-// }
+	//BSP_AUDIO_OUT_DeInit();
+	AUDIO_OUT_Activation=0;
+	AUDIO_OUT_Callback=0x0;
+	BSP_AUDIO_OUT_Init(OUTPUT_DEVICE_BOTH, 92, freq);
+}
+
+void AUDIO_OUT_Start(void) {
+	if (AUDIO_OUT_Activation==0) {
+		/* Clean Data Cache to update the content of the SRAM */
+		SCB_CleanDCache_by_Addr((uint32_t*)&AUDIO_OUT_Buffer.buffer1[0], AUDIO_OUT_BUFFER_SIZE*8);
+
+		BSP_AUDIO_OUT_Play((uint16_t*)&AUDIO_OUT_Buffer.buffer1[0], AUDIO_OUT_BUFFER_SIZE*8);
+		AUDIO_OUT_Activation=1;
+	}
+}
+
+void AUDIO_OUT_Stop(void) {
+	if (AUDIO_OUT_Activation!=0) {
+		BSP_AUDIO_OUT_Stop(CODEC_PDWN_SW);
+		AUDIO_OUT_Activation=0;
+	}
+}
+
+void AUDIO_OUT_FillBuffer16(int buffer_nbr, int16_t* buffer) {
+	int i;
+	int16_t *ptr;
+
+	if (buffer_nbr == 1) ptr = &AUDIO_OUT_Buffer.buffer1[0];
+	else ptr =  &AUDIO_OUT_Buffer.buffer2[0];
+
+	for (i=0; i<AUDIO_OUT_BUFFER_SIZE*2; i++)
+	{
+		*ptr=buffer[i];
+		ptr++;
+	}
+
+	if (buffer_nbr == 1) SCB_CleanDCache_by_Addr((uint32_t*)&AUDIO_OUT_Buffer.buffer1[0], AUDIO_OUT_BUFFER_SIZE*4);
+	else SCB_CleanDCache_by_Addr((uint32_t*)&AUDIO_OUT_Buffer.buffer2[0], AUDIO_OUT_BUFFER_SIZE*4);
+}
+
+void AUDIO_OUT_SetEventCallback(AUDIO_EventCallback callback) {
+	if (callback != 0x00)
+	{
+		AUDIO_OUT_Callback= callback;
+	}
+}
+
+/*
+ * @brief  Manages the full Transfer complete event.
+ * @param  None
+ * @retval None
+ */
+void BSP_AUDIO_OUT_TransferComplete_CallBack(void)
+{
+	if (AUDIO_OUT_Callback != 0x00)
+	{
+		AUDIO_OUT_Callback(2);
+	}
+}
+
+/*
+ * @brief  Manages the DMA Half Transfer complete event.
+ * @param  None
+ * @retval None
+ */
+void BSP_AUDIO_OUT_HalfTransfer_CallBack(void)
+{
+	if (AUDIO_OUT_Callback != 0x00)
+	{
+		AUDIO_OUT_Callback(1);
+	}
+}
+
+// AUDIO   (HP)
+void AUDIO_Init(void) {
+	//BSP_AUDIO_OUT_DeInit();
+	AUDIO_OUT_Activation=0;
+	AUDIO_IN_Activation=0;
+
+	AUDIO_IN_Callback=0x0;
+	AUDIO_OUT_Callback=0x0;
+	BSP_AUDIO_IN_OUT_Init(INPUT_DEVICE_DIGITAL_MICROPHONE_2, OUTPUT_DEVICE_SPEAKER,
+			AUDIO_FREQUENCY, AUDIO_BIT_RESOLUTION, AUDIO_NBR_CHANNELS);
+}
 
 // Sensors services
 float* L3GD20_GetGyroscopicValues (void) {
@@ -343,7 +345,7 @@ void WRAPPER_Init (void) {
 	uint32_t              pFLatency;
 
 	/* Configure the TIM7 IRQ priority */
-	HAL_NVIC_SetPriority(TIM7_IRQn, 0xFU ,0U);
+	HAL_NVIC_SetPriority(TIM7_IRQn, 0x0F ,0U);
 
 	/* Enable the TIM7 global Interrupt */
 	HAL_NVIC_EnableIRQ(TIM7_IRQn);
@@ -392,10 +394,9 @@ void WRAPPER_Init (void) {
 	}
 
 	/* Init audio */
-	/*AUDIO_Callback =0x0;
-	AUDIO_Init();*/
-	AUDIO_IN_Callback =0x0;
 	AUDIO_IN_Init();
+	//AUDIO_OUT_Init();
+	//AUDIO_Init();
 
 	/* Init Melody timer */
 	//MELODY_Init();

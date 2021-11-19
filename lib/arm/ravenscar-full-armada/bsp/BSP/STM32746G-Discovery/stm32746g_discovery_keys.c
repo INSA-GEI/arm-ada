@@ -303,7 +303,7 @@ __weak void BSP_KEYS_MspInit(void)
 
 	/*##-3- Configure the NVIC for SPI2 #########################################*/
 	/* NVIC configuration for SPI2 interrupt */
-	HAL_NVIC_SetPriority(SPI2_IRQn, 0x0F, 0);
+	HAL_NVIC_SetPriority(SPI2_IRQn, 0x0C, 0);
 	HAL_NVIC_EnableIRQ(SPI2_IRQn);
 }
 

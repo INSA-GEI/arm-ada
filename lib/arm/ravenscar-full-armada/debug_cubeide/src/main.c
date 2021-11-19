@@ -53,7 +53,7 @@ LV_IMG_DECLARE(orange);
 
 int main(void)
 {
-	int val;
+	//int val;
 
 	init_bsp();
 	//enable_unpriviledged_mode((uint32_t)((void *)&__stack_end), (uint32_t)((void *)&__interrupt_stack_end));

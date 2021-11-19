@@ -16,6 +16,11 @@ static lv_obj_t * tsensors;
 static lv_obj_t * taudio_out;
 static lv_obj_t * taudio_in;
 
+static uint16_t tab_id_audio_in;
+static uint16_t tab_id_audio_out;
+static uint8_t entering_audio_in_tab;
+static uint8_t entering_audio_out_tab;
+
 static lv_obj_t *button_a;
 static lv_obj_t *button_b;
 static lv_obj_t *button_x;
@@ -48,8 +53,14 @@ lv_chart_series_t * s_audio_in_left;
 lv_chart_series_t * s_audio_in_right;
 static void TEST_AUDIO_IN_EventCallback(int buffer_nbr);
 
+lv_obj_t * chart_audio_out;
+lv_chart_series_t * s_audio_out;
+static void TEST_AUDIO_OUT_EventCallback(int buffer_nbr);
+
 static char buf[40];
 static int16_t buffer_audio_in[AUDIO_IN_BUFFER_SIZE*2];
+static uint8_t buffer_in_data_received;
+static int16_t buffer_audio_out[AUDIO_OUT_BUFFER_SIZE*2];
 
 void tab_button_create(lv_obj_t * parent);
 void tab_sensors_create(lv_obj_t * parent);
@@ -67,8 +78,10 @@ void tests(void) {
 	tv = lv_tabview_create(lv_scr_act(), NULL);
 	tbutton = lv_tabview_add_tab(tv, "Buttons");
 	tsensors = lv_tabview_add_tab(tv, "Sensors");
-	taudio_out = lv_tabview_add_tab(tv, "Audio out");
 	taudio_in = lv_tabview_add_tab(tv, "Audio in");
+	taudio_out = lv_tabview_add_tab(tv, "Audio out");
+	tab_id_audio_in=2;
+	tab_id_audio_out=3;
 
 	lv_style_init(&style_box);
 	lv_style_set_value_align(&style_box, LV_STATE_DEFAULT, LV_ALIGN_OUT_TOP_LEFT);
@@ -82,7 +95,8 @@ void tests(void) {
 
 	lv_task_create(animate_data_cb, 100, LV_TASK_PRIO_LOW, NULL);
 
-	while (1); // never get out tests
+	while (1) { // never get out tests
+	}
 }
 
 void tab_button_create(lv_obj_t * parent) {
@@ -253,7 +267,36 @@ void tab_sensors_create(lv_obj_t * parent) {
 }
 
 void tab_audio_out_create(lv_obj_t * parent) {
+	lv_page_set_scrl_layout(parent, LV_LAYOUT_PRETTY_TOP);
 
+	lv_disp_size_t disp_size = lv_disp_get_size_category(NULL);
+
+	lv_coord_t grid_h_chart = lv_page_get_height_grid(parent, 1, 1);
+	lv_coord_t grid_w_chart = lv_page_get_width_grid(parent, disp_size <= LV_DISP_SIZE_LARGE ? 1 : 2, 1);
+
+	chart_audio_out = lv_chart_create(parent, NULL);
+	lv_obj_add_style(chart_audio_out, LV_CHART_PART_BG, &style_box);
+	lv_obj_set_drag_parent(chart_audio_out, true);
+	lv_obj_set_style_local_value_str(chart_audio_out, LV_CONT_PART_MAIN, LV_STATE_DEFAULT, "Loudspeakers");
+	lv_obj_set_width_margin(chart_audio_out, grid_w_chart);
+	lv_obj_set_height_margin(chart_audio_out, grid_h_chart);
+	lv_chart_set_div_line_count(chart_audio_out, 3, 0);
+	lv_chart_set_point_count(chart_audio_out, AUDIO_IN_BUFFER_SIZE);
+	lv_chart_set_type(chart_audio_out, LV_CHART_TYPE_LINE);
+	if(disp_size > LV_DISP_SIZE_SMALL) {
+		lv_obj_set_style_local_pad_left(chart_audio_out,  LV_CHART_PART_BG, LV_STATE_DEFAULT, 4 * (LV_DPI / 10));
+		lv_obj_set_style_local_pad_bottom(chart_audio_out,  LV_CHART_PART_BG, LV_STATE_DEFAULT, 3 * (LV_DPI / 10));
+		lv_obj_set_style_local_pad_right(chart_audio_out,  LV_CHART_PART_BG, LV_STATE_DEFAULT, 2 * (LV_DPI / 10));
+		lv_obj_set_style_local_pad_top(chart_audio_out,  LV_CHART_PART_BG, LV_STATE_DEFAULT, 2 * (LV_DPI / 10));
+		lv_chart_set_y_tick_length(chart_audio_out, 0, 0);
+		lv_chart_set_x_tick_length(chart_audio_out, 0, 0);
+		lv_chart_set_y_tick_texts(chart_audio_out, "10 db\n0 db\n-10 db", 0, LV_CHART_AXIS_DRAW_LAST_TICK);
+	}
+
+	s_audio_out = lv_chart_add_series(chart_audio_out, CHART_COLOR_X_AXIS);
+
+	AUDIO_OUT_SetEventCallback(TEST_AUDIO_OUT_EventCallback);
+	entering_audio_out_tab=1;
 }
 
 void tab_audio_in_create(lv_obj_t * parent) {
@@ -280,24 +323,33 @@ void tab_audio_in_create(lv_obj_t * parent) {
 		lv_obj_set_style_local_pad_top(chart_audio_in,  LV_CHART_PART_BG, LV_STATE_DEFAULT, 2 * (LV_DPI / 10));
 		lv_chart_set_y_tick_length(chart_audio_in, 0, 0);
 		lv_chart_set_x_tick_length(chart_audio_in, 0, 0);
-		lv_chart_set_y_tick_texts(chart_audio_in, "10 db\n0 G\n-10 db", 0, LV_CHART_AXIS_DRAW_LAST_TICK);
+		lv_chart_set_y_tick_texts(chart_audio_in, "10 db\n0 db\n-10 db", 0, LV_CHART_AXIS_DRAW_LAST_TICK);
 	}
 
 	s_audio_in_left = lv_chart_add_series(chart_audio_in, CHART_COLOR_X_AXIS);
 	s_audio_in_right = lv_chart_add_series(chart_audio_in, CHART_COLOR_Y_AXIS);
 
 	AUDIO_IN_SetEventCallback(TEST_AUDIO_IN_EventCallback);
-	AUDIO_IN_Start();
+	buffer_in_data_received=0;
+	entering_audio_in_tab=1;
 }
 
 static void TEST_AUDIO_IN_EventCallback(int buffer_nbr) {
-
 	AUDIO_IN_GetBuffer16(buffer_nbr, buffer_audio_in);
 
-	for (int i=0; i<AUDIO_IN_BUFFER_SIZE*2; i+=2) {
-		lv_chart_set_next(chart_audio_in, s_audio_in_left,50 + (int)(buffer_audio_in[i]*100/8192));
-		lv_chart_set_next(chart_audio_in, s_audio_in_right,50 + (int)(buffer_audio_in[i+1]*100/8192));
+	buffer_in_data_received=1;
+}
+
+static void TEST_AUDIO_OUT_EventCallback(int buffer_nbr) {
+	for (int i=0; i<AUDIO_OUT_BUFFER_SIZE; i++) {
+		buffer_audio_out[i]=8192;
 	}
+
+	for (int i=AUDIO_OUT_BUFFER_SIZE; i<AUDIO_OUT_BUFFER_SIZE*2; i++) {
+		buffer_audio_out[i]=-8192;
+	}
+
+	AUDIO_OUT_FillBuffer16(buffer_nbr, buffer_audio_out);
 }
 
 static void animate_data_cb(lv_task_t * task) {
@@ -306,6 +358,7 @@ static void animate_data_cb(lv_task_t * task) {
 	magnetic_t magnetic;
 	float pressure;
 	float temperature;
+	uint16_t tab_id;
 
 	if (BSP_PB_GetState(BUTTON_A)) lv_btn_set_state(button_a, LV_BTN_STATE_PRESSED);
 	else lv_btn_set_state(button_a, LV_BTN_STATE_RELEASED);
@@ -343,6 +396,8 @@ static void animate_data_cb(lv_task_t * task) {
 		if (acceleration.z>2000.0) acceleration.z=2000.0;
 		else if (acceleration.z<-2000.0) acceleration.z=-2000.0;
 		lv_chart_set_next(chart_acc, s_acc_z,50 + (int)(acceleration.z*50.0/2000.0));
+	} else {
+		lv_obj_set_style_local_value_str(chart_acc, LV_CONT_PART_MAIN, LV_STATE_DEFAULT, "Accelerometer (Not present)");
 	}
 
 	if (BSP_GYRO_ReadValues(&angular_rate)== ACC_OK) {
@@ -357,6 +412,8 @@ static void animate_data_cb(lv_task_t * task) {
 		if (angular_rate.z>50000.0) angular_rate.z=50000.0;
 		else if (angular_rate.z<-50000.0) angular_rate.z=-50000.0;
 		lv_chart_set_next(chart_gyr, s_gyr_z,50 + (int)(angular_rate.z*50.0/50000.0));
+	} else {
+		lv_obj_set_style_local_value_str(chart_acc, LV_CONT_PART_MAIN, LV_STATE_DEFAULT, "Gyroscope (Not present)");
 	}
 
 	if (BSP_MAG_ReadValues(&magnetic)== MAG_OK) {
@@ -371,6 +428,8 @@ static void animate_data_cb(lv_task_t * task) {
 		if (magnetic.z>1000.0) magnetic.z=1000.0;
 		else if (magnetic.z<-1000.0) magnetic.z=-1000.0;
 		lv_chart_set_next(chart_mag, s_mag_z,50 + (int)(magnetic.z*50.0/1000.0));
+	} else {
+		lv_obj_set_style_local_value_str(chart_acc, LV_CONT_PART_MAIN, LV_STATE_DEFAULT, "Magnetometer (Not present)");
 	}
 
 	if (BSP_PRESSURE_ReadCompensatedValues(&pressure, &temperature)==PRESSURE_OK) {
@@ -378,7 +437,6 @@ static void animate_data_cb(lv_task_t * task) {
 		 * Value are in Pascal, normally atmospheric value are in Hp (hectoPascal), so we must
 		 * divide by 100 value given by sensor
 		 */
-		//pressure = pressure/100.0;
 
 		lv_snprintf(buf, sizeof(buf), "Pressure [T°= %d C]", (int)(temperature));
 		lv_obj_set_style_local_value_str(chart_pres, LV_CONT_PART_MAIN, LV_STATE_DEFAULT, buf);
@@ -387,5 +445,40 @@ static void animate_data_cb(lv_task_t * task) {
 		if (pressure > 500.0) pressure = 500.0;
 		else if (pressure < -500.0) pressure = -500.0;
 		lv_chart_set_next(chart_pres, s_pres,50 + (int)(pressure*50.0/500.0));
+	} else {
+		lv_obj_set_style_local_value_str(chart_acc, LV_CONT_PART_MAIN, LV_STATE_DEFAULT, "Pressure (Not present)");
 	}
+
+	tab_id = lv_tabview_get_tab_act(tv);
+	if (tab_id==tab_id_audio_in) {
+		if (entering_audio_in_tab!=0) {
+			AUDIO_IN_Start();
+			entering_audio_in_tab=0;
+		}
+
+		if (buffer_in_data_received!=0) {
+			lv_chart_clear_serie(chart_audio_in, s_audio_in_left);
+			lv_chart_clear_serie(chart_audio_in, s_audio_in_right);
+
+			for (int i=0; i<AUDIO_IN_BUFFER_SIZE*2; i+=2) {
+				lv_chart_set_next(chart_audio_in, s_audio_in_left,50 + (int)(buffer_audio_in[i]*100/8192));
+				lv_chart_set_next(chart_audio_in, s_audio_in_right,50 + (int)(buffer_audio_in[i+1]*100/8192));
+			}
+
+			buffer_in_data_received=0;
+		}
+	} else {
+		AUDIO_IN_Stop();
+		entering_audio_in_tab=1;
+	}
+
+	//	if (tab_id==tab_id_audio_out) {
+	//		if (entering_audio_out_tab!=0) {
+	//			AUDIO_OUT_Start();
+	//			entering_audio_out_tab=0;
+	//		}
+	//	} else {
+	//		AUDIO_OUT_Stop();
+	//		entering_audio_out_tab=1;
+	//	}
 }

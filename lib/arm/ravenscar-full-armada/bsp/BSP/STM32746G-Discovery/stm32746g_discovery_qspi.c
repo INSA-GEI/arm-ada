@@ -562,7 +562,7 @@ __weak void BSP_QSPI_MspInit(QSPI_HandleTypeDef *hqspi, void *Params)
 
   /*##-3- Configure the NVIC for QSPI #########################################*/
   /* NVIC configuration for QSPI interrupt */
-  HAL_NVIC_SetPriority(QUADSPI_IRQn, 0x0F, 0);
+  HAL_NVIC_SetPriority(QUADSPI_IRQn, 0x0A, 0);
   HAL_NVIC_EnableIRQ(QUADSPI_IRQn);
 }
 

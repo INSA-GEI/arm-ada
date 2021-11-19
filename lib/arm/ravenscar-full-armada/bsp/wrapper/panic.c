@@ -119,22 +119,18 @@ void PANIC_Display(void) {
 	volatile uint32_t counter2=0;
 	while (1)
 	{
-//	{
-//		counter++;
-//		counter2++;
-//
-//		if (counter>100000) {
-//			lv_tick_inc(1);
-//			counter=0;
-//		}
-//
-//		if (counter2>500000) {
-//			lv_task_handler();
-//			counter2=0;
-//		}
+		counter++;
+		counter2++;
 
-		lv_tick_inc(1);
-		lv_task_handler();
+		if (counter>100000) {
+			lv_tick_inc(1);
+			counter=0;
+		}
+
+		if (counter2>500000) {
+			lv_task_handler();
+			counter2=0;
+		}
 	}
 }
 

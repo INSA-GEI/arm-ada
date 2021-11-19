@@ -14,7 +14,6 @@ with Sprites;
 with Ada.Exceptions;  use Ada.Exceptions;
 
 procedure Main is
-
    -- Test CreateButton / GetButtonState
    procedure TestButton is
       Label,Label2: Insa.Graphics.PWidget;

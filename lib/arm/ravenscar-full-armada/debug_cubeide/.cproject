@@ -139,6 +139,18 @@
 							<tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.objcopy.symbolsrec.1310665814" name="MCU Output Converter Motorola S-rec with symbols" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.objcopy.symbolsrec.647252077"/>
 						</toolChain>
 					</folderInfo>
+					<fileInfo id="com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.debug.1033316828.819468710" name="stm32746g_discovery_audio.c" rcbsApplicability="disable" resourcePath="bsp/BSP/STM32746G-Discovery/stm32746g_discovery_audio.c" toolsToInvoke="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.309496850.570700437">
+						<tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.309496850.570700437" name="MCU GCC Compiler" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.309496850">
+							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.option.optimization.level.1111820371" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.option.optimization.level" useByScannerDiscovery="false" value="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.option.optimization.level.value.og" valueType="enumerated"/>
+							<inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c.833504381" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c"/>
+						</tool>
+						<tool customBuildStep="true" id="org.eclipse.cdt.managedbuilder.ui.rcbs.160863069" name="Resource Custom Build Step">
+							<inputType id="org.eclipse.cdt.managedbuilder.ui.rcbs.inputtype.786940465" name="Resource Custom Build Step Input Type">
+								<additionalInput kind="additionalinputdependency" paths=""/>
+							</inputType>
+							<outputType id="org.eclipse.cdt.managedbuilder.ui.rcbs.outputtype.130310927" name="Resource Custom Build Step Output Type"/>
+						</tool>
+					</fileInfo>
 					<sourceEntries>
 						<entry excluding="bsp/Utilities|bsp/wrapper/trash|bsp/BSP/STM32746G-Discovery/trash|bsp/BSP/STM32746G-Discovery/stm32746g_discovery_lcd.c|bsp/BSP/STM32746G-Discovery/stm32746g_discovery_lcd_dma2d.c|bsp/BSP/STM32746G-Discovery/wifi.c|bsp/Utilities/Log|bsp/Utilities/CPU|bsp/BSP/STM32746G-Discovery/src|bsp/BSP/Components|bsp/Middlewares|BSP|STM32F7xx_HAL_Driver|res|wrapper|bsp/DoNotUse|../CMSIS|../STM32F7xx_HAL_Driver|../BSP|../hal_stm_lvgl|../res|../lvgl|../wrapper|lv_conf.h.old|CMSIS|Utilities|HAL_Driver|hal_stm_lvgl|inc|lv_examples|lvgl|src|startup" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="BSP"/>

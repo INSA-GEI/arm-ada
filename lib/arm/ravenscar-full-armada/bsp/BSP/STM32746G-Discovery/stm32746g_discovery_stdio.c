@@ -228,7 +228,7 @@ __weak void BSP_STDIO_MspInit(void)
 {
 	/*##-3- Configure the NVIC for USART1 #########################################*/
 	/* NVIC configuration for USART1 interrupt */
-	HAL_NVIC_SetPriority(DISCOVERY_COM1_IRQn, 0x0F, 0);
+	HAL_NVIC_SetPriority(DISCOVERY_COM1_IRQn, 0x09, 0);
 	HAL_NVIC_EnableIRQ(DISCOVERY_COM1_IRQn);
 }
 

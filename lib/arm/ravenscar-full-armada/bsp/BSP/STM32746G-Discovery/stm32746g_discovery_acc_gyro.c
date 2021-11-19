@@ -233,8 +233,6 @@ uint8_t BSP_ACC_ReadRawValues(axis3bit16_t *data_raw_acceleration)
 
 	if (accSensorEnabled)
 	{
-		/* TODO: Supprimer apres test */
-		//__disable_irq(); // Set PRIMASK
 
 		/*
 		 * Read status register
@@ -249,10 +247,10 @@ uint8_t BSP_ACC_ReadRawValues(axis3bit16_t *data_raw_acceleration)
 			memset(data_raw_acceleration->u8bit, 0, 3 * sizeof(int16_t));
 			lsm6ds3_acceleration_raw_get(&sensorCtx, data_raw_acceleration->u8bit);
 		}
-
-		/* TODO: Supprimer apres test */
-		//__enable_irq(); // Clear PRIMASK
-	} else status = ACC_ERROR;
+	} else {
+		memset(data_raw_acceleration->u8bit, 0, 3 * sizeof(int16_t));
+		status = ACC_ERROR;
+	}
 
 	return status;
 }
@@ -268,9 +266,6 @@ uint8_t BSP_GYRO_ReadRawValues(axis3bit16_t *data_raw_angular_rate)
 
 	if (accSensorEnabled)
 	{
-		/* TODO: Supprimer apres test */
-		//__disable_irq(); // Set PRIMASK
-
 		lsm6ds3_gy_flag_data_ready_get(&sensorCtx, &reg);
 
 		if (reg)
@@ -281,10 +276,10 @@ uint8_t BSP_GYRO_ReadRawValues(axis3bit16_t *data_raw_angular_rate)
 			memset(data_raw_angular_rate->u8bit, 0, 3 * sizeof(int16_t));
 			lsm6ds3_angular_rate_raw_get(&sensorCtx, data_raw_angular_rate->u8bit);
 		}
-
-		/* TODO: Supprimer apres test */
-		//__enable_irq(); // Clear PRIMASK
-	} else status = ACC_ERROR;
+	} else {
+		memset(data_raw_angular_rate->u8bit, 0, 3 * sizeof(int16_t));
+		status = ACC_ERROR;
+	}
 
 	return status;
 }
@@ -298,15 +293,12 @@ uint8_t BSP_ACC_ReadValues(acceleration_t *acceleration)
 	axis3bit16_t data_raw_acceleration;
 	uint8_t status= ACC_OK;
 
-	if (accSensorEnabled)
-	{
-		/* TODO: Supprimer apres test */
-		//__disable_irq(); // Set PRIMASK
-
+	//if (accSensorEnabled)
+	//{
 		status = BSP_ACC_ReadRawValues(&data_raw_acceleration);
 
-		if (status == ACC_OK)
-		{
+		//if (status == ACC_OK)
+		//{
 			acceleration->x =
 					lsm6ds3_from_fs4g_to_mg(data_raw_acceleration.i16bit[0]);
 			acceleration->y =
@@ -314,17 +306,15 @@ uint8_t BSP_ACC_ReadValues(acceleration_t *acceleration)
 			acceleration->z =
 					lsm6ds3_from_fs4g_to_mg(data_raw_acceleration.i16bit[2]);
 
-		}
-
-		/* TODO: Supprimer apres test */
-		//__enable_irq(); // Clear PRIMASK
-	} else status = ACC_ERROR;
+//		}
+//	} else
+//		status = ACC_ERROR;
 
 	return status;
 }
 
 /**
- * @brief  Reads acceleration values
+ * @brief  Reads gyroscopic values
  * @retval Read status
  */
 uint8_t BSP_GYRO_ReadValues(angularRate_t *angular_rate)
@@ -332,15 +322,12 @@ uint8_t BSP_GYRO_ReadValues(angularRate_t *angular_rate)
 	axis3bit16_t data_raw_angular_rate;
 	uint8_t status= ACC_OK;
 
-	if (accSensorEnabled)
-	{
-		/* TODO: Supprimer apres test */
-		//__disable_irq(); // Set PRIMASK
-
+//	if (accSensorEnabled)
+//	{
 		status = BSP_GYRO_ReadRawValues(&data_raw_angular_rate);
 
-		if (status == ACC_OK)
-		{
+//		if (status == ACC_OK)
+//		{
 			/*
 			 * Read gyroscope field data
 			 */
@@ -352,11 +339,8 @@ uint8_t BSP_GYRO_ReadValues(angularRate_t *angular_rate)
 			angular_rate->z =
 					lsm6ds3_from_fs250dps_to_mdps(data_raw_angular_rate.i16bit[2]);
 
-		}
-
-		/* TODO: Supprimer apres test */
-		//__enable_irq(); // Clear PRIMASK
-	} else status = ACC_ERROR;
+//		}
+//	} else status = ACC_ERROR;
 
 	return status;
 }
@@ -373,9 +357,6 @@ uint8_t BSP_ACC_ReadTemperature(float *temperature_degC)
 
 	if (accSensorEnabled)
 	{
-		/* TODO: Supprimer apres test */
-		//__disable_irq(); // Set PRIMASK
-
 		/*
 		 * Read output only if new value is available
 		 */
@@ -395,12 +376,10 @@ uint8_t BSP_ACC_ReadTemperature(float *temperature_degC)
 		{
 			status =  ACC_NO_DATA;
 		}
-
-
-
-		/* TODO: Supprimer apres test */
-		//__enable_irq(); // Clear PRIMASK
-	} else status = ACC_ERROR;
+	} else {
+		*temperature_degC = 0.0f;
+		status = ACC_ERROR;
+	}
 
 	return status;
 }
@@ -506,11 +485,11 @@ __weak void BSP_ACC_GYRO_MspInit(void)
 	DISCOVERY_EXT_I2Cx_RELEASE_RESET();
 
 	/* Enable and set I2Cx Interrupt to a lower priority */
-	HAL_NVIC_SetPriority(DISCOVERY_EXT_I2Cx_EV_IRQn, 0x0F, 0);
+	HAL_NVIC_SetPriority(DISCOVERY_EXT_I2Cx_EV_IRQn, 0x0D, 0);
 	HAL_NVIC_EnableIRQ(DISCOVERY_EXT_I2Cx_EV_IRQn);
 
 	/* Enable and set I2Cx Interrupt to a lower priority */
-	HAL_NVIC_SetPriority(DISCOVERY_EXT_I2Cx_ER_IRQn, 0x0F, 0);
+	HAL_NVIC_SetPriority(DISCOVERY_EXT_I2Cx_ER_IRQn, 0x0D, 0);
 	HAL_NVIC_EnableIRQ(DISCOVERY_EXT_I2Cx_ER_IRQn);
 
 	//	/* Enable and set EXTI9-5 Interrupt to the lowest priority */

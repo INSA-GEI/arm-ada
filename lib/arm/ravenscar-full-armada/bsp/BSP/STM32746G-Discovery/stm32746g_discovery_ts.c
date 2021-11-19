@@ -195,7 +195,7 @@ uint8_t BSP_TS_ITConfig(void)
 	HAL_GPIO_Init(TS_INT_GPIO_PORT, &gpio_init_structure);
 
 	/* Enable and set Touch screen EXTI Interrupt to the lowest priority */
-	HAL_NVIC_SetPriority((IRQn_Type)(TS_INT_EXTI_IRQn), 0x0F, 0x00);
+	HAL_NVIC_SetPriority((IRQn_Type)(TS_INT_EXTI_IRQn), 0x0E, 0x00);
 	HAL_NVIC_EnableIRQ((IRQn_Type)(TS_INT_EXTI_IRQn));
 
 	/* Enable the TS ITs */

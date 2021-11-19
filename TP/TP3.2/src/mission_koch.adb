@@ -34,7 +34,7 @@ procedure Mission_Koch is
       for Cote in 1..3 loop
          Courbe_Koch(Finesse, Lg);
          Tourner_Droite(120.0);      --dans le sens des aiguilles d'une montre
-         AttendreToucheA;
+         --  AttendreToucheA;
       end loop;
    end Flocon_Koch;
 

@@ -70,7 +70,6 @@ EndDependencies */
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32746g_discovery_mag.h"
-//#include "stm32746g_discovery_mag_conf.h"
 
 /** @addtogroup BSP
  * @{
@@ -241,32 +240,27 @@ uint8_t BSP_MAG_ReadRawValues(axis3bit16_t *data_raw_magnetic)
 	uint8_t status= MAG_OK;
 	uint8_t reg;
 
-	if (magSensorEnabled)
-	{
-		/* TODO: Supprimer apres test */
-		//__disable_irq(); // Set PRIMASK
-
+	if (magSensorEnabled) {
 		/*
 		 * Read output only if new value is available
 		 */
 		lis2mdl_mag_data_ready_get(&magCtx, &reg);
-		if (reg)
-		{
+
+		if (reg) {
 			/*
 			 * Read magnetic field data
 			 */
 			memset(data_raw_magnetic->u8bit, 0x00, 3 * sizeof(int16_t));
 			lis2mdl_magnetic_raw_get(&magCtx, data_raw_magnetic->u8bit);
-		}
-		else
-		{
+		} else {
 			status =  MAG_NO_DATA;
 		}
-
-		/* TODO: Supprimer apres test */
-		//__enable_irq(); // Clear PRIMASK
 	}
-	else status = MAG_ERROR;
+	else {
+		memset(data_raw_magnetic->u8bit, 0x00, 3 * sizeof(int16_t));
+
+		status = MAG_ERROR;
+	}
 
 	return status;
 }
@@ -281,37 +275,31 @@ uint8_t BSP_MAG_ReadValues(magnetic_t *magnetic)
 	uint8_t reg;
 	axis3bit16_t data_raw_magnetic;
 
-	if (magSensorEnabled)
-	{
-		/* TODO: Supprimer apres test */
-		//__disable_irq(); // Set PRIMASK
+	memset(data_raw_magnetic.u8bit, 0x00, 3 * sizeof(int16_t));
 
+	magnetic->x = lis2mdl_from_lsb_to_mgauss( data_raw_magnetic.i16bit[0]);
+	magnetic->y = lis2mdl_from_lsb_to_mgauss( data_raw_magnetic.i16bit[1]);
+	magnetic->z = lis2mdl_from_lsb_to_mgauss( data_raw_magnetic.i16bit[2]);
+
+	if (magSensorEnabled) {
 		/*
 		 * Read output only if new value is available
 		 */
 		lis2mdl_mag_data_ready_get(&magCtx, &reg);
-		if (reg)
-		{
+
+		if (reg) {
 			/*
 			 * Read magnetic field data
 			 */
-			memset(data_raw_magnetic.u8bit, 0x00, 3 * sizeof(int16_t));
 			lis2mdl_magnetic_raw_get(&magCtx, data_raw_magnetic.u8bit);
 
 			magnetic->x = lis2mdl_from_lsb_to_mgauss( data_raw_magnetic.i16bit[0]);
 			magnetic->y = lis2mdl_from_lsb_to_mgauss( data_raw_magnetic.i16bit[1]);
 			magnetic->z = lis2mdl_from_lsb_to_mgauss( data_raw_magnetic.i16bit[2]);
-		}
-		else
-		{
+		} else {
 			status =  MAG_NO_DATA;
 		}
-
-		/* TODO: Supprimer apres test */
-		//__enable_irq(); // Clear PRIMASK
-
-	}
-	else status = MAG_ERROR;
+	} else status = MAG_ERROR;
 
 	return status;
 }
@@ -326,17 +314,16 @@ uint8_t BSP_MAG_ReadTemperature(float *temperature_degC)
 	uint8_t reg;
 	axis1bit16_t data_raw_temperature;
 
-	if (magSensorEnabled)
-	{
-		/* TODO: Supprimer apres test */
-		//__disable_irq(); // Set PRIMASK
+	memset(data_raw_temperature.u8bit, 0x00, sizeof(int16_t));
+	*temperature_degC = lis2mdl_from_lsb_to_celsius(data_raw_temperature.i16bit);
 
+	if (magSensorEnabled) {
 		/*
 		 * Read output only if new value is available
 		 */
 		lis2mdl_mag_data_ready_get(&magCtx, &reg);
-		if (reg)
-		{
+
+		if (reg) {
 			/*
 			 * Read temperature data
 			 */
@@ -344,17 +331,10 @@ uint8_t BSP_MAG_ReadTemperature(float *temperature_degC)
 			lis2mdl_temperature_raw_get(&magCtx, data_raw_temperature.u8bit);
 			*temperature_degC = lis2mdl_from_lsb_to_celsius(data_raw_temperature.i16bit);
 
-		}
-		else
-		{
+		} else {
 			status =  MAG_NO_DATA;
 		}
-
-		/* TODO: Supprimer apres test */
-		//__enable_irq(); // Clear PRIMASK
-
-	}
-	else status = MAG_ERROR;
+	} else status = MAG_ERROR;
 
 	return status;
 }
@@ -461,15 +441,15 @@ __weak void BSP_MAG_MspInit(void)
 	DISCOVERY_EXT_I2Cx_RELEASE_RESET();
 
 	/* Enable and set I2Cx Interrupt to a lower priority */
-	HAL_NVIC_SetPriority(DISCOVERY_EXT_I2Cx_EV_IRQn, 0x0F, 0);
+	HAL_NVIC_SetPriority(DISCOVERY_EXT_I2Cx_EV_IRQn, 0x0D, 0);
 	HAL_NVIC_EnableIRQ(DISCOVERY_EXT_I2Cx_EV_IRQn);
 
 	/* Enable and set I2Cx Interrupt to a lower priority */
-	HAL_NVIC_SetPriority(DISCOVERY_EXT_I2Cx_ER_IRQn, 0x0F, 0);
+	HAL_NVIC_SetPriority(DISCOVERY_EXT_I2Cx_ER_IRQn, 0x0D, 0);
 	HAL_NVIC_EnableIRQ(DISCOVERY_EXT_I2Cx_ER_IRQn);
 
 	/* Enable and set EXTI9-5 Interrupt to the lowest priority */
-	HAL_NVIC_SetPriority(MAG_DRDY_EXTI_IRQn, 0xFF, 0);
+	HAL_NVIC_SetPriority(MAG_DRDY_EXTI_IRQn, 0x0E, 0);
 	HAL_NVIC_EnableIRQ(MAG_DRDY_EXTI_IRQn);
 }
 

@@ -344,7 +344,7 @@ void BSP_PB_Init(Button_TypeDef Button, ButtonMode_TypeDef ButtonMode)
 		HAL_GPIO_Init(BUTTON_PORT[Button], &gpio_init_structure);
 
 		/* Enable and set Button EXTI Interrupt to the lowest priority */
-		HAL_NVIC_SetPriority((IRQn_Type)(BUTTON_IRQn[Button]), 0x0F, 0x00);
+		HAL_NVIC_SetPriority((IRQn_Type)(BUTTON_IRQn[Button]), 0x0E, 0x00);
 		HAL_NVIC_EnableIRQ((IRQn_Type)(BUTTON_IRQn[Button]));
 	}
 }
@@ -511,11 +511,11 @@ static void I2Cx_MspInit(I2C_HandleTypeDef *i2c_handler)
 		DISCOVERY_AUDIO_I2Cx_RELEASE_RESET();
 
 		/* Enable and set I2Cx Interrupt to a lower priority */
-		HAL_NVIC_SetPriority(DISCOVERY_AUDIO_I2Cx_EV_IRQn, 0x0F, 0);
+		HAL_NVIC_SetPriority(DISCOVERY_AUDIO_I2Cx_EV_IRQn, 0x0D, 0);
 		HAL_NVIC_EnableIRQ(DISCOVERY_AUDIO_I2Cx_EV_IRQn);
 
 		/* Enable and set I2Cx Interrupt to a lower priority */
-		HAL_NVIC_SetPriority(DISCOVERY_AUDIO_I2Cx_ER_IRQn, 0x0F, 0);
+		HAL_NVIC_SetPriority(DISCOVERY_AUDIO_I2Cx_ER_IRQn, 0x0D, 0);
 		HAL_NVIC_EnableIRQ(DISCOVERY_AUDIO_I2Cx_ER_IRQn);
 	}
 	else

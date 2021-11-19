@@ -70,7 +70,6 @@ EndDependencies */
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32746g_discovery_pressure.h"
-//#include "stm32746g_discovery_mag_conf.h"
 
 /** @addtogroup BSP
  * @{
@@ -198,11 +197,7 @@ uint8_t BSP_PRESSURE_ReadValues(uint32_t *pressure)
 	int32_t temperature;
 	uint32_t humidity;
 
-	if (pressureSensorEnabled)
-	{
-		/* TODO: Supprimer apres test */
-		//__disable_irq(); // Set PRIMASK
-
+	if (pressureSensorEnabled) {
 		/*
 		 * Read output only if new value is available
 		 */
@@ -212,14 +207,9 @@ uint8_t BSP_PRESSURE_ReadValues(uint32_t *pressure)
 		{
 			status =  PRESSURE_NO_DATA;
 		}
-
-		/* TODO: Supprimer apres test */
-		//__enable_irq(); // Clear PRIMASK
-	}
-	else
-	{
+	} else {
 		*pressure=0;
-		status =  PRESSURE_NO_DATA;
+		status = PRESSURE_NO_DATA;
 	}
 
 	return status;
@@ -235,11 +225,7 @@ uint8_t BSP_PRESSURE_ReadTemperature(int32_t *temperature_degC)
 	uint32_t pressure;
 	uint32_t humidity;
 
-	if (pressureSensorEnabled)
-	{
-		/* TODO: Supprimer apres test */
-		//__disable_irq(); // Set PRIMASK
-
+	if (pressureSensorEnabled) {
 		/*
 		 * Read output only if new value is available
 		 */
@@ -249,13 +235,9 @@ uint8_t BSP_PRESSURE_ReadTemperature(int32_t *temperature_degC)
 		{
 			status =  PRESSURE_NO_DATA;
 		}
-
-		/* TODO: Supprimer apres test */
-		//__enable_irq(); // Clear PRIMASK
-	}
-	else
-	{ *temperature_degC=0;
-	status =  PRESSURE_NO_DATA;
+	} else {
+		*temperature_degC=0;
+		status =  PRESSURE_NO_DATA;
 	}
 
 	return status;
@@ -270,11 +252,7 @@ uint8_t BSP_PRESSURE_ReadCompensatedValues(float *pressure, float *temperature)
 	uint8_t status= PRESSURE_OK;
 	float humidity;
 
-	if (pressureSensorEnabled)
-	{
-		/* TODO: Supprimer apres test */
-		//__disable_irq(); // Set PRIMASK
-
+	if (pressureSensorEnabled) {
 		/*
 		 * Read output only if new value is available
 		 */
@@ -284,12 +262,7 @@ uint8_t BSP_PRESSURE_ReadCompensatedValues(float *pressure, float *temperature)
 		{
 			status =  PRESSURE_NO_DATA;
 		}
-
-		/* TODO: Supprimer apres test */
-		//__enable_irq(); // Clear PRIMASK
-	}
-	else
-	{
+	} else {
 		*pressure=0.0;
 		*temperature=0.0;
 		status =  PRESSURE_NO_DATA;
@@ -356,7 +329,7 @@ __weak void BSP_PRESSURE_MspInit(void)
 
 	/*##-3- Configure the NVIC for SPI2 #########################################*/
 	/* NVIC configuration for SPI2 interrupt */
-	HAL_NVIC_SetPriority(SPI2_IRQn, 0x0F, 0);
+	HAL_NVIC_SetPriority(SPI2_IRQn, 0x0C, 0);
 	HAL_NVIC_EnableIRQ(SPI2_IRQn);
 }
 
