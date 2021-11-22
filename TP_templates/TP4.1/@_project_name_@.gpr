@@ -14,6 +14,7 @@ project @_project_name_@ is
 
    package Builder is
       for Switches ("ada") use ("-g", "-O0", "-j4");
+      for Executable_Suffix use ".elf";
    end Builder;
 
    for Runtime ("ada") use "/mnt/commetud/2eme Annee IMACS/ADA/lib/arm/ravenscar-full-armada";

@@ -23,8 +23,7 @@ def on_debugger_cmd(hook, debugger, command):
     return ""
 
 
+GPS.Console("Messages").write("Load: Cortex-M7 HW bug workaround (22/11/21)\n")
 GPS.Hook("debugger_command_action_hook").add(on_debugger_cmd)
-GPS.Console("Messages").write("Cortex-M7 bug plugin: Version 1.0 (15/09/20)\n")
-GPS.Console("Messages").write("Cortex-M7 bug plugin: gdb commands patched\n")
-print("Cortex-M7 bug plugin: Version 1.0 (15/09/20)")
-print("Cortex-M7 bug plugin: gdb commands patched")
+# GPS.Console("Messages").write("Cortex-M7 bug plugin: Version 1.0 (15/09/20)\n")
+# GPS.Console("Messages").write("Cortex-M7 bug plugin: gdb commands patched\n")
