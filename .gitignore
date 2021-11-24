@@ -99,6 +99,10 @@ donotuse/
 lib/arm/ravenscar-full-armada/ld/common-ROM.ld.new
 lib/arm/ravenscar-full-armada/ld/common-ROM.ld.org
 
+tools/bin/native/
+tools/bin/ST-LINK_gdbserver
+tools/bin/STLinkUpgrade.jar
+
 # Misc
 *.db
 *.cswi
