@@ -2,7 +2,7 @@
 Name=ST-Link GdbServer
 Comment=GDB server for ST-Link probe
 GenericName=gdbserver
-Exec="/mnt/commetud/2eme Annee IMACS/ADA/bin/ST-LINK_gdbserver.sh"
+Exec="/mnt/commetud/2eme Annee IMACS/ADA/tools/bin/ST-LINK_gdbserver.sh"
 Icon=/usr/local/insa/STM32CubeProgrammer/util/Programmer.ico
 Type=Application
 Terminal=true

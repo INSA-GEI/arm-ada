@@ -7,7 +7,7 @@ fichier=~/.bashrc
 if [ ! -f "$fichier" ]; then
     touch "$fichier"
 else
-    cp "$fichier" "$fichier".bak
+    cp "$fichier" "$fichier".armada-bak
 fi
 
 var1=$(cat $fichier | grep "insa/GNAT")
@@ -17,7 +17,7 @@ if [ "$var1" = "" ]; then
     echo "var1=\$(echo \$PATH | grep \"insa/GNAT\")"  >> "$fichier"
     echo " " >> "$fichier"
     echo "if [ \"\$var1\" = \"\" ]; then" >> "$fichier"
-    echo "   PATH=\$PATH:/usr/local/insa/GNAT/2020/arm-elf/bin/:/usr/local/insa/GNAT/2020/x86_64/bin:/usr/local/insa/STM32CubeProgrammer/bin/:/mnt/commetud/2eme\\ Annee\\ IMACS/ADA/bin/" >> "$fichier"
+    echo "   PATH=\$PATH:$PATH:/usr/local/insa/GNAT/2020/arm-elf/bin:/usr/local/insa/GNAT/2020/x86_64/bin:/usr/local/insa/STM32CubeProgrammer/bin:/mnt/commetud/2eme\\ Annee\\ IMACS/ADA/tools/bin" >> "$fichier"
     echo "fi" >> "$fichier"
 
     echo "$fichier mis à jour"
@@ -29,10 +29,14 @@ echo ""
 echo "Recopie de la configuration de gnatstudio dans ~/.gnatstudio"
 
 if [ ! -e ~/.gnatstudio/plug-ins ]; then
-    mkdir -p ~/.gnatstudio/plug-ins
+    mkdir ~/.gnatstudio
+    ln -s /mnt/commetud/2eme\ Annee\ IMACS/ADA/tools/gnatstudio/plug-ins ~/.gnatstudio/plug-ins
 fi
 
-cp -rv /mnt/commetud/2eme\ Annee\ IMACS/ADA/tools/gnatstudio/plug-ins/* ~/.gnatstudio/plug-ins
+if [ ! -e ~/.gnatstudio/icons ]; then
+    mkdir ~/.gnatstudio
+    ln -s /mnt/commetud/2eme\ Annee\ IMACS/ADA/tools/gnatstudio/icons ~/.gnatstudio/icons
+fi
 
 echo ""
 echo "Rajoute les racourcies des applications et les associations de fichier"
@@ -41,7 +45,14 @@ if [ ! -e ~/.local/share/applications ]; then
     mkdir -p ~/.local/share/applications
 fi
 
-cp -v /mnt/commetud/2eme\ Annee\ IMACS/ADA/tools/gnome/applications/* ~/.local/share/applications
+if [ ! -e ~/.local/share/applications/gnatstudio.desktop ]; then
+    ln -s /mnt/commetud/2eme\ Annee\ IMACS/ADA/tools/gnome/applications/gnatstudio.desktop ~/.local/share/applications/gnatstudio.desktop
+fi
+
+if [ ! -e ~/.local/share/applications/st-gdbserver.desktop ]; then
+    ln -s /mnt/commetud/2eme\ Annee\ IMACS/ADA/tools/gnome/applications/st-gdbserver.desktop ~/.local/share/applications/st-gdbserver.desktop
+fi
+
 update-desktop-database ~/.local/share/applications
 
 echo ""
