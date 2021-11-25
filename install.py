@@ -54,8 +54,6 @@ def deploy(servername, deploydir, downloaddir, tempdir, temparchive):
     print ("Connection to " + server_name)
     username = input("Enter user name: ")
     password = getpass("Enter password: ")
-    #username = "dimercur"
-    #password = "F4iryC4lend4r-"
 
     ssh_client= paramiko.SSHClient()
     ssh_client.load_system_host_keys()

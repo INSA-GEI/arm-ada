@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "arm-ada-setup v5"
+echo "arm-ada-setup v6"
 echo "Mise a jour du path dans .bashrc"
 fichier=~/.bashrc
 
@@ -17,7 +17,7 @@ if [ "$var1" = "" ]; then
     echo "var1=\$(echo \$PATH | grep \"insa/GNAT\")"  >> "$fichier"
     echo " " >> "$fichier"
     echo "if [ \"\$var1\" = \"\" ]; then" >> "$fichier"
-    echo "   PATH=\$PATH:$PATH:/usr/local/insa/GNAT/2020/arm-elf/bin:/usr/local/insa/GNAT/2020/x86_64/bin:/usr/local/insa/STM32CubeProgrammer/bin:/mnt/commetud/2eme\\ Annee\\ IMACS/ADA/tools/bin" >> "$fichier"
+    echo "   PATH=\$PATH:/usr/local/insa/GNAT/2020/arm-elf/bin:/usr/local/insa/GNAT/2020/x86_64/bin:/usr/local/insa/STM32CubeProgrammer/bin:/mnt/commetud/2eme\\ Annee\\ IMACS/ADA/tools/bin" >> "$fichier"
     echo "fi" >> "$fichier"
 
     echo "$fichier mis à jour"
@@ -27,14 +27,15 @@ fi
 
 echo ""
 echo "Recopie de la configuration de gnatstudio dans ~/.gnatstudio"
+if [ ! -e ~/.gnatstudio ]; then
+    mkdir ~/.gnatstudio
+fi
 
 if [ ! -e ~/.gnatstudio/plug-ins ]; then
-    mkdir ~/.gnatstudio
     ln -s /mnt/commetud/2eme\ Annee\ IMACS/ADA/tools/gnatstudio/plug-ins ~/.gnatstudio/plug-ins
 fi
 
 if [ ! -e ~/.gnatstudio/icons ]; then
-    mkdir ~/.gnatstudio
     ln -s /mnt/commetud/2eme\ Annee\ IMACS/ADA/tools/gnatstudio/icons ~/.gnatstudio/icons
 fi
 
@@ -55,10 +56,17 @@ fi
 
 update-desktop-database ~/.local/share/applications
 
+echo "Creation de l'arborescence des TPs"
+if [ ! -e ~/TPADA2IMACS ]; then
+    mkdir -p ~/TPADA2IMACS/TP0
+    mkdir -p ~/TPADA2IMACS/TP1
+    mkdir -p ~/TPADA2IMACS/TP2
+    mkdir -p ~/TPADA2IMACS/TP3.1
+    mkdir -p ~/TPADA2IMACS/TP3.2
+    mkdir -p ~/TPADA2IMACS/TP4.1
+    mkdir -p ~/TPADA2IMACS/TP4.2
+fi
+
 echo ""
 echo "Fini"
 read -p "Press Enter to exit"
-
-
-
-

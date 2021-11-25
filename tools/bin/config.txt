@@ -72,4 +72,4 @@
 #                       Modify to correct path
 #                       for STM32_Programmer_CLI executable
 ###############################################################
--cp /mnt/commetud/2eme Annee IMACS/ADA/cubeprogrammer/bin
+-cp /usr/local/insa/STM32CubeProgrammer/bin/
