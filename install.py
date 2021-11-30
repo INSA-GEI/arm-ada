@@ -1,4 +1,6 @@
 #!/usr/bin/python3
+#
+# Script for installing library on server
 
 import os
 import time
@@ -10,13 +12,44 @@ from shutil import rmtree
 import paramiko
 from getpass import getpass
 
-directories_to_archive  = ["./tools","./lib","./TP_templates"]
+# Parameters to configure
+directories_to_archive  = ["./tools",
+                           "./lib",
+                           "./TP_templates"]
+
 libs_to_rebuild         = ["gprbuild ./lib/arm/insa/insa.gpr",
-                           "gprbuild ./lib/arm/ravenscar-full-armada/ravenscar_build.gpr"]
+                           "gprbuild ./lib/arm/ravenscar-full-armada/ravenscar_build.gpr",
+                           "gprbuild ./TP/TP1/mission_pacman.gpr",
+                           "gprbuild ./TP/TP2/mission_simon.gpr",
+                           "gprbuild ./TP/TP3.1/mission_dicho.gpr",
+                           "gprbuild ./TP/TP3.2/mission_koch.gpr",
+                           "gprbuild ./TP/TP4.1/mission_capteurs.gpr",
+                           "gprbuild ./TP/TP4.2/mission_snake.gpr"]
+
+preparation_commands    = ["unzip -fq %s/tools/bin/ST-LINK_gdbserver.zip",
+                           "rm %s/tools/bin/ST-LINK_gdbserver.zip",
+                           "rm -rf %s/lib/arm/ravenscar-full-armada/debug_cubeide",
+                           "rm -rf %s/lib/arm/insa/donotuse",
+                           "cp ./TP/TP1/obj/mission_pacman %s/TP_templates/TP1/obj/solution.elf",
+                           "cp ./TP/TP2/obj/mission_simon %s/TP_templates/TP2/obj/solution.elf",
+                           "cp ./TP/TP3.1/obj/mission_dicho %s/TP_templates/TP3.1/obj/solution.elf",
+                           "cp ./TP/TP3.2/obj/mission_koch %s/TP_templates/TP3.2/obj/solution.elf",
+                           "cp ./TP/TP4.1/obj/mission_capteurs %s/TP_templates/TP4.1/obj/solution.elf",
+                           "cp ./TP/TP4.2/obj/mission_snake %s/TP_templates/TP4.2/obj/solution.elf",
+                           "cp ./arm-ada-setup %s",
+                           "chmod +x %s/arm-ada-setup"]
+
 server_name             = "srv-ens-calcul"
+
 deploy_path_on_server   = "/mnt/commetud/2eme\\ Annee\\ IMACS/ADA/"
+
 download_path_on_server = "/home_pers/"
+
 temp_archive            = "armada.zip"
+
+# 
+# Nothing to configure or modify under this line
+#
 
 def rebuildlibs(commands):
     for command in commands:
@@ -30,14 +63,14 @@ def copyfilestoarchive(treetocopy, tempdir):
         copytree (treetocopy, tempdir+treetocopy)
 
 
-def preparearchive(tempdir,temparchive):
-    os.system ("unzip " + tempdir + "tools/bin/ST-LINK_gdbserver.zip")
-    os.system ("rm " + tempdir + "tools/bin/ST-LINK_gdbserver.zip")
-    os.system ("rm -rf " + tempdir + "lib/arm/ravenscar-full-armada/debug_cubeide")
+def preparearchive(tempdir,temparchive,cmdlist):
+    for cmd in cmdlist:
+        print (cmd % tempdir)
+        os.system (cmd % tempdir)
 
     currentdir = os.getcwd()
     os.chdir(tempdir)
-    os.system ("zip -r " + temparchive + " *")
+    os.system ("zip -qr " + temparchive + " *")
     os.chdir(currentdir)
 
 
@@ -64,9 +97,17 @@ def deploy(servername, deploydir, downloaddir, tempdir, temparchive):
     sftp_client.put(tempdir+ temparchive ,downloaddir + username + "/" + temparchive, transferprogress)
     sftp_client.close()
 
+    print ("Archive old ADA directory to ADA_" + datetime.now().strftime("%Y%m%d-%H%M%S"))
+    ssh_stdin, ssh_stdout, ssh_stderr = ssh_client.exec_command("mv "+ deploydir + " " + deploydir + "/../ADA_" + datetime.now().strftime("%Y%m%d-%H%M%S"),get_pty=True)
+    time.sleep(1) # wait 1 second in order for "mv" command to complete
+
+    print ("Create empty directory " + deploydir)
+    ssh_stdin, ssh_stdout, ssh_stderr = ssh_client.exec_command("mkdir " + deploydir,get_pty=True)
+    time.sleep(1) # wait 1 second in order for "mkdir" command to complete
+
     print ("Move " + downloaddir + username + "/" + temparchive + " to " + deploydir)
     ssh_stdin, ssh_stdout, ssh_stderr = ssh_client.exec_command("mv "+ downloaddir + username + "/"  + temparchive + " " + deploydir,get_pty=True)
-    time.sleep(3) # wait 3 second in order for "mv" command to complete
+    time.sleep(2) # wait 2 second in order for "mv" command to complete
 
     print ("unzip "+ temparchive)
     ssh_stdin, ssh_stdout, ssh_stderr = ssh_client.exec_command("cd " + deploydir + ";unzip "+ temparchive + " -d ./",get_pty=True)
@@ -93,7 +134,7 @@ def main():
     print ("\nPrepare archive")
     rebuildlibs (libs_to_rebuild)
     copyfilestoarchive (directories_to_archive, temp_dir)
-    preparearchive (temp_dir, temp_archive)
+    preparearchive (temp_dir, temp_archive, preparation_commands)
 
     print ("\nDeploy on commetud")
     deploy (server_name, deploy_path_on_server, download_path_on_server,  temp_dir, temp_archive)

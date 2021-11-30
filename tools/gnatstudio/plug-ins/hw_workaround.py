@@ -9,17 +9,21 @@ import sys
 def on_debugger_cmd(hook, debugger, command):
     # GPS.Console("Messages").write("Debugger command: " + command+"\n")
     if command == "-exec-step":
-        GPS.Console("Messages").write("Single step detected: patching\n")
-        debugger.send("set $primask=0x1", True)
+        #GPS.Console("Messages").write("Single step detected: patching\n")
+        #debugger.send("set $primask=0x1", True)
+        debugger.send("set $PRIMASK:=0x1", True)
     elif command == "-exec-next":
-        GPS.Console("Messages").write("Step over detected: patching\n")
-        debugger.send("set $primask=0x1", True)
+        #GPS.Console("Messages").write("Step over detected: patching\n")
+        #debugger.send("set $primask=0x1", True)
+        debugger.send("set $PRIMASK:=0x1", True)
     elif command == "-exec-continue":
-        GPS.Console("Messages").write("Run detected: patching\n")
-        debugger.send("set $primask=0x0", True)
+        #GPS.Console("Messages").write("Run detected: patching\n")
+        #debugger.send("set $primask=0x0", True)
+        debugger.send("set $PRIMASK:=0x0", True)
     elif command == "-exec-finish":
-        GPS.Console("Messages").write("Run to exit detected: patching\n")
-        debugger.send("set $primask=0x0", True)
+        #GPS.Console("Messages").write("Run to exit detected: patching\n")
+        #debugger.send("set $primask=0x0", True)
+        debugger.send("set $PRIMASK:=0x0", True)
     return ""
 
 

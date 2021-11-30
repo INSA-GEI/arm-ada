@@ -10,9 +10,6 @@
 -- Cet acteur fourni les routines pour afficher du texte
 --
 
-with Insa, Insa.Graphics;
-use  Insa, Insa.Graphics;
-
 with Ada.Characters.Latin_1;
 
 package Ecran is
@@ -22,14 +19,6 @@ package Ecran is
    -- Exemple:
    -- EcrireInfos("Ma premiere ligne" & NewLine & "Ma deuxieme ligne");
    Newline: constant Character := Ada.Characters.Latin_1.LF;
-   
-   -- Cree une zone pour ecrire du texte
-   -- X=0 completement à gauche de l'ecran; x = SCREEN_WIDTH: completement à droite
-   -- Y=0 Completement en HAUT de l'ecran, y= SCREEn_HEIGHT: completement en BAS
-   function CreerZonedeTexte(X: Integer; Y: Integer) return Pwidget;
-  
-   -- Ecrit du texte dans une zone de texte DEJA CREE
-   procedure Ecriretexte(ZonedeTexte: not null PWidget; Texte: String);
    
    -- Ecrit le nombre de cerises restant dans la zone prevue 
    procedure EcrireNbCerises(Cerises: Integer);

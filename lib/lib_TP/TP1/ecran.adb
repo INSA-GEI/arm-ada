@@ -10,20 +10,31 @@
 -- Cet acteur fourni les routines pour afficher du texte
 --
 
+with Insa, Insa.Graphics;
+use  Insa, Insa.Graphics;
+
 package body Ecran is
    LabelCerise: Pwidget;
    LabelTemps: Pwidget;
    LabelInformation: Pwidget;
    
-   function CreerZonedeTexte(X: Integer; Y: Integer) return Pwidget is
-   begin
-      return Insa.Graphics.CreateLabel((SCREEN_WIDTH/2)+X, (SCREEN_HEIGHT/2)+Y);
-   end CreerZonedeTexte;
+   --  Cree une zone pour ecrire du texte
+   --  X=0 completement à gauche de l'ecran; x = SCREEN_WIDTH: completement à droite
+   --  Y=0 Completement en HAUT de l'ecran, y= SCREEn_HEIGHT: completement en BAS
+   --  function CreerZonedeTexte(X: Integer; Y: Integer) return Pwidget;
+  
+   --  Ecrit du texte dans une zone de texte DEJA CREE
+   --  procedure Ecriretexte(ZonedeTexte: not null PWidget; Texte: String);
    
-   procedure Ecriretexte(ZonedeTexte: not null Pwidget; Texte: String) is
-   begin 
-      Insa.Graphics.SetLabelText(ZonedeTexte, Texte);
-   end Ecriretexte;
+   --  function CreerZonedeTexte(X: Integer; Y: Integer) return Pwidget is
+   --  begin
+   --     return Insa.Graphics.CreateLabel((SCREEN_WIDTH/2)+X, (SCREEN_HEIGHT/2)+Y);
+   --  end CreerZonedeTexte;
+   --  
+   --  procedure Ecriretexte(ZonedeTexte: not null Pwidget; Texte: String) is
+   --  begin
+   --     Insa.Graphics.SetLabelText(ZonedeTexte, Texte);
+   --  end Ecriretexte;
    
    -- Ecrit le nombre de cerises restant dans la zone prevue 
    procedure EcrireNbCerises(Cerises: Integer) is
