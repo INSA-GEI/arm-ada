@@ -54,17 +54,33 @@ if [ ! -e ~/.local/share/applications/st-gdbserver.desktop ]; then
     ln -s /mnt/commetud/2eme\ Annee\ IMACS/ADA/tools/gnome/applications/st-gdbserver.desktop ~/.local/share/applications/st-gdbserver.desktop
 fi
 
-update-desktop-database ~/.local/share/applications
+#update-desktop-database ~/.local/share/applications
 
 echo "Creation de l'arborescence des TPs"
+pathList=( "TP1" "TP2" "TP3.1" "TP3.2" "TP4.1" "TP4.2" )
+missionNames=( "mission_pacman" "mission_simon" "mission_dicho" "mission_koch" "mission_capteurs" "mission_snake" )
+length=${#pathList[@]}
+
 if [ ! -e ~/TPADA2IMACS ]; then
-    mkdir -p ~/TPADA2IMACS/TP0
-    mkdir -p ~/TPADA2IMACS/TP1
-    mkdir -p ~/TPADA2IMACS/TP2
-    mkdir -p ~/TPADA2IMACS/TP3.1
-    mkdir -p ~/TPADA2IMACS/TP3.2
-    mkdir -p ~/TPADA2IMACS/TP4.1
-    mkdir -p ~/TPADA2IMACS/TP4.2
+    mkdir -p ~/TPADA2IMACS
+    cp -r /mnt/commetud/2eme\ Annee\ IMACS/ADA/TP_templates/* ~/TPADA2IMACS/
+    rm -rf ~/TPADA2IMACS/Generic
+
+    # Et maintenant, on fait le boulot de Gnatstudio quand on créé un nouveau projet
+    for (( j=0; j<${length}; j++ ));
+    do
+        TPPath=${pathList[$j]}
+        TPName=${missionNames[$j]}
+
+        #echo "Repertoire = $TPPath"
+        #echo "Nom = $TPName"
+	    rm ~/TPADA2IMACS/$TPPath/*.gpt
+        mv ~/TPADA2IMACS/$TPPath/@_project_name_@.gpr ~/TPADA2IMACS/$TPPath/$TPName.gpr
+        mv ~/TPADA2IMACS/$TPPath/src/@_main_name_@.adb ~/TPADA2IMACS/$TPPath/src/$TPName.adb
+        sed -i 's/@_project_name_@/'$TPName'/g' ~/TPADA2IMACS/$TPPath/$TPName.gpr
+        sed -i 's/@_main_name_@/'$TPName'/g' ~/TPADA2IMACS/$TPPath/$TPName.gpr
+        sed -i 's/@_Main_Name_@/'$TPName'/g' ~/TPADA2IMACS/$TPPath/src/$TPName.adb
+    done
 fi
 
 echo ""
