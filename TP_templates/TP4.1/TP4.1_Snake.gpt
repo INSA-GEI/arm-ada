@@ -1,10 +1,10 @@
 # Header
-Name: TP4.2
+Name: TP4.1
 Category: TPs ADA 2IMACS
 Project: @_project_name_@.gpr
 
 # Variables
-Project_Name: TP4.2_Snake: Nom du projet.
+Project_Name: TP4.1_Snake: Nom du projet.
 Main_Name: mission_snake: Nom du fichier principal du projet. 
 
 # Description

@@ -30,7 +30,7 @@
 		<link>
 			<name>bsp</name>
 			<type>2</type>
-			<location>/home/dimercur/Travail/ada/ravenscar-port-armada/ravenscar-full-armada/bsp</location>
+			<location>/home/dimercur/Travail/git/arm-ada/lib/arm/ravenscar-full-armada/bsp</location>
 		</link>
 	</linkedResources>
 </projectDescription>

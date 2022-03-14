@@ -1,0 +1,18 @@
+# Header
+Name: TP4.2
+Category: TPs ADA 2IMACS
+Project: @_project_name_@.gpr
+
+# Variables
+Project_Name: TP4.2_Morse: Nom du projet.
+Main_Name: mission_morse: Nom du fichier principal du projet. 
+
+# Description
+[Description]
+Réalisation d'un generateur/decodeur de morse.
+---------
+Enregistrez votre message en morse, envoyez le et decodez le
+---------
+Ce TP permet de mettre en application les listes chainées,
+l'ajout en fin de liste et la recherche recursive 
+d'element dans une liste chainée.

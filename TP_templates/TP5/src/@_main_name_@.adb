@@ -1,12 +1,12 @@
 ------------------------------------------------------------------------------
 --                                                                          --
---                             Mission Morse                                --
+--                             Mission Capteurs                             --
 --                                                                          --
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Morse;
-use Morse;
+with Sensors;
+use Sensors;
 
 procedure @_Main_Name_@ is
    type Element ;
