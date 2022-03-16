@@ -120,6 +120,9 @@ package body Insa.Graphics is
    function Wrp_lv_label_create(Parent: PWidget; Copy: PWidget) return PWidget;
    pragma Import (C, Wrp_lv_label_create, "lv_label_create");
    
+   function Wrp_lv_textarea_create(Parent: PWidget; Copy: PWidget) return PWidget;
+   pragma Import (C, Wrp_lv_textarea_create, "lv_textarea_create");
+   
    procedure Wrp_lv_msgbox_start_auto_close(Mbx: PWidget; Tempo: WORD);
    pragma Import (C, Wrp_lv_msgbox_start_auto_close, "lv_msgbox_start_auto_close");
    
@@ -272,6 +275,54 @@ package body Insa.Graphics is
       Interfaces.C.Strings.Free (Tmp_String);
    end SetLabelText;
 
+   -----------------------------------------------------
+   -- Textarea
+   ----------------------------------------------------
+
+   -- CreateTextArea
+   -- Create a textArea widget into a parent widget, for writting text, and move it to given position
+   function CreateTextArea (Parent: not null Pwidget; X: Integer; Y: Integer) return PWidget is
+      Tmp: PWidget;
+   begin
+      Tmp := Wrp_lv_textarea_create(Parent,null);
+      SetWidgetPosition(Tmp,X,Y);
+      Wrp_Lv_Textarea_Set_Scrollbar_Mode(Tmp, SCROLLBAR_MODE_AUTO);
+      
+      return Tmp;
+   end CreateTextArea;
+   
+   -- CreateTextArea
+   -- Create a textArea widget for writting text, and move it to given position
+   function CreateTextArea (X: Integer; Y: Integer) return PWidget is
+   begin
+      return CreateTextArea (GetScreenId, X, Y);
+   end CreateTextArea;
+   
+   -- AddTextinTextArea
+   -- Add text to text area
+   procedure AddTextinTextArea (TextArea: PWidget; Text: String) is
+      procedure Wrp_lv_textarea_add_text(TextArea: PWidget; Text: Interfaces.C.Strings.Chars_Ptr);
+      pragma Import (C, Wrp_lv_textarea_add_text, "lv_textarea_add_text");
+      Tmp_String: Interfaces.C.Strings.Chars_Ptr:=  Interfaces.C.Strings.New_String (Text);
+   begin
+      Wrp_lv_textarea_add_text(TextArea, Tmp_String);
+      -- RealignWidget(Label);
+      
+      Interfaces.C.Strings.Free (Tmp_String);
+   end AddTextinTextArea;
+   
+   -- ClearTextinTextArea
+   -- Clear text in a text area
+   procedure ClearTextinTextArea (TextArea: PWidget) is
+      procedure Wrp_lv_textarea_set_text(TextArea: PWidget; Text: Interfaces.C.Strings.Chars_Ptr);
+      pragma Import (C, Wrp_lv_textarea_set_text, "lv_textarea_set_text");
+      Tmp_String: Interfaces.C.Strings.Chars_Ptr:=  Interfaces.C.Strings.New_String ("");
+   begin
+      Wrp_lv_textarea_set_text(TextArea, Tmp_String);
+
+      Interfaces.C.Strings.Free (Tmp_String);
+   end ClearTextinTextArea;
+   
    -----------------------------------------------------
    -- Slider
    -----------------------------------------------------

@@ -104,6 +104,13 @@ package Insa.Graphics is
    STATE_PRESSED: constant Byte:=16#10#;
    STATE_DISABLED: constant Byte:= 16#20#;
    
+   SCROLLBAR_MODE_OFF: constant Byte:= 16#0#;  -- Never Show Scroll Bars
+   SCROLLBAR_MODE_ON: constant Byte:= 16#1#; -- Always Show Scroll Bars
+   SCROLLBAR_MODE_DRAG: constant Byte:= 16#2#; -- Show Scroll Bars when Page is Being Dragged
+   SCROLLBAR_MODE_AUTO : constant Byte:= 16#3#; -- Show Scroll Bars when The Scrollable Container is Large Enough To Be Scrolled
+   SCROLLBAR_MODE_HIDE : constant Byte:=16#4#; -- Hide The Scroll Bar Temporally
+   SCROLLBAR_MODE_UNHIDE: constant Byte:=16#8#;
+   
    -- SetWidgetPosition
    -- Move widget to a given position
    procedure SetWidgetPosition (Widget: PWidget; X: Integer; Y: Integer);
@@ -182,6 +189,33 @@ package Insa.Graphics is
    -- Change label text
    procedure SetLabelText (Label: PWidget; Text: String);
    
+   -----------------------------------------------------
+   -- Textarea
+   ----------------------------------------------------
+   
+   -- CreateTextArea
+   -- Create a textArea widget for writting text, and move it to given position
+   function CreateTextArea (X: Integer; Y: Integer) return PWidget;
+   
+   -- CreateTextArea
+   -- Create a textArea widget into a parent widget, for writting text, and move it to given position
+   function CreateTextArea (Parent: not null Pwidget; X: Integer; Y: Integer) return PWidget;
+   
+   -- AddTextinTextArea
+   -- Add text to text area
+   procedure AddTextinTextArea (TextArea: PWidget; Text: String);
+   
+   -- AddCharinTextArea
+   -- Add char to text area
+   procedure AddCharinTextArea(TextArea: PWidget; C: Character);
+   pragma Import (C, AddCharinTextArea, "lv_textarea_add_char");
+   
+   -- ClearTextinTextArea
+   -- Clear text in a text area
+   procedure ClearTextinTextArea (TextArea: PWidget);
+   
+   procedure Wrp_lv_textarea_set_scrollbar_mode(TextArea: PWidget; Mode: Byte);
+   pragma Import (C, Wrp_lv_textarea_set_scrollbar_mode, "lv_page_set_scrollbar_mode");
    -----------------------------------------------------
    -- Slider
    -----------------------------------------------------
