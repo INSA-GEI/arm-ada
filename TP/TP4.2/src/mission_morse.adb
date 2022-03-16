@@ -116,6 +116,7 @@ begin
       while not Fin loop
          SymboleSaisi:=AttendreSymbole;
          AfficherSymboleSaisi(SymboleSaisi);
+         JouerBruitSymbole(SymboleSaisi);
 
          case SymboleSaisi is
          when FinMot =>

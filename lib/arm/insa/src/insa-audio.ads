@@ -9,10 +9,16 @@
 package Insa.Audio is
    pragma Warnings (Off);
 
-   subtype BUFFER_NUMBER is BYTE range 1 .. 2;
-   subtype BUFFER_ELEMENT is BYTE;
-
-   type AUDIO_BUFFER is array(1..512) of BUFFER_ELEMENT;
+   subtype BUFFER_NUMBER is WORD range 1..2;
+   
+   type BUFFER_ELEMENT is record 
+      Left :SIGNED_WORD;
+      Right:SIGNED_WORD;
+   end record;
+   
+   AUDIO_BUFFER_SIZE: constant Integer := 256;
+   
+   type AUDIO_BUFFER is array(1..AUDIO_BUFFER_SIZE/2) of BUFFER_ELEMENT;
 
    type AUDIO_CALLBACK is access procedure (Buffer_Nbr: BUFFER_NUMBER);
 

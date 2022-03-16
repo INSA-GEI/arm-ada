@@ -161,7 +161,7 @@ void AUDIO_OUT_Init(void) {
 	//BSP_AUDIO_OUT_DeInit();
 	AUDIO_OUT_Activation=0;
 	AUDIO_OUT_Callback=0x0;
-	BSP_AUDIO_OUT_Init(OUTPUT_DEVICE_BOTH, 92, freq);
+	BSP_AUDIO_OUT_Init(OUTPUT_DEVICE_SPEAKER, 92, freq);
 }
 
 void AUDIO_OUT_Start(void) {
@@ -394,8 +394,8 @@ void WRAPPER_Init (void) {
 	}
 
 	/* Init audio */
-	AUDIO_IN_Init();
-	//AUDIO_OUT_Init();
+	//AUDIO_IN_Init();
+	AUDIO_OUT_Init();
 	//AUDIO_Init();
 
 	/* Init Melody timer */

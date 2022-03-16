@@ -11,8 +11,8 @@
 -- et l'affichage des elements de morse.
 --
 
-with Insa, Insa.Graphics;
-use Insa, Insa.Graphics;
+with Insa, Insa.Graphics, Insa.Audio;
+use Insa, Insa.Graphics, Insa.Audio;
 
 package body Morse is
 
@@ -25,6 +25,9 @@ package body Morse is
    BoutonResultat: Pwidget;
    LabelBoutonResultat: Pwidget;
    WindowResultat: PWidget;
+   
+   AudioBuffer: AUDIO_BUFFER;
+   GenererSon:Boolean:=False;
    
    procedure AfficherSymboleSaisi (S: T_Symbole) is
    begin
@@ -144,12 +147,48 @@ package body Morse is
       end case;
    end AfficherSymboleResultat ;
    
+   procedure AudioCallback (Buffer_Nbr: BUFFER_NUMBER) is
+   begin
+      for I in AudioBuffer'Range loop
+         if not GenererSon then
+            AudioBuffer(I).Left:= 0;
+            AudioBuffer(I).Right:= 0;
+         elsif I<AudioBuffer'Last/2 then
+            AudioBuffer(I).Left:= SIGNED_WORD'First;
+            AudioBuffer(I).Right:= SIGNED_WORD'First;
+         else
+            AudioBuffer(I).Left:= SIGNED_WORD'Last;
+            AudioBuffer(I).Right:= SIGNED_WORD'Last;
+         end if;
+      end loop;
+      
+      if Buffer_Nbr =2 then
+         FillAudioBuffer(1,AudioBuffer);
+      else 
+         FillAudioBuffer(2,AudioBuffer);
+      end if;
+   end AudioCallback;
+   
    procedure JouerBruitSymbole(S:T_Symbole) is
+      DUREE_COURT: constant Integer:= 200;
+      DUREE_LONG: constant Integer:= 400;
+      
+      DUREE_APRES_SYMBOLE: constant Integer:= 70;
+      
+      DUREE_ENTRE_LETTRE: constant Integer:= 250;
    begin
       case S is
-         when Court => Insa.SysDelay(250);
-         when Long => Insa.SysDelay(500);
-         when FinLettre => Insa.SysDelay(350);
+         when Court => 
+            GenererSon:=True;
+            Insa.SysDelay(DUREE_COURT);
+            GenererSon:=False;
+            Insa.SysDelay(DUREE_APRES_SYMBOLE);
+         when Long => 
+            GenererSon:=True;
+            Insa.SysDelay(DUREE_LONG);
+            GenererSon:=False;
+            Insa.SysDelay(DUREE_APRES_SYMBOLE);
+         when FinLettre => Insa.SysDelay(DUREE_ENTRE_LETTRE);
          when others => null;
       end case;
       
@@ -188,10 +227,10 @@ package body Morse is
          ClearTextinTextArea(TextAreaSymboleSaisie);
          ClearTextinTextArea(TextAreaCaractereSaisie);
       end if;
-      
    end InitialiseEcran;
    
 begin
+   
    TextAreaSymboleSaisie := null;
    TextAreaCaractereSaisie := null;
    BoutonCourt:= null;
@@ -199,4 +238,11 @@ begin
    BoutonFinLettre:= null; 
    BoutonFinMot:= null;
    LabelBouton:= null;
+   
+   StopAudio;
+   SetAudioCallback(AudioCallback'Access);
+   
+   GenererSon:=False;
+   
+   StartAudio;
 end Morse;
