@@ -170,22 +170,22 @@ package body Morse is
    end AudioCallback;
    
    procedure JouerBruitSymbole(S:T_Symbole) is
-      DUREE_COURT: constant Integer:= 200;
-      DUREE_LONG: constant Integer:= 400;
+      DUREE_TI: constant Integer:= 100;
+      DUREE_TA: constant Integer:= 3*DUREE_TI;
       
-      DUREE_APRES_SYMBOLE: constant Integer:= 70;
+      DUREE_APRES_SYMBOLE: constant Integer:= DUREE_TI;
       
-      DUREE_ENTRE_LETTRE: constant Integer:= 250;
+      DUREE_ENTRE_LETTRE: constant Integer:= DUREE_TA;
    begin
       case S is
          when Court => 
             GenererSon:=True;
-            Insa.SysDelay(DUREE_COURT);
+            Insa.SysDelay(DUREE_TI);
             GenererSon:=False;
             Insa.SysDelay(DUREE_APRES_SYMBOLE);
          when Long => 
             GenererSon:=True;
-            Insa.SysDelay(DUREE_LONG);
+            Insa.SysDelay(DUREE_TA);
             GenererSon:=False;
             Insa.SysDelay(DUREE_APRES_SYMBOLE);
          when FinLettre => Insa.SysDelay(DUREE_ENTRE_LETTRE);

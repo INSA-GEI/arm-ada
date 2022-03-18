@@ -23,8 +23,8 @@ libs_to_rebuild         = ["gprbuild ./lib/arm/insa/insa.gpr",
                            "gprbuild ./TP/TP2/mission_simon.gpr",
                            "gprbuild ./TP/TP3.1/mission_dicho.gpr",
                            "gprbuild ./TP/TP3.2/mission_koch.gpr",
-                           "gprbuild ./TP/TP4.1/mission_capteurs.gpr",
-                           "gprbuild ./TP/TP4.2/mission_snake.gpr"]
+                           "gprbuild ./TP/TP4.1/mission_snake.gpr",
+                           "gprbuild ./TP/TP4.2/mission_morse.gpr"]
 
 preparation_commands    = ["unzip -fq %s/tools/bin/ST-LINK_gdbserver.zip",
                            "rm %s/tools/bin/ST-LINK_gdbserver.zip",
@@ -34,8 +34,8 @@ preparation_commands    = ["unzip -fq %s/tools/bin/ST-LINK_gdbserver.zip",
                            "cp ./TP/TP2/obj/mission_simon %s/TP_templates/TP2/obj/solution.elf",
                            "cp ./TP/TP3.1/obj/mission_dicho %s/TP_templates/TP3.1/obj/solution.elf",
                            "cp ./TP/TP3.2/obj/mission_koch %s/TP_templates/TP3.2/obj/solution.elf",
-                           "cp ./TP/TP4.1/obj/mission_capteurs %s/TP_templates/TP4.1/obj/solution.elf",
-                           "cp ./TP/TP4.2/obj/mission_snake %s/TP_templates/TP4.2/obj/solution.elf",
+                           "cp ./TP/TP4.1/obj/mission_snake %s/TP_templates/TP4.1/obj/solution.elf",
+                           "cp ./TP/TP4.2/obj/mission_morse %s/TP_templates/TP4.2/obj/solution.elf",
                            "cp ./arm-ada-setup %s",
                            "chmod +x %s/arm-ada-setup"]
 
