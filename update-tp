@@ -1,0 +1,71 @@
+#!/usr/bin/env python3
+
+from calendar import c
+import os
+import time
+import sys
+
+from datetime import datetime
+from shutil import copytree
+from shutil import rmtree
+
+COMMETUD_PATH = "/mnt/commetud/2eme\\ Annee\\ IMACS/ADA"
+
+TP_DIR_NAME   = "TPADA2IMACS"
+
+MISSION_NAMES= [("/TP1", "mission_pacman"), 
+                ("/TP2", "mission_simon"),
+                ("/TP3.1", "mission_dicho"),
+                ("/TP3.2", "mission_koch"),
+                ("/TP4.1", "mission_snake"),
+                ("/TP4.2", "mission_morse") ]
+
+def templateToProject(TPPath, TPName):
+    print ("... Update %s in %s"%(TPName, TPPath))
+    
+    os.system("rm %s/*.gpt"%(TPPath))
+    os.system("mv %s/@_project_name_@.gpr %s/%s.gpr"%(TPPath,TPPath,TPName))
+    os.system("mv %s/src/@_main_name_@.adb %s/src/%s.adb"%(TPPath,TPPath,TPName))
+    os.system("sed -i 's/@_project_name_@/'%s'/g' %s/%s.gpr"%(TPName,TPPath,TPName))
+    os.system("sed -i 's/@_main_name_@/'%s'/g' %s/%s.gpr"%(TPName,TPPath,TPName))
+    os.system("sed -i 's/@_Main_Name_@/'%s'/g' %s/src/%s.adb"%(TPName,TPPath,TPName))
+        
+def main():
+    tp_path = os.path.expanduser('~')+'/'+TP_DIR_NAME
+    remote_path = COMMETUD_PATH+'/TP_templates'
+    
+    print("Local TPs path: " + tp_path)
+    print("Remote TPs path: "+ remote_path)
+    print ()
+    
+    print(tp_path + " exists ? ",end ='')
+    
+    if (os.path.exists(tp_path)):
+        print("Yes")
+        
+        save_path = tp_path + '-' + datetime.now().strftime("%Y%m%d-%H%M%S")
+        print("... Save contents into " + save_path)
+        os.system("cp -r %s %s"%(tp_path, save_path))
+        
+        os.system("rm -rf %s"%(tp_path+"/TP4*"))
+        os.system("cp -r %s %s"%(remote_path+'/TP4*',tp_path))
+        
+        templateToProject(tp_path+"/TP4.1", "mission_snake")
+        templateToProject(tp_path+"/TP4.2", "mission_morse")
+        
+    else:
+        print ("No")
+        print ("... Copy remote directory")
+        os.makedirs(tp_path)
+        os.system("cp -r %s %s"%(remote_path+"/*",tp_path))
+        os.system("rm -r %s"%(tp_path+"/Generic"))
+        
+        for mission in MISSION_NAMES:
+            templateToProject(tp_path+mission[0], mission[1])
+        
+    print()
+    print ("All done")
+
+if __name__ == '__main__':
+    main()
+    
