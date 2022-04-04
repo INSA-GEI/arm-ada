@@ -9,18 +9,16 @@ with Morse;
 use Morse;
 
 procedure @_Main_Name_@ is
-   type Element ;
-   type P_Element is access Element;
-
-   Type Element is 
-      record
-	      Norme : Integer;
-	      Num : Natural;
-	      Suiv : P_Element;
-      end record;
+   type T_Mot ;
+   type Ptr_Mot is access T_Mot ;
+   type T_Mot is record
+      Lettre : Ptr_Element ;
+      Suiv : Ptr_Mot ;
+   end record ;
    
 begin
-   loop     
+   loop    
+      InitialiseEcran; 
       null;
    end loop;
 end @_Main_Name_@;
