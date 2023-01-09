@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 B o d y                                  --
 --                                                                          --
---          Copyright (C) 1992-2020, Free Software Foundation, Inc.         --
+--          Copyright (C) 1992-2021, Free Software Foundation, Inc.         --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -31,10 +31,6 @@
 
 --  This is a Ravenscar bare board version of this body. Tasking version of
 --  these functions are always used.
-
-pragma Polling (Off);
---  We must turn polling off for this unit, because otherwise we get an
---  infinite loop from the code within the Poll routine itself.
 
 with System.Tasking;
 with System.Task_Primitives.Operations;

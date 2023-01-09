@@ -6,7 +6,7 @@
 --                                                                          --
 --                                  S p e c                                 --
 --                                                                          --
---                   Copyright (C) 2016-2017, AdaCore                       --
+--                   Copyright (C) 2016-2020, AdaCore                       --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -32,7 +32,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  This package defines board parameters for the STM32F429-Discovery board
+--  This package defines board parameters for the stm32f746disco
 
 package System.BB.Board_Parameters is
    pragma No_Elaboration_Code_All;
@@ -43,9 +43,9 @@ package System.BB.Board_Parameters is
    --------------------
 
    Main_Clock_Frequency : constant := 200_000_000;
-   --  Maximal frequency in over-drive mode is 216MHz. However this can lead
-   --  to instabilities, so we lower the frequency to 200MHz.
-   --  In non over-drive mode, the frequency should be adjusted to 180 MHz.
+   --  Optimal frequency of the system clock. Note that the STM32F411 can go
+   --  up to 200 MHz, but all other STM32F40x and STM32F41x MCUs can only do
+   --  168 MHz.
 
    HSE_Clock_Frequency : constant := 25_000_000;
    --  Frequency of High Speed External clock.

@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 B o d y                                  --
 --                                                                          --
---          Copyright (C) 2004-2020, Free Software Foundation, Inc.         --
+--          Copyright (C) 2004-2021, Free Software Foundation, Inc.         --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -40,8 +40,11 @@ with Ada.Containers.Helpers; use Ada.Containers.Helpers;
 with Ada.Containers.Prime_Numbers;
 
 with System; use type System.Address;
+with System.Put_Images;
 
-package body Ada.Containers.Hashed_Sets is
+package body Ada.Containers.Hashed_Sets with
+  SPARK_Mode => Off
+is
 
    pragma Warnings (Off, "variable ""Busy*"" is not referenced");
    pragma Warnings (Off, "variable ""Lock*"" is not referenced");
@@ -316,6 +319,8 @@ package body Ada.Containers.Hashed_Sets is
 
       Free (Position.Node);
       Position.Container := null;
+      Position.Position := No_Element.Position;
+      pragma Assert (Position = No_Element);
    end Delete;
 
    ----------------
@@ -465,6 +470,17 @@ package body Ada.Containers.Hashed_Sets is
       return Position.Node.Element;
    end Element;
 
+   -----------
+   -- Empty --
+   -----------
+
+   function Empty (Capacity : Count_Type := 1000) return Set is
+   begin
+      return Result : Set do
+         Reserve_Capacity (Result, Capacity);
+      end return;
+   end Empty;
+
    ---------------------
    -- Equivalent_Sets --
    ---------------------
@@ -589,13 +605,13 @@ package body Ada.Containers.Hashed_Sets is
    is
       HT   : Hash_Table_Type renames Container'Unrestricted_Access.HT;
       Node : constant Node_Access := Element_Keys.Find (HT, Item);
-
    begin
       if Node = null then
          return No_Element;
       end if;
 
-      return Cursor'(Container'Unrestricted_Access, Node, Hash_Type'Last);
+      return Cursor'
+        (Container'Unrestricted_Access, Node, HT_Ops.Index (HT, Node));
    end Find;
 
    --------------------
@@ -747,9 +763,11 @@ package body Ada.Containers.Hashed_Sets is
       Position  : out Cursor;
       Inserted  : out Boolean)
    is
+      HT : Hash_Table_Type renames Container'Unrestricted_Access.HT;
    begin
       Insert (Container.HT, New_Item, Position.Node, Inserted);
       Position.Container := Container'Unchecked_Access;
+      Position.Position := HT_Ops.Index (HT, Position.Node);
    end Insert;
 
    procedure Insert
@@ -1146,6 +1164,31 @@ package body Ada.Containers.Hashed_Sets is
          Process (Position.Node.Element);
       end;
    end Query_Element;
+
+   ---------------
+   -- Put_Image --
+   ---------------
+
+   procedure Put_Image
+     (S : in out Ada.Strings.Text_Buffers.Root_Buffer_Type'Class; V : Set)
+   is
+      First_Time : Boolean := True;
+      use System.Put_Images;
+   begin
+      Array_Before (S);
+
+      for X of V loop
+         if First_Time then
+            First_Time := False;
+         else
+            Simple_Array_Between (S);
+         end if;
+
+         Element_Type'Put_Image (S, X);
+      end loop;
+
+      Array_After (S);
+   end Put_Image;
 
    ----------
    -- Read --
@@ -1957,7 +2000,7 @@ package body Ada.Containers.Hashed_Sets is
             return No_Element;
          else
             return Cursor'
-              (Container'Unrestricted_Access, Node, Hash_Type'Last);
+              (Container'Unrestricted_Access, Node, HT_Ops.Index (HT, Node));
          end if;
       end Find;
 

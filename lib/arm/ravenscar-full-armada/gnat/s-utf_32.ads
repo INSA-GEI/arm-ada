@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 S p e c                                  --
 --                                                                          --
---          Copyright (C) 2005-2020, Free Software Foundation, Inc.         --
+--          Copyright (C) 2005-2021, Free Software Foundation, Inc.         --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -188,6 +188,12 @@ package System.UTF_32 is
    --  identifiers are equivalent if they are identical after folding all
    --  letters to upper case using this routine. A corresponding routine to
    --  fold to lower case is also provided.
+
+   function Is_UTF_32_NFKC (U : UTF_32) return Boolean;
+   pragma Inline (Is_UTF_32_NFKC);
+   --  Return True if U could be present in a string normalized to
+   --  Normalization Form KC (as defined by Clause 21 of ISO/IEC 10646:2017),
+   --  otherwise returns False.
 
    function Is_UTF_32_Basic (U : UTF_32) return Boolean;
    pragma Inline (Is_UTF_32_Basic);

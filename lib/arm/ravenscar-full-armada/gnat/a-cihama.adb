@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 B o d y                                  --
 --                                                                          --
---          Copyright (C) 2004-2020, Free Software Foundation, Inc.         --
+--          Copyright (C) 2004-2021, Free Software Foundation, Inc.         --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -38,8 +38,11 @@ with Ada.Containers.Helpers; use Ada.Containers.Helpers;
 with Ada.Unchecked_Deallocation;
 
 with System; use type System.Address;
+with System.Put_Images;
 
-package body Ada.Containers.Indefinite_Hashed_Maps is
+package body Ada.Containers.Indefinite_Hashed_Maps with
+  SPARK_Mode => Off
+is
 
    pragma Warnings (Off, "variable ""Busy*"" is not referenced");
    pragma Warnings (Off, "variable ""Lock*"" is not referenced");
@@ -346,6 +349,8 @@ package body Ada.Containers.Indefinite_Hashed_Maps is
 
       Free (Position.Node);
       Position.Container := null;
+      Position.Position := No_Element.Position;
+      pragma Assert (Position = No_Element);
    end Delete;
 
    -------------
@@ -381,6 +386,17 @@ package body Ada.Containers.Indefinite_Hashed_Maps is
 
       return Position.Node.Element.all;
    end Element;
+
+   -----------
+   -- Empty --
+   -----------
+
+   function Empty (Capacity : Count_Type := 1000) return Map is
+   begin
+      return Result : Map do
+         Reserve_Capacity (Result, Capacity);
+      end return;
+   end Empty;
 
    -------------------------
    -- Equivalent_Key_Node --
@@ -506,7 +522,8 @@ package body Ada.Containers.Indefinite_Hashed_Maps is
          return No_Element;
       end if;
 
-      return Cursor'(Container'Unrestricted_Access, Node, Hash_Type'Last);
+      return Cursor'
+        (Container'Unrestricted_Access, Node, HT_Ops.Index (HT, Node));
    end Find;
 
    --------------------
@@ -732,6 +749,7 @@ package body Ada.Containers.Indefinite_Hashed_Maps is
       end if;
 
       Position.Container := Container'Unchecked_Access;
+      Position.Position := HT_Ops.Index (HT, Position.Node);
    end Insert;
 
    procedure Insert
@@ -949,6 +967,36 @@ package body Ada.Containers.Indefinite_Hashed_Maps is
          Process (K, E);
       end;
    end Query_Element;
+
+   ---------------
+   -- Put_Image --
+   ---------------
+
+   procedure Put_Image
+     (S : in out Ada.Strings.Text_Buffers.Root_Buffer_Type'Class; V : Map)
+   is
+      First_Time : Boolean := True;
+      use System.Put_Images;
+
+      procedure Put_Key_Value (Position : Cursor);
+      procedure Put_Key_Value (Position : Cursor) is
+      begin
+         if First_Time then
+            First_Time := False;
+         else
+            Simple_Array_Between (S);
+         end if;
+
+         Key_Type'Put_Image (S, Key (Position));
+         Put_Arrow (S);
+         Element_Type'Put_Image (S, Element (Position));
+      end Put_Key_Value;
+
+   begin
+      Array_Before (S);
+      Iterate (V, Put_Key_Value'Access);
+      Array_After (S);
+   end Put_Image;
 
    ----------
    -- Read --

@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 B o d y                                  --
 --                                                                          --
---          Copyright (C) 2004-2020, Free Software Foundation, Inc.         --
+--          Copyright (C) 2004-2021, Free Software Foundation, Inc.         --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -30,8 +30,11 @@
 with Ada.Unchecked_Deallocation;
 
 with System; use type System.Address;
+with System.Put_Images;
 
-package body Ada.Containers.Doubly_Linked_Lists is
+package body Ada.Containers.Doubly_Linked_Lists with
+  SPARK_Mode => Off
+is
 
    pragma Warnings (Off, "variable ""Busy*"" is not referenced");
    pragma Warnings (Off, "variable ""Lock*"" is not referenced");
@@ -127,11 +130,6 @@ package body Ada.Containers.Doubly_Linked_Lists is
       pragma Assert (Container.Last.Next = null);
       pragma Assert (Container.Length > 0);
 
-      Container.First := null;
-      Container.Last := null;
-      Container.Length := 0;
-      Zero_Counts (Container.TC);
-
       Container.First := new Node_Type'(Src.Element, null, null);
       Container.Last := Container.First;
       Container.Length := 1;
@@ -155,10 +153,18 @@ package body Ada.Containers.Doubly_Linked_Lists is
    procedure Append
      (Container : in out List;
       New_Item  : Element_Type;
-      Count     : Count_Type := 1)
+      Count     : Count_Type)
    is
    begin
       Insert (Container, No_Element, New_Item, Count);
+   end Append;
+
+   procedure Append
+     (Container : in out List;
+      New_Item  : Element_Type)
+   is
+   begin
+      Insert (Container, No_Element, New_Item, 1);
    end Append;
 
    ------------
@@ -221,9 +227,7 @@ package body Ada.Containers.Doubly_Linked_Lists is
       Container.Last := null;
       Container.Length := 0;
 
-      pragma Warnings (Off);
       Free (X);
-      pragma Warnings (On);
    end Clear;
 
    ------------------------
@@ -1252,6 +1256,31 @@ package body Ada.Containers.Doubly_Linked_Lists is
          Process (Position.Node.Element);
       end;
    end Query_Element;
+
+   ---------------
+   -- Put_Image --
+   ---------------
+
+   procedure Put_Image
+     (S : in out Ada.Strings.Text_Buffers.Root_Buffer_Type'Class; V : List)
+   is
+      First_Time : Boolean := True;
+      use System.Put_Images;
+   begin
+      Array_Before (S);
+
+      for X of V loop
+         if First_Time then
+            First_Time := False;
+         else
+            Simple_Array_Between (S);
+         end if;
+
+         Element_Type'Put_Image (S, X);
+      end loop;
+
+      Array_After (S);
+   end Put_Image;
 
    ----------
    -- Read --

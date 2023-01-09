@@ -6,7 +6,7 @@
 --                                                                          --
 --                                B o d y                                   --
 --                                                                          --
---                     Copyright (C) 1998-2020, AdaCore                     --
+--                     Copyright (C) 1998-2021, AdaCore                     --
 --                                                                          --
 -- GNARL is free software; you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -54,10 +54,6 @@ pragma Style_Checks (All_Checks);
 --  Note that the difference with respect to the high integrity version of
 --  this package is that exception handlers are allowed, so that support for
 --  exceptional completion of entry bodies needs to be provided.
-
-pragma Polling (Off);
---  Turn off polling, we do not want polling to take place during tasking
---  operations. It can cause  infinite loops and other problems.
 
 pragma Suppress (All_Checks);
 --  Why is this needed???

@@ -10,14 +10,14 @@ else
     cp "$fichier" "$fichier".armada-bak
 fi
 
-var1=$(cat $fichier | grep "insa/GNAT")
+var1=$(cat $fichier | grep "GNAT/2021")
 
 if [ "$var1" = "" ]; then
     echo " " >> "$fichier"
-    echo "var1=\$(echo \$PATH | grep \"insa/GNAT\")"  >> "$fichier"
+    echo "var1=\$(echo \$PATH | grep \"GNAT/2021\")"  >> "$fichier"
     echo " " >> "$fichier"
     echo "if [ \"\$var1\" = \"\" ]; then" >> "$fichier"
-    echo "   PATH=\$PATH:/usr/local/insa/GNAT/2020/arm-elf/bin:/usr/local/insa/GNAT/2020/x86_64/bin:/usr/local/insa/STM32CubeProgrammer/bin:/mnt/commetud/2eme\\ Annee\\ IMACS/ADA/tools/bin" >> "$fichier"
+    echo "   PATH=\$PATH:/usr/local/insa/GNAT/2021/arm-elf/bin:/usr/local/insa/GNAT/2021/x86_64/bin:/usr/local/insa/STM32CubeProgrammer/bin:/mnt/commetud/2eme\\ Annee\\ IMACS/ADA/tools/bin" >> "$fichier"
     echo "fi" >> "$fichier"
 
     echo "$fichier mis à jour"

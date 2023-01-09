@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 B o d y                                  --
 --                                                                          --
---         Copyright (C) 2014-2020, Free Software Foundation, Inc.          --
+--         Copyright (C) 2014-2021, Free Software Foundation, Inc.          --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -758,6 +758,7 @@ package body System.Libm is
      (Left       : T;
       Right      : T;
       Is_Special : out Boolean;
+      Negate     : out Boolean;
       Result     : out T)
    is
       ------------
@@ -774,6 +775,7 @@ package body System.Libm is
 
    begin
       Is_Special := True;
+      Negate := False;
       Result := 0.0;
 
       --  value 'Result' is not used if the input is
@@ -852,6 +854,15 @@ package body System.Libm is
 
       else
          Is_Special := False;
+
+         if Left < 0.0
+           and then Left >= T'First
+           and then abs (Right) <= T'Last
+           and then Right = T'Rounding (Right)
+           and then not Is_Even (Right)
+         then
+            Negate := True;
+         end if;
       end if;
    end Generic_Pow_Special_Cases;
 

@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 B o d y                                  --
 --                                                                          --
---                     Copyright (C) 2001-2020, AdaCore                     --
+--                     Copyright (C) 2001-2021, AdaCore                     --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -389,19 +389,20 @@ is
       --  yet stored in 64-bit signed variables. When multiplied by M, which is
       --  in range of 0 .. 2 ** 31 - 1, the results will still fit in 64-bit
       --  integer, even if we extend it by D/2 as required to implement
-      --  rounding. We will get the value of V * M ± D/2 as low and high part:
+      --  rounding. We will get the value of V * M +/- D/2 as low and high
+      --  part:
       --
-      --    (V * M ± D/2)_Lo = (V_Lo * M ± D/2) with carry zeroed
-      --    (V * M ± D/2)_Hi = (V_Hi * M) with carry from (V_Lo * M ± D/2)
+      --    (V * M +/- D/2)_Lo = (V_Lo * M +/- D/2) with carry zeroed
+      --    (V * M +/- D/2)_Hi = (V_Hi * M) with carry from (V_Lo * M +/- D/2)
       --
       --  (carry flows only from low to high part), or mathematically speaking:
       --
-      --    (V * M ± D/2)_Lo = (V * M ± D/2) rem 2 ** 32
-      --    (V * M ± D/2)_Hi = (V * M ± D/2)  /  2 ** 32
+      --    (V * M +/- D/2)_Lo = (V * M +/- D/2) rem 2 ** 32
+      --    (V * M +/- D/2)_Hi = (V * M +/- D/2)  /  2 ** 32
       --
       --  and thus
       --
-      --    V * M ± D/2 = (V * M ± D/2)_Hi * 2 ** 32 + (V * M ± D/2)_Lo
+      --    V * M +/- D/2 = (V * M +/- D/2)_Hi * 2 ** 32 + (V * M +/- D/2)_Lo
       --
       --  with signs just like described for V_Hi and V_Lo.
       --
@@ -409,23 +410,23 @@ is
       --  Division
       --  --------
       --
-      --  The final result (V * M ± D/2) / D is computed as a high and low
+      --  The final result (V * M +/- D/2) / D is computed as a high and low
       --  parts:
       --
-      --    ((V * M ± D/2) / D)_Hi = (V * M ± D/2)_Hi / D
-      --    ((V * M ± D/2) / D)_Lo =
-      --        ((V * M ± D/2)_Lo + remainder from high part division) / D
+      --    ((V * M +/- D/2) / D)_Hi = (V * M +/- D/2)_Hi / D
+      --    ((V * M +/- D/2) / D)_Lo =
+      --        ((V * M +/- D/2)_Lo + remainder from high part division) / D
       --
       --  (remainder flows only from high to low part, opposite to carry),
       --  or mathematically speaking:
       --
-      --    ((V * M ± D/2) / D)_Hi = ((V * M ± D/2) / D)  /  2 ** 32
-      --    ((V * M ± D/2) / D)_Lo = ((V * M ± D/2) / D) rem 2 ** 32
+      --    ((V * M +/- D/2) / D)_Hi = ((V * M +/- D/2) / D)  /  2 ** 32
+      --    ((V * M +/- D/2) / D)_Lo = ((V * M +/- D/2) / D) rem 2 ** 32
       --
       --  and thus
       --
-      --    (V * M ± D/2) / D = ((V * M ± D/2) / D)_Hi * 2 ** 32
-      --                      + ((V * M ± D/2) / D)_Lo
+      --    (V * M +/- D/2) / D = ((V * M +/- D/2) / D)_Hi * 2 ** 32
+      --                      + ((V * M +/- D/2) / D)_Lo
       --
       --  with signs just like described for V_Hi and V_Lo.
       --
@@ -462,22 +463,26 @@ is
 
       Result_Hi := V_M_Hi / LLI (D);
 
-      --  The final result would overflow
+      --  Second quotient
 
-      if Result_Hi not in -(2 ** 31) .. 2 ** 31 - 1 then
+      Remainder := V_M_Hi rem LLI (D);
+      Result_Lo := (V_M_Lo + Remainder * 2 ** 32) / LLI (D);
+
+      --  Check if the final result would overflow. We will definitely overflow
+      --  if Result_Hi lies outside the 32-bit integer range. However, we
+      --  can also overflow in the case where Result_Hi is the first 32-bit
+      --  number since the only valid 64-bit integer with a Result_Hi value of
+      --  -(2 ** 31) is LLI'First (thanks to two's complement).
+
+      if Result_Hi not in -(2 ** 31) .. 2 ** 31 - 1
+        or else (Result_Hi = -(2 ** 31) and then Result_Lo /= 0)
+      then
          raise Constraint_Error;
       end if;
 
-      Remainder := V_M_Hi rem LLI (D);
-      Result_Hi := Result_Hi * 2 ** 32;
-
-      --  Second quotient
-
-      Result_Lo := (V_M_Lo + Remainder * 2 ** 32) / LLI (D);
-
       --  Combine low and high parts of the result
 
-      return Result_Hi + Result_Lo;
+      return (Result_Hi * 2 ** 32) + Result_Lo;
    end Mul_Div;
 
    -----------------
@@ -574,7 +579,8 @@ is
             --  TS would overflow anyway.
 
             if SC < Seconds_From_Ts
-              or else Time_Last / Res < Time (SC - Seconds_From_Ts)
+              or else
+                Time_Last - Time (SC - Seconds_From_Ts) * Res < Remainder_Ts
             then
                raise Constraint_Error;
             else

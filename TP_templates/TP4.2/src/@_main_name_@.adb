@@ -8,17 +8,18 @@
 with Morse;
 use Morse;
 
-procedure @_Main_Name_@ is
-   type T_Mot ;
-   type Ptr_Mot is access T_Mot ;
-   type T_Mot is record
+procedure mission_morse is
+   
+   type T_Lettre ;
+   type Ptr_Lettre is access T_Lettre ;
+   type T_Lettre is record
       Lettre : Ptr_Element ;
-      Suiv : Ptr_Mot ;
+      Suiv : Ptr_Lettre ;
    end record ;
    
-begin
-   loop    
-      InitialiseEcran; 
+   
+begin   
+   while true loop
       null;
-   end loop;
-end @_Main_Name_@;
+   end loop ;
+end mission_morse;

@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 B o d y                                  --
 --                                                                          --
---          Copyright (C) 2005-2020, Free Software Foundation, Inc.         --
+--          Copyright (C) 2005-2021, Free Software Foundation, Inc.         --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -115,6 +115,15 @@ package body Ada.Wide_Characters.Unicode is
    begin
       return G.Is_UTF_32_Non_Graphic (G.Category (C));
    end Is_Non_Graphic;
+
+   -------------
+   -- Is_NFKC --
+   -------------
+
+   function Is_NFKC (U : Wide_Character) return Boolean is
+   begin
+      return G.Is_UTF_32_NFKC (Wide_Character'Pos (U));
+   end Is_NFKC;
 
    --------------
    -- Is_Other --

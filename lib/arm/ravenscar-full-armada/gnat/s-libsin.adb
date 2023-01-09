@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 B o d y                                  --
 --                                                                          --
---         Copyright (C) 2014-2020, Free Software Foundation, Inc.          --
+--         Copyright (C) 2014-2021, Free Software Foundation, Inc.          --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -650,13 +650,14 @@ package body System.Libm_Single is
    function Pow (Left, Right : F) return F is
 
       --  Cody and Waite implementation (page 84)
-
-      procedure Pow_Special_Cases is new Generic_Pow_Special_Cases (F);
+      --  The implementation seems restricted to positive base, so we use
+      --  the absolute value and remember the even/oddness of the exponent.
 
       One_Over_Sixteen : constant := 0.0625;
+      Abs_Left : constant F := abs (Left);
 
-      M : constant Integer := F'Exponent (Left);
-      G : constant F       := F'Fraction (abs Left);
+      M : constant Integer := F'Exponent (Abs_Left);
+      G : constant F       := F'Fraction (Abs_Left);
       Y : constant F       := Right;
       Z : F;
       P : Integer;
@@ -664,30 +665,20 @@ package body System.Libm_Single is
       U2, U1, Y1, Y2, W1, W2, W : F;
       MM, PP, IW1, I            : Integer;
       Is_Special                : Boolean;
+      Negate                    : Boolean;
       Special_Result            : F;
-      Negate                    : Boolean := False;
+
+      procedure Pow_Special_Cases is new Generic_Pow_Special_Cases (F);
 
    begin
       --  Special values
 
-      Pow_Special_Cases (Left, Right, Is_Special, Special_Result);
+      Pow_Special_Cases (Left, Right, Is_Special, Negate, Special_Result);
 
       if Is_Special then
          return Special_Result;
+
       else
-         --  For integral valued Y, negative X is ok but this algorithm
-         --  doesn't handle that case, so we use the absolute value of X
-         --  and then adjust the sign at return.
-
-         if Left < 0.0 then
-            --  Right not integral handled by Pow_Special_Cases
-
-            I := Integer (Right);
-            if I mod 2 = 1 then
-               Negate := True;
-            end if;
-         end if;
-
          --  Left**Right is calculated using the formula
          --  2**(Right * Log2 (Left))
 
@@ -730,12 +721,12 @@ package body System.Libm_Single is
          PP := 16 * MM - IW1;
 
          Z := Approx_Exp2 (W2);
-         W1 := Reconstruct_Pow (Z, PP, MM);
 
+         Special_Result := Reconstruct_Pow (Z, PP, MM);
          if Negate then
-            return -W1;
+            return -Special_Result;
          else
-            return W1;
+            return Special_Result;
          end if;
       end if;
    end Pow;

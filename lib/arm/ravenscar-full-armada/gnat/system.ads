@@ -7,7 +7,7 @@
 --                                 S p e c                                  --
 --                          (ARM Cortex M4 Version)                         --
 --                                                                          --
---           Copyright (C) 2015-2017, Free Software Foundation, Inc.        --
+--          Copyright (C) 1992-2020, Free Software Foundation, Inc.         --
 --                                                                          --
 -- This specification is derived from the Ada Reference Manual for use with --
 -- GNAT. The copyright notice above, and the license provisions that follow --
@@ -39,7 +39,7 @@ pragma Restrictions (No_Exception_Registration);
 --  it is only required by exception stream attributes which are not supported
 --  in this run time.
 
-pragma Profile (GNAT_Extended_Ravenscar);
+pragma Profile (Jorvik);
 --  This is a Ravenscar run time
 
 pragma Restrictions (No_Task_At_Interrupt_Priority);
@@ -61,16 +61,16 @@ package System is
 
    --  System-Dependent Named Numbers
 
-   Min_Int               : constant := Long_Long_Integer'First;
-   Max_Int               : constant := Long_Long_Integer'Last;
+   Min_Int             : constant := -2 ** (Standard'Max_Integer_Size - 1);
+   Max_Int             : constant :=  2 ** (Standard'Max_Integer_Size - 1) - 1;
 
-   Max_Binary_Modulus    : constant := 2 ** Long_Long_Integer'Size;
+   Max_Binary_Modulus    : constant := 2 ** Standard'Max_Integer_Size;
    Max_Nonbinary_Modulus : constant := 2 ** Integer'Size - 1;
 
    Max_Base_Digits       : constant := Long_Long_Float'Digits;
    Max_Digits            : constant := Long_Long_Float'Digits;
 
-   Max_Mantissa          : constant := 63;
+   Max_Mantissa          : constant := Standard'Max_Integer_Size - 1;
    Fine_Delta            : constant := 2.0 ** (-Max_Mantissa);
 
    Tick                  : constant := 0.000_001;

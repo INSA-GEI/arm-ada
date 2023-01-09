@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 S p e c                                  --
 --                                                                          --
---          Copyright (C) 1999-2020, Free Software Foundation, Inc.         --
+--          Copyright (C) 1999-2021, Free Software Foundation, Inc.         --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -34,10 +34,6 @@
 --  chain, up to either the top or a designated number of levels.
 
 --  This version is for the AE653 Level A run time and for bare board targets
-
-pragma Polling (Off);
---  We must turn polling off for this unit, because otherwise we get
---  elaboration circularities with System.Exception_Tables.
 
 with System.Traceback_Entries;
 

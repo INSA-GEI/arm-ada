@@ -6,7 +6,7 @@
 --                                                                          --
 --                                   S p e c                                --
 --                                                                          --
---          Copyright (C) 2003-2020, Free Software Foundation, Inc.         --
+--          Copyright (C) 2003-2021, Free Software Foundation, Inc.         --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -118,6 +118,9 @@ private
 
    Gl_XDR_Stream : Integer := 0;
    pragma Export (C, Gl_XDR_Stream, "__gl_xdr_stream");
+
+   Gl_Time_T_is_32_Bits : Integer := 0;
+   pragma Export (C, Gl_Time_T_is_32_Bits, "__gl_time_t_is_32_bits");
 
    --  The following two variables are deliberately commented out. They are
    --  referenced by the binder generated file, but they cannot be shared among

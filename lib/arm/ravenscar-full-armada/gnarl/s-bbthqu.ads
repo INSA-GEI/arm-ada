@@ -8,7 +8,7 @@
 --                                                                          --
 --        Copyright (C) 1999-2002 Universidad Politecnica de Madrid         --
 --             Copyright (C) 2003-2004 The European Space Agency            --
---                     Copyright (C) 2003-2020, AdaCore                     --
+--                     Copyright (C) 2003-2021, AdaCore                     --
 --                                                                          --
 -- GNARL is free software; you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -282,38 +282,6 @@ package System.BB.Threads.Queues is
        --  Inserted first in the queue if there is not a more recent alarm
 
        and then (if Is_First then Get_Next_Alarm_Time (Get_CPU (Thread)) = T);
-
-   function Extract_First_Alarm return Thread_Id with
-   --  Extract the first element in the alarm queue and return its identifier
-
-     Post =>
-
-       --  All threads extracted from the alarm queue must be waiting in a
-       --  delay statement.
-
-       --  Note: we use AND instead of AND THEN in the conjunctions here
-       --  because otherwise the use of OLD in the last test violates the
-       --  rule about use of OLD in potentially unevaluated expressions.
-
-       --  Could we instead use pragma Unevaluated_Use_Of_Old (Allow)???
-
-       Extract_First_Alarm'Result.State = Delayed
-
-         --  After extraction the Alarm_Time field is set to Time'Last
-
-         and Extract_First_Alarm'Result.Alarm_Time = System.BB.Time.Time'Last
-
-         --  After extraction the Next_Alarm field is set to Null_Thread_Id
-
-         and Extract_First_Alarm'Result.Next_Alarm = Null_Thread_Id
-
-         --  The extracted thread must be the one with the smallest value of
-         --  Alarm_Time.
-
-         and Get_Next_Alarm_Time (BOSUMU.Current_CPU)'Old <=
-             Get_Next_Alarm_Time (BOSUMU.Current_CPU),
-
-     Inline => True;
 
    function Get_Next_Alarm_Time
      (CPU_Id : System.Multiprocessors.CPU) return System.BB.Time.Time;

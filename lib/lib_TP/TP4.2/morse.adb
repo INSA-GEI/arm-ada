@@ -14,8 +14,12 @@
 with Insa, Insa.Graphics, Insa.Audio;
 use Insa, Insa.Graphics, Insa.Audio;
 
-package body Morse is
+with Ada.Characters.Latin_1;
 
+package body Morse is
+   
+   Newline: constant Character := Ada.Characters.Latin_1.LF;
+   
    TextAreaSymboleSaisie,TextAreaCaractereSaisie : PWidget;
    BoutonCourt, BoutonLong, BoutonFinLettre, BoutonFinMot: Pwidget;
    LabelBouton:Pwidget;
@@ -45,16 +49,6 @@ package body Morse is
       AddCharinTextArea(TextAreaCaractereSaisie,C);
       AddCharinTextArea(TextAreaCaractereSaisie,Newline);
    end AfficherCaractereSaisi;
-   
-   procedure AfficherLettre (L : Ptr_Element) is
-      Aux : Ptr_Element := L;
-   begin
-      while Aux /= null loop
-         AfficherSymboleSaisi(Aux.all.Symb);
-         --Put(" ");
-         Aux :=Aux.all.Suiv ;
-      end loop ;
-   end AfficherLettre ;
    
    function AttendreSymbole return T_Symbole is
       Symbole: T_Symbole := FinMot;

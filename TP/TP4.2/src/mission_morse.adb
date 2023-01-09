@@ -4,147 +4,170 @@
 --                                                                          --
 --                                                                          --
 ------------------------------------------------------------------------------
-
 with Morse;
 use Morse;
-
 procedure Mission_Morse is
-
-   type T_Mot ;
-   type Ptr_Mot is access T_Mot ;
-   type T_Mot is record
+   type T_Lettre ;
+   type Ptr_Lettre is access T_Lettre ;
+   type T_Lettre is record
       Lettre : Ptr_Element ;
-      Suiv : Ptr_Mot ;
+      Suiv : Ptr_Lettre ;
    end record ;
 
-   procedure InsererFinSymb (L : in out Ptr_Element ; S : T_Symbole) is
+   procedure InsererSymbole ( LS : in out Ptr_Element ; S : T_Symbole ) is
    begin
-      if L = null then
-         L:= new Element'(S,null);
+      if LS = null then
+         LS := new Element'(S,null);
       else
-         InsererFinSymb(L.all.Suiv,S);
+         InsererSymbole(LS.all.Suiv,S);
       end if;
-   end InsererFinSymb ;
+   end InsererSymbole ;
 
-   --  procedure AfficherListe (L : in Ptr_Element) is
-   --  begin
-   --     if L/= null then
-   --        AfficherSymboleSaisi(L.all.Symb);
-   --        AfficherListe(L.all.Suiv);
-   --     end if;
-   --  end AfficherListe;
-
-   function TesterEgalite (L1,L2 : Ptr_Element) return Boolean is
-      Pareil : Boolean := True ;
-
+   procedure AfficherSymbole (LS : in Ptr_Element) is
    begin
-      if L1 = L2 then
-         Pareil := True ; -- pas necessaire car initialise a true mais c'est plus beau
-      elsif L1 = null or L2 =null then
-         Pareil := False ;
-      elsif L1.all.Symb /= L2.all.Symb then
-         Pareil := False ;
-      else
-         Pareil := TesterEgalite(L1.all.Suiv,L2.all.Suiv);
+      if LS /=null then
+         JouerBruitSymbole(LS.all.Symb);
+         AfficherSymboleResultat(LS.all.Symb);
+         AfficherSymbole(LS.all.Suiv);
       end if;
-      return Pareil ;
-   end TesterEgalite ;
+   end AfficherSymbole ;
 
-   function ChercherDico(Liste : Ptr_Element) return Character is
-      Lettre : Character := '?'; -- ? pour pas trouve
+   procedure TestGestionSimpleLettre is
+      Continuer : Boolean := True ;
+      Symb : T_Symbole ;
+      Lettre : Ptr_Element ;
+   begin
+      InitialiseEcran ;
+      while Continuer loop
+         Symb := AttendreSymbole ;
+         case Symb is
+         when FinLettre =>
+            Continuer := False ;
+         when Court | Long =>
+            AfficherSymboleSaisi(Symb);
+            JouerBruitSymbole(Symb);
+            InsererSymbole(Lettre,Symb);
+         when others => null;
+         end case ;
+      end loop;
+      OuvrirFenetreResultat;
+      AfficherSymbole(Lettre);
+   end TestGestionSimpleLettre;
+
+   function TesterEgaliteListe (LS1, LS2 : Ptr_Element ) return Boolean is
+      Egales : Boolean ;
+   begin
+      if LS1 = null and LS2 = null then
+         Egales := True ;
+      elsif LS1 = null or LS2 = null then
+         Egales := False ;
+      elsif LS1.all.Symb /= LS2.all.Symb then
+         Egales := False ;
+      else
+         Egales := TesterEgaliteListe (LS1.all.Suiv,LS2.all.Suiv);
+      end if;
+      return Egales ;
+   end TesterEgaliteListe ;
+
+   function RechercherLettre (LS : Ptr_Element) return Character is
+      Lettre : Character := '?';
       Trouve : Boolean := False ;
-      --Aux : Ptr_Element := Liste ;
-      Indice : Character := DicoMorse'First;
+      Indice : Character := DicoMorse'First ;
    begin
       while not Trouve and Indice <= DicoMorse'Last loop
-         if TesterEgalite(DicoMorse(Indice),Liste) then
-            Trouve := True;
+         if TesterEgaliteListe(LS,DicoMorse(Indice)) then
             Lettre := Indice ;
+            Trouve := True ;
          else
-            Indice := Character'Succ(Indice) ;
+            Indice := Character'Succ(Indice);
          end if;
-      end loop ;
-      return Lettre ;
-   end ChercherDico ;
+      end loop;
+      return Lettre;
+   end RechercherLettre ;
 
-   procedure InsererFinLettre (M : in out Ptr_Mot ; L : in out Ptr_Element) is
+   procedure TestDetectionLettre is
+      Continuer : Boolean := True ;
+      Symb : T_Symbole ;
+      Lettre : Ptr_Element ;
+      Caractere : Character ;
    begin
-      if M = null then
-         M := new T_Mot' (L,null) ;
+      InitialiseEcran ;
+      while Continuer loop
+         Symb := AttendreSymbole ;
+         case Symb is
+         when FinLettre =>
+            Continuer := False ;
+            Caractere := RechercherLettre(Lettre) ;
+            AfficherCaractereSaisi(Caractere);
+         when Court | Long =>
+            AfficherSymboleSaisi(Symb);
+            JouerBruitSymbole(Symb);
+            InsererSymbole(Lettre,Symb);
+         when others => null;
+         end case ;
+      end loop;
+      OuvrirFenetreResultat;
+      AfficherSymbole(Lettre);
+      AfficherCaractereResultat(Caractere);
+   end TestDetectionLettre ;
+
+   procedure InsererLettre (ML : in out Ptr_Lettre ; LS : in Ptr_Element) is
+   begin
+      if ML = null then
+         ML := new T_Lettre'(LS,null) ;
       else
-         InsererFinLettre(M.all.Suiv,L);
+         InsererLettre (ML.all.Suiv,LS);
       end if;
-   end InsererFinLettre ;
+   end InsererLettre;
 
-   procedure AfficherSymbolesLettre (Liste : Ptr_Element) is
+   procedure GererFenetreResultat (M: Ptr_Lettre) is
+      M1 : Ptr_Lettre := M;
+      Caractere : Character ;
    begin
-      if Liste /= null then
-         AfficherSymboleResultat(Liste.all.Symb);
-         JouerBruitSymbole(Liste.all.Symb);
+      OuvrirFenetreResultat;
+      while M1 /= null loop
+         Caractere := RechercherLettre(M1.all.Lettre);
+         AfficherSymbole(M1.all.Lettre);
+         AfficherCaractereResultat(Caractere);
+         M1:=M1.all.Suiv;
+      end loop;
+      AttendreBoutonFermer ;
+      FermerFenetreResultat ;
+   end GererFenetreResultat ;
 
-         AfficherSymbolesLettre(Liste.all.Suiv);
-      else
-         AfficherSymboleResultat(FinLettre);
-         JouerBruitSymbole(FinLettre);
-      end if;
-   end AfficherSymbolesLettre;
-
-   procedure AfficherMot(M : in Ptr_Mot ) is
+   procedure TestGestionMot is
+      Continuer : Boolean := True ;
+      Symb : T_Symbole ;
+      Lettre : Ptr_Element ;
+      Caractere : Character ;
+      Mot : Ptr_Lettre ;
    begin
-      if M /= null then
-         if M.all.Lettre /= null then
-            AfficherSymbolesLettre(M.all.Lettre);
-            AfficherCaractereResultat(ChercherDico(M.all.Lettre));
-         end if;
-
-         AfficherMot(M.all.Suiv);
-      end if;
-   end AfficherMot ;
-
-   MonMot : Ptr_Mot ;
-   Fin : Boolean := False ;
-   LettreEnCours : Ptr_Element ;
-   SymboleSaisi : T_Symbole;
+      InitialiseEcran ;
+      while Continuer loop
+         Symb := AttendreSymbole ;
+         case Symb is
+         when FinLettre =>
+            Caractere := RechercherLettre(Lettre) ;
+            AfficherCaractereSaisi(Caractere);
+            AfficherSymboleSaisi(FinLettre);
+            InsererLettre(Mot,Lettre);
+            Lettre := null;
+         when Court | Long =>
+            AfficherSymboleSaisi(Symb);
+            JouerBruitSymbole(Symb);
+            InsererSymbole(Lettre,Symb);
+         when FinMot =>
+            Continuer := False ;
+         end case ;
+      end loop;
+      GererFenetreResultat(Mot);
+   end TestGestionMot;
 
 begin
-   loop
-      InitialiseEcran;
-      Fin := False;
-      MonMot:=null;
-      LettreEnCours:=null;
-
-      while not Fin loop
-         SymboleSaisi:=AttendreSymbole;
-         AfficherSymboleSaisi(SymboleSaisi);
-         JouerBruitSymbole(SymboleSaisi);
-
-         case SymboleSaisi is
-         when FinMot =>
-            Fin := True ;
-            InsererFinLettre(MonMot,LettreEnCours);
-
-         when Long =>
-            InsererFinSymb(LettreEnCours,Long);
-
-         when Court =>
-            InsererFinSymb(LettreEnCours,Court);
-
-         when FinLettre =>
-            if LettreEnCours /= null then
-               AfficherCaractereSaisi(ChercherDico(LettreEnCours));
-            end if;
-
-            InsererFinLettre(MonMot,LettreEnCours);
-            LettreEnCours := null;
-
-         end case;
-      end loop;
-
-      OuvrirFenetreResultat;
-      AfficherMot(MonMot);
-
-      AttendreBoutonFermer;
-      FermerFenetreResultat;
-
-   end loop;
+   -- testGestionSimpleLettre ;
+   -- testDetectionLettre ;
+   while True loop
+      TestGestionMot ;
+   end loop ;
 end Mission_Morse;
+

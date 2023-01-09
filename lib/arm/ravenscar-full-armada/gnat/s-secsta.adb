@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 B o d y                                  --
 --                                                                          --
---          Copyright (C) 1992-2020, Free Software Foundation, Inc.         --
+--          Copyright (C) 1992-2021, Free Software Foundation, Inc.         --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -137,7 +137,10 @@ package body System.Secondary_Stack is
       end if;
 
       --  Set resulting address and update top of stack pointer
-
+      pragma Assert (Stack.Top <= Stack.Internal_Chunk'Last);
+      pragma Assert (Stack.Top >= Stack.Internal_Chunk'First);
+      --  Here, there is enough memory to get the whole requested memory
+      --  since the available memory was checked in the previous block.
       Addr := Stack.Internal_Chunk (Stack.Top)'Address;
       Stack.Top := Stack.Top + Mem_Request;
    end SS_Allocate;
@@ -216,9 +219,15 @@ package body System.Secondary_Stack is
             begin
                Num_Of_Assigned_Stacks := Num_Of_Assigned_Stacks + 1;
 
+               pragma Assert (Num_Of_Assigned_Stacks >= 1);
+               --  Num_Of_Assigned_Stacks is defined as Natural. So after, the
+               --  Previous increment it shall be greater or equal to 1.
+
                Local_Stk_Address :=
                  To_Stack_Pool
                    (Default_Sized_SS_Pool) (Num_Of_Assigned_Stacks)'Address;
+               pragma Annotate (CodePeer, False_Positive, "array index check",
+                                "Num_Of_Assigned_Stacks < Binder_SS_Count.");
                Stack := To_Global_Ptr (Local_Stk_Address);
             end;
 

@@ -8,7 +8,7 @@
 --                                                                          --
 --        Copyright (C) 1999-2002 Universidad Politecnica de Madrid         --
 --             Copyright (C) 2003-2005 The European Space Agency            --
---                     Copyright (C) 2003-2019, AdaCore                     --
+--                     Copyright (C) 2003-2021, AdaCore                     --
 --                                                                          --
 -- GNARL is free software; you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -17,9 +17,9 @@
 -- OUT ANY WARRANTY;  without even the  implied warranty of MERCHANTABILITY --
 -- or FITNESS FOR A PARTICULAR PURPOSE.                                     --
 --                                                                          --
--- As a special exception under Section 7 of GPL version 3, you are granted --
--- additional permissions described in the GCC Runtime Library Exception,   --
--- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+--                                                                          --
+--                                                                          --
 --                                                                          --
 -- You should have received a copy of the GNU General Public License and    --
 -- a copy of the GCC Runtime Library Exception along with this program;     --
@@ -37,13 +37,13 @@
 pragma Restrictions (No_Elaboration_Code);
 
 with System.Storage_Elements;
-with System.Multiprocessors;
 with System.BB.CPU_Primitives;
 with System.BB.CPU_Specific;
 with System.BB.Threads;
 with System.BB.Threads.Queues;
 with System.BB.Board_Support;
 with System.BB.Time;
+with System.Multiprocessors;
 
 package body System.BB.Interrupts is
 
@@ -58,15 +58,14 @@ package body System.BB.Interrupts is
 
    type Stack_Space is new Storage_Elements.Storage_Array
      (1 .. Storage_Elements.Storage_Offset (Parameters.Interrupt_Stack_Size));
-   pragma Suppress_Initialization (Stack_Space);
    for Stack_Space'Alignment use CPU_Specific.Stack_Alignment;
+   pragma Suppress_Initialization (Stack_Space);
    --  Type used to represent the stack area for each interrupt. The stack must
    --  be aligned to the CPU specific alignment to hold the largest registers.
 
    Interrupt_Stacks : array (CPU) of Stack_Space;
    pragma Linker_Section (Interrupt_Stacks, ".interrupt_stacks");
-   --  Array that contains the stack used for each interrupt priority on each
-   --  CPU.
+   --  Array that contains the stack used for interrupts on each CPU.
    --
    --  The interrupt stacks are assigned a special section so the linker script
    --  can put them at a specific place and avoid useless initialization.
@@ -204,7 +203,11 @@ package body System.BB.Interrupts is
 
       --  Call the user handler
 
-      Interrupt_Handlers_Table (Id).all (Id);
+      if Interrupt_Handlers_Table (Id) = null then
+         raise Program_Error with "No handler for interrupt" & Id'Img;
+      else
+         Interrupt_Handlers_Table (Id).all (Id);
+      end if;
 
       CPU_Primitives.Disable_Interrupts;
 
@@ -258,14 +261,13 @@ package body System.BB.Interrupts is
    ---------------------------
 
    procedure Initialize_Interrupts is
-      use type System.Storage_Elements.Storage_Offset;
    begin
       for Proc in CPU loop
 
-         --  Store the pointer in the last double word
-
-         Interrupt_Stack_Table (Proc) :=
-              Interrupt_Stacks (Proc)(Stack_Space'Last - 7)'Address;
+         CPU_Primitives.Initialize_Stack
+           (Interrupt_Stacks (Proc)'Address,
+            Stack_Space'Length,
+            Interrupt_Stack_Table (Proc));
       end loop;
    end Initialize_Interrupts;
 end System.BB.Interrupts;

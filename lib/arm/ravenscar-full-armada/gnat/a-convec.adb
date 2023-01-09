@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 B o d y                                  --
 --                                                                          --
---          Copyright (C) 2004-2020, Free Software Foundation, Inc.         --
+--          Copyright (C) 2004-2021, Free Software Foundation, Inc.         --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -31,8 +31,11 @@ with Ada.Containers.Generic_Array_Sort;
 with Ada.Unchecked_Deallocation;
 
 with System; use type System.Address;
+with System.Put_Images;
 
-package body Ada.Containers.Vectors is
+package body Ada.Containers.Vectors with
+  SPARK_Mode => Off
+is
 
    pragma Warnings (Off, "variable ""Busy*"" is not referenced");
    pragma Warnings (Off, "variable ""Lock*"" is not referenced");
@@ -61,8 +64,8 @@ package body Ada.Containers.Vectors is
    begin
       return Result : Vector do
          Reserve_Capacity (Result, Length (Left) + Length (Right));
-         Append (Result, Left);
-         Append (Result, Right);
+         Append_Vector (Result, Left);
+         Append_Vector (Result, Right);
       end return;
    end "&";
 
@@ -70,7 +73,7 @@ package body Ada.Containers.Vectors is
    begin
       return Result : Vector do
          Reserve_Capacity (Result, Length (Left) + 1);
-         Append (Result, Left);
+         Append_Vector (Result, Left);
          Append (Result, Right);
       end return;
    end "&";
@@ -80,7 +83,7 @@ package body Ada.Containers.Vectors is
       return Result : Vector do
          Reserve_Capacity (Result, 1 + Length (Right));
          Append (Result, Left);
-         Append (Result, Right);
+         Append_Vector (Result, Right);
       end return;
    end "&";
 
@@ -164,21 +167,10 @@ package body Ada.Containers.Vectors is
    -- Append --
    ------------
 
-   procedure Append (Container : in out Vector; New_Item : Vector) is
-   begin
-      if Is_Empty (New_Item) then
-         return;
-      elsif Checks and then Container.Last = Index_Type'Last then
-         raise Constraint_Error with "vector is already at its maximum length";
-      else
-         Insert (Container, Container.Last + 1, New_Item);
-      end if;
-   end Append;
-
    procedure Append
      (Container : in out Vector;
       New_Item  : Element_Type;
-      Count     : Count_Type := 1)
+      Count     : Count_Type)
    is
    begin
       --  In the general case, we pass the buck to Insert, but for efficiency,
@@ -205,6 +197,32 @@ package body Ada.Containers.Vectors is
       else
          Append_Slow_Path (Container, New_Item, Count);
       end if;
+   end Append;
+
+   -------------------
+   -- Append_Vector --
+   -------------------
+
+   procedure Append_Vector (Container : in out Vector; New_Item : Vector) is
+   begin
+      if Is_Empty (New_Item) then
+         return;
+      elsif Checks and then Container.Last = Index_Type'Last then
+         raise Constraint_Error with "vector is already at its maximum length";
+      else
+         Insert_Vector (Container, Container.Last + 1, New_Item);
+      end if;
+   end Append_Vector;
+
+   ------------
+   -- Append --
+   ------------
+
+   procedure Append (Container : in out Vector;
+                     New_Item  :        Element_Type)
+   is
+   begin
+      Insert (Container, Last_Index (Container) + 1, New_Item, 1);
    end Append;
 
    ----------------------
@@ -236,7 +254,7 @@ package body Ada.Containers.Vectors is
          return;
       else
          Target.Clear;
-         Target.Append (Source);
+         Target.Append_Vector (Source);
       end if;
    end Assign;
 
@@ -600,6 +618,17 @@ package body Ada.Containers.Vectors is
       return Position.Container.Elements.EA (Position.Index);
    end Element;
 
+   -----------
+   -- Empty --
+   -----------
+
+   function Empty (Capacity : Count_Type := 10) return Vector is
+   begin
+      return Result : Vector do
+         Reserve_Capacity (Result, Capacity);
+      end return;
+   end Empty;
+
    --------------
    -- Finalize --
    --------------
@@ -738,6 +767,16 @@ package body Ada.Containers.Vectors is
    begin
       return Index_Type'First;
    end First_Index;
+
+   -----------------
+   -- New_Vector --
+   -----------------
+
+   function New_Vector (First, Last : Index_Type) return Vector
+   is
+   begin
+      return (To_Vector (Count_Type (Last - First + 1)));
+   end New_Vector;
 
    ---------------------
    -- Generic_Sorting --
@@ -1275,7 +1314,7 @@ package body Ada.Containers.Vectors is
       end;
    end Insert;
 
-   procedure Insert
+   procedure Insert_Vector
      (Container : in out Vector;
       Before    : Extended_Index;
       New_Item  : Vector)
@@ -1394,9 +1433,9 @@ package body Ada.Containers.Vectors is
 
          Container.Elements.EA (K .. J) := Src;
       end;
-   end Insert;
+   end Insert_Vector;
 
-   procedure Insert
+   procedure Insert_Vector
      (Container : in out Vector;
       Before    : Cursor;
       New_Item  : Vector)
@@ -1426,10 +1465,10 @@ package body Ada.Containers.Vectors is
          Index := Before.Index;
       end if;
 
-      Insert (Container, Index, New_Item);
-   end Insert;
+      Insert_Vector (Container, Index, New_Item);
+   end Insert_Vector;
 
-   procedure Insert
+   procedure Insert_Vector
      (Container : in out Vector;
       Before    : Cursor;
       New_Item  : Vector;
@@ -1466,10 +1505,10 @@ package body Ada.Containers.Vectors is
          Index := Before.Index;
       end if;
 
-      Insert (Container, Index, New_Item);
+      Insert_Vector (Container, Index, New_Item);
 
       Position := (Container'Unrestricted_Access, Index);
-   end Insert;
+   end Insert_Vector;
 
    procedure Insert
      (Container : in out Vector;
@@ -2231,11 +2270,6 @@ package body Ada.Containers.Vectors is
    -- Prepend --
    -------------
 
-   procedure Prepend (Container : in out Vector; New_Item : Vector) is
-   begin
-      Insert (Container, Index_Type'First, New_Item);
-   end Prepend;
-
    procedure Prepend
      (Container : in out Vector;
       New_Item  : Element_Type;
@@ -2244,6 +2278,15 @@ package body Ada.Containers.Vectors is
    begin
       Insert (Container, Index_Type'First, New_Item, Count);
    end Prepend;
+
+   --------------------
+   -- Prepend_Vector --
+   --------------------
+
+   procedure Prepend_Vector (Container : in out Vector; New_Item : Vector) is
+   begin
+      Insert_Vector (Container, Index_Type'First, New_Item);
+   end Prepend_Vector;
 
    --------------
    -- Previous --
@@ -2296,6 +2339,31 @@ package body Ada.Containers.Vectors is
          Busy (TC.all);
       end return;
    end Pseudo_Reference;
+
+   ---------------
+   -- Put_Image --
+   ---------------
+
+   procedure Put_Image
+     (S : in out Ada.Strings.Text_Buffers.Root_Buffer_Type'Class; V : Vector)
+   is
+      First_Time : Boolean := True;
+      use System.Put_Images;
+   begin
+      Array_Before (S);
+
+      for X of V loop
+         if First_Time then
+            First_Time := False;
+         else
+            Simple_Array_Between (S);
+         end if;
+
+         Element_Type'Put_Image (S, X);
+      end loop;
+
+      Array_After (S);
+   end Put_Image;
 
    -------------------
    -- Query_Element --

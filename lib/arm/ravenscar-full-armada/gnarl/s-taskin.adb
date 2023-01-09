@@ -6,7 +6,7 @@
 --                                                                          --
 --                                  B o d y                                 --
 --                                                                          --
---                     Copyright (C) 2001-2020, AdaCore                     --
+--                     Copyright (C) 2001-2021, AdaCore                     --
 --                                                                          --
 -- GNARL is free software; you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -35,10 +35,6 @@ pragma Restrictions (No_Elaboration_Code);
 --  For Ravenscar/HI-E, this restriction is simply an optimization.
 --  For Ravenscar/full, this restriction is required because the Initialize
 --  procedure is called by s-init before the elaboration.
-
-pragma Polling (Off);
---  Turn off polling, we do not want ATC polling to take place during tasking
---  operations. It causes infinite loops and other problems.
 
 with System.Task_Primitives.Operations;
 

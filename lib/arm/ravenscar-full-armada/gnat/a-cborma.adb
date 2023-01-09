@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 B o d y                                  --
 --                                                                          --
---          Copyright (C) 2004-2020, Free Software Foundation, Inc.         --
+--          Copyright (C) 2004-2021, Free Software Foundation, Inc.         --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -38,8 +38,11 @@ pragma Elaborate_All
   (Ada.Containers.Red_Black_Trees.Generic_Bounded_Keys);
 
 with System; use type System.Address;
+with System.Put_Images;
 
-package body Ada.Containers.Bounded_Ordered_Maps is
+package body Ada.Containers.Bounded_Ordered_Maps with
+  SPARK_Mode => Off
+is
 
    pragma Warnings (Off, "variable ""Busy*"" is not referenced");
    pragma Warnings (Off, "variable ""Lock*"" is not referenced");
@@ -569,6 +572,17 @@ package body Ada.Containers.Bounded_Ordered_Maps is
 
       return Container.Nodes (Node).Element;
    end Element;
+
+   -----------
+   -- Empty --
+   -----------
+
+   function Empty (Capacity : Count_Type := 10) return Map is
+   begin
+      return Result : Map (Capacity) do
+         null;
+      end return;
+   end Empty;
 
    ---------------------
    -- Equivalent_Keys --
@@ -1286,6 +1300,36 @@ package body Ada.Containers.Bounded_Ordered_Maps is
          Process (N.Key, N.Element);
       end;
    end Query_Element;
+
+   ---------------
+   -- Put_Image --
+   ---------------
+
+   procedure Put_Image
+     (S : in out Ada.Strings.Text_Buffers.Root_Buffer_Type'Class; V : Map)
+   is
+      First_Time : Boolean := True;
+      use System.Put_Images;
+
+      procedure Put_Key_Value (Position : Cursor);
+      procedure Put_Key_Value (Position : Cursor) is
+      begin
+         if First_Time then
+            First_Time := False;
+         else
+            Simple_Array_Between (S);
+         end if;
+
+         Key_Type'Put_Image (S, Key (Position));
+         Put_Arrow (S);
+         Element_Type'Put_Image (S, Element (Position));
+      end Put_Key_Value;
+
+   begin
+      Array_Before (S);
+      Iterate (V, Put_Key_Value'Access);
+      Array_After (S);
+   end Put_Image;
 
    ----------
    -- Read --

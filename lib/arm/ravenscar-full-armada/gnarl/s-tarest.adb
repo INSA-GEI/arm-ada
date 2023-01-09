@@ -6,7 +6,7 @@
 --                                                                          --
 --                                  B o d y                                 --
 --                                                                          --
---                     Copyright (C) 1999-2020, AdaCore                     --
+--                     Copyright (C) 1999-2021, AdaCore                     --
 --                                                                          --
 -- GNARL is free software; you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -38,10 +38,6 @@
 pragma Style_Checks (All_Checks);
 --  Turn off subprogram alpha order check, since we group soft link bodies and
 --  also separate off subprograms for restricted GNARLI.
-
-pragma Polling (Off);
---  Turn off polling, we do not want ATC polling to take place during
---  tasking operations. It causes infinite loops and other problems.
 
 with System.Task_Primitives.Operations;
 

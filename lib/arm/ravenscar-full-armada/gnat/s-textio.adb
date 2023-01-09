@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 B o d y                                  --
 --                                                                          --
---             Copyright (C) 2017-2020, Free Software Foundation, Inc.      --
+--             Copyright (C) 2017-2021, Free Software Foundation, Inc.      --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -80,6 +80,6 @@ package body System.Text_IO is
    -- Use_Cr_Lf_For_New_Line --
    ----------------------------
 
-   function Use_Cr_Lf_For_New_Line return Boolean is (True);
+   function Use_Cr_Lf_For_New_Line return Boolean is (False);
 
 end System.Text_IO;

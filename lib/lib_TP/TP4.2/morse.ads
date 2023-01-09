@@ -10,16 +10,9 @@
 -- Cet acteur fourni les routines et ressources necessaires à la saisie
 -- et l'affichage des elements de morse.
 --
-with Ada.Characters.Latin_1;
 
 package Morse is
-
-   -- Utiliser newline pour faire un retour à la ligne (dans AjouterTexteResultats)
-   --
-   -- Exemple:
-   -- AjouterTexteResultats("Ma premiere ligne" & NewLine & "Ma deuxieme ligne");
-   Newline: constant Character := Ada.Characters.Latin_1.LF;
-   
+      
    type T_Symbole is (Long,Court,FinLettre,FinMot) ;
    
    type Element ;
@@ -61,21 +54,20 @@ package Morse is
       'z'=>new Element'(Long,new Element'(Long,new Element'(Court,new Element'(Court,null))))
      );
 
-   -- Procedures et fonctions liées à l'ecran principal (saisie des symboles morse)
+   -- Procedures et fonctions liees à l'ecran principal (saisie des symboles morse)
    procedure InitialiseEcran;
    function AttendreSymbole return T_Symbole;
    procedure AfficherSymboleSaisi (S: T_Symbole);
    procedure AfficherCaractereSaisi (C: Character);
    
-   -- Procedures et fonctions liées à la fenetre de resultat
+   -- Procedures et fonctions liees à la fenetre de resultat
    procedure OuvrirFenetreResultat;
    procedure FermerFenetreResultat; 
    procedure AttendreBoutonFermer;
    procedure AfficherCaractereResultat(C:Character);
    procedure AfficherSymboleResultat(S:T_Symbole);
    
-   -- Procedures diverses
+   -- Procedure pour faire du bruit
    procedure JouerBruitSymbole(S:T_Symbole);
-   procedure AfficherLettre (L : Ptr_Element);
    
 end Morse;
