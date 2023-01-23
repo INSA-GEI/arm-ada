@@ -63,6 +63,7 @@ package body Ecran is
    
    Label: Pwidget;
 begin
+   
    Label := Insa.Graphics.CreateLabel(130, -80);
    Insa.Graphics.SetLabelText(Label, "Cerises restantes");
    LabelCerise := Insa.Graphics.CreateLabel(130, -60);

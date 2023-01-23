@@ -13,13 +13,11 @@
 
 package Carte is
    
-   type T_Direction is (Nord,Sud,Est,Ouest,Immobile);
-   
-   -- fonction devant etre appelee imperativement au debut de votre programme
-   procedure InitialiserCarte ;
+   --type T_Direction is (Nord,Sud,Est,Ouest,Immobile);
+   type T_Direction is (Haut,Bas,Gauche,Droite,Immobile);
    
    -- retourne un entier qui represente le nombre de 100ms
-   -- ecoulees depuis l'appel de la procedure InitialiserCarte
+   -- ecoulees depuis le debut du jeu
    function GetTempsEcoule return Integer ;
    
    -- fige le temps !!!

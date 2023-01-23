@@ -20,15 +20,15 @@ package Lab is
    
    type T_Bloc is (Mur,Vide,Pacman,Cerise);
   
-   LAB_WIDTH: constant Integer:= 10;
-   LAB_HEIGHT: constant Integer:= 10;
+   LAB_COLONNES : constant Integer:= 10;
+   LAB_LIGNES: constant Integer:= 10;
    
-   type T_Lab is array (1..LAB_WIDTH,1..LAB_HEIGHT) of T_Bloc;
+   type T_Lab is array (1..LAB_LIGNES,1..LAB_COLONNES) of T_Bloc;
    
    type T_Pacman is record
-      PosX :     Integer;
-      PosY :     Integer;
-      NbreVies : Integer;
+      PosLigne :     Integer;
+      PosColonne :   Integer;
+      NbreVies :     Integer;
    end record ;   
    
    Invalid_Bloc: exception;
@@ -41,17 +41,14 @@ package Lab is
    -- dans lequel un T_Pacman P est place 
    function GenererLabyrinthe(P : T_Pacman) return T_Lab;
    
-   -- Dessine a la Ieme ligne Jeme colonne du labyrinthe un T_Bloc defini par TypeBloc
-   procedure DessinerBloc (I,J : Integer ; TypeBloc : T_Bloc);
+   -- Dessine a la Leme ligne Ceme colonne du labyrinthe un T_Bloc defini par TypeBloc
+   procedure DessinerBloc (L,C : Integer ; TypeBloc : T_Bloc);
    
    -- Dessine a la Ieme ligne Jeme colonne du labyrinthe un bloc pacman (Pacman_Haut, Pacman_Droit, Pacman_Gauche, Pacman_Bas) 
    -- en fonction de la direction.
    -- Si le bloc n'est pas un bloc pacman, une exception Invalid_Bloc est levée
-   procedure DessinerBloc (I,J : Integer ; TypeBloc : T_Bloc; Direction: T_Direction );
+   procedure DessinerBloc (L,C : Integer ; TypeBloc : T_Bloc; Direction: T_Direction );
    
    -- Dessine un labyrinthe T_Lab defini par L
    procedure DessinerLabyrinthe (L : T_Lab);
 end Lab;
-
-
-

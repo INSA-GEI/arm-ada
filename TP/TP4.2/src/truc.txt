@@ -1,0 +1,167 @@
+−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−
+−−
+−−
+−−
+Mission Morse
+−−
+−−
+−−
+−−
+−−
+−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−
+with Morse;
+use Morse;
+procedure mission_morse is
+type T_Lettre ;
+type Ptr_Lettre is access T_Lettre ;
+type T_Lettre is record
+Lettre : Ptr_Element ;
+Suiv : Ptr_Lettre ;
+end record ;
+procedure insererSymbole ( LS : in out Ptr_Element ; S : T_Symbole ) is
+begin
+if LS = null then
+LS := new Element’(S,null);
+else
+insererSymbole(LS.all.suiv,S);
+end if;
+end insererSymbole ;
+procedure afficherSymbole (LS : in Ptr_Element) is
+begin
+if LS /=null then
+JouerBruitSymbole(LS.all.symb);
+AfficherSymboleResultat(LS.all.symb);
+AfficherSymbole(LS.all.suiv);
+end if;
+end afficherSymbole ;
+procedure testGestionSimpleLettre is
+continuer : Boolean := True ;
+symb : T_Symbole ;
+lettre : Ptr_Element ;
+begin
+InitialiseEcran ;
+while continuer loop
+symb := AttendreSymbole ;
+case symb is
+when FinLettre =>
+continuer := false ;
+when Court | Long =>
+AfficherSymboleSaisi(symb);
+JouerBruitSymbole(symb);
+insererSymbole(lettre,symb);
+when others => null;
+end case ;
+end loop;
+OuvrirFenetreResultat;
+afficherSymbole(lettre);
+end testGestionSimpleLettre;
+function testerEgaliteListe (LS1, LS2 : Ptr_Element ) return boolean is
+egales : Boolean ;
+begin
+if LS1 = null and LS2 = null then
+egales := true ;
+elsif LS1 = null or LS2 = null then
+egales := false ;
+elsif LS1.all.symb /= LS2.all.symb then
+egales := false ;
+else
+egales := TesterEgaliteListe (LS1.all.suiv,LS2.all.suiv);
+end if;
+return egales ;
+end testerEgaliteListe ;
+function rechercherLettre (LS : Ptr_Element) return character is
+lettre : character := ’?’ ;
+trouve : boolean := false ;
+indice : Character := DicoMorse’first ;
+begin
+while not trouve and indice <= DicoMorse’last loop
+if testerEgaliteListe(LS,DicoMorse(indice)) then
+lettre := indice ;
+trouve := true ;
+else
+indice := character’succ(indice);
+end if;
+end loop;
+return lettre;
+end rechercherLettre ;
+procedure testDetectionLettre is
+continuer : Boolean := True ;
+symb : T_Symbole ;
+lettre : Ptr_Element ;
+caractere : Character ;
+begin
+InitialiseEcran ;
+while continuer loop
+symb := AttendreSymbole ;
+case symb is
+when FinLettre =>
+continuer := false ;
+caractere := rechercherLettre(Lettre) ;
+AfficherCaractereSaisi(caractere);
+when Court | Long =>
+AfficherSymboleSaisi(symb);
+JouerBruitSymbole(symb);
+insererSymbole(lettre,symb);
+when others => null;
+end case ;
+end loop;
+OuvrirFenetreResultat;
+afficherSymbole(lettre);
+AfficherCaractereResultat(caractere);
+end testDetectionLettre ;
+procedure insererLettre (ML : in out Ptr_Lettre ; LS : in Ptr_Element)
+begin
+if ML = null then
+ML := new T_Lettre’(LS,null) ;
+else
+insererLettre (ML.all.suiv,LS);
+end if;
+end insererLettre;
+procedure gererFenetreResultat (M: Ptr_Lettre) is
+M1 : Ptr_Lettre := M;
+caractere : Character ;
+begin
+OuvrirFenetreResultat;
+while M1 /= null loop
+caractere := rechercherLettre(M1.all.Lettre);
+afficherSymbole(M1.all.lettre);
+AfficherCaractereResultat(caractere);
+M1:=M1.all.suiv;
+end loop;
+AttendreBoutonFermer ;
+FermerFenetreResultat ;
+end gererFenetreResultat ;
+procedure testGestionMot is
+continuer : Boolean := True ;
+symb : T_Symbole ;
+lettre : Ptr_Element ;
+caractere : Character ;
+mot : Ptr_Lettre ;
+begin
+InitialiseEcran ;
+while continuer loop
+symb := AttendreSymbole ;
+case symb is
+when FinLettre =>
+caractere := rechercherLettre(Lettre) ;
+AfficherCaractereSaisi(caractere);
+AfficherSymboleSaisi(FinLettre);
+insererLettre(mot,lettre);
+lettre := null;
+when Court | Long =>
+AfficherSymboleSaisi(symb);
+JouerBruitSymbole(symb);
+insererSymbole(lettre,symb);
+when FinMot =>
+continuer := false ;
+end case ;
+end loop;
+gererFenetreResultat(mot);
+end testGestionMot;
+begin
+−− testGestionSimpleLettre ;
+−− testDetectionLettre ;
+while true loop
+testGestionMot ;
+end loop ;
+end mission_morse;

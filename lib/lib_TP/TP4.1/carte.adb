@@ -16,8 +16,8 @@ use  Insa, Insa.Timer, Insa.Graphics, Insa.Sensors ;
 
 package body Carte is
    
-   SeuilEstOuest : constant Integer := 30 ;
-   SeuilNordSud : constant Integer := 30 ;
+   SeuilGaucheDroite : constant Integer := 30 ;
+   SeuilHautBas: constant Integer := 30 ;
    
    LabelInformation: PWidget;
    LabelScore:PWidget;
@@ -50,23 +50,23 @@ package body Carte is
    function DetecterDirection return T_Direction is            
       Resultat : T_Direction := Immobile;
       TempsEntree : constant Integer  := TempsEcoule ;
-      EstOuest : Integer ;
-      NordSud : Integer ;
+      GaucheDroite : Integer ;
+      HautBas : Integer ;
    begin
-      EstOuest := Integer(GetAccelerometerValues.X);
-      NordSud := Integer(-GetAccelerometerValues.Y);
+      GaucheDroite := Integer(GetAccelerometerValues.X);
+      HautBas := Integer(-GetAccelerometerValues.Y);
 
-      if abs(EstOuest) > abs(NordSud) then
-         if EstOuest > SeuilEstOuest then
-            Resultat := Ouest ;
-         elsif EstOuest < -SeuilEstOuest then
-            Resultat := Est ;
+      if abs(GaucheDroite) > abs(HautBas) then
+         if GaucheDroite > SeuilGaucheDroite then
+            Resultat := Gauche ;
+         elsif GaucheDroite < -SeuilGaucheDroite then
+            Resultat := Droite ;
          end if;
       else
-         if NordSuD > SeuilNordSud then
-            Resultat := Nord ;
-         elsif NordSuD < -SeuilNordSud then
-            Resultat := Sud ;
+         if HautBas > SeuilHautBas then
+            Resultat := Haut ;
+         elsif HautBas < -SeuilHautBas then
+            Resultat := Bas ;
          end if;
       end if;
 	 

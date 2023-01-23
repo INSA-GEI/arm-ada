@@ -26,14 +26,14 @@ package body Lab is
    SPRITE_WIDTH : constant Integer := 24;
    SPRITE_HEIGHT : constant Integer := 24;
    
-   Lab_Image: array (1.. LAB_WIDTH, 1.. LAB_HEIGHT) of PWidget;
+   Lab_Image: array (1.. LAB_LIGNES, 1.. LAB_COLONNES) of PWidget;
    
    -- Efface l'ecran, genere et dessine un labyrinthe
    -- Positionne Pacman avec MaxNbreVies vies au milieu du labyrinthe
    procedure InitialiserJeu (P : out T_Pacman ; L : out T_Lab)  is
    begin
-      P.PosX := 5 ;
-      P.PosY := 6 ;
+      P.PosLigne:= 5 ;
+      P.PosColonne := 6 ;
       P.NbreVies := MaxNbreVies ;
       L := GenererLabyrinthe(P) ;
 
@@ -55,27 +55,27 @@ package body Lab is
            8=>(Mur,Mur,Cerise,Cerise,Cerise,Mur,Cerise,Mur,Cerise,Mur),
            9=>(Mur,Cerise,Cerise,Mur,Cerise,Cerise,Cerise,Cerise,Cerise,Mur),
            10=>(Mur,Mur,Mur,Mur,Mur,Mur,Mur,Mur,Mur,Mur));	   
-      L(P.PosX,P.PosY):=Pacman;
+      L(P.PosLigne,P.PosColonne):=Pacman;
       return L;
    end GenererLabyrinthe ;
    
-   -- Dessine a la Ieme ligne Jeme colonne du labyrinthe un T_Bloc defini par TypeBloc
-   procedure DessinerBloc (I,J : Integer ; TypeBloc : T_Bloc) is
+   -- Dessine a la Leme ligne Ceme colonne du labyrinthe un T_Bloc defini par TypeBloc
+   procedure DessinerBloc (L,C : Integer ; TypeBloc : T_Bloc) is
    begin
       case TypeBloc is
       when Mur    => 
-         DrawImage(Lab_Image(I,J), Sprites.Mur2'Access);
+         DrawImage(Lab_Image(L,C), Sprites.Mur2'Access);
       when Vide   => 
-         DrawImage(Lab_Image(I,J), Sprites.Vide'Access);
-      when Cerise => DrawImage(Lab_Image(I,J), Sprites.Cerise'Access);
-      when Pacman => DrawImage(Lab_Image(I,J), Sprites.Pacman_Droit'Access); 
+         DrawImage(Lab_Image(L,C), Sprites.Vide'Access);
+      when Cerise => DrawImage(Lab_Image(L,C), Sprites.Cerise'Access);
+      when Pacman => DrawImage(Lab_Image(L,C), Sprites.Pacman_Droit'Access); 
       end case;
    end DessinerBloc;
    
-   -- Dessine a la Ieme ligne Jeme colonne du labyrinthe un bloc pacman (Pacman_Haut, Pacman_Droit, Pacman_Gauche, Pacman_Bas) 
+   -- Dessine a la Leme ligne Ceme colonne du labyrinthe un bloc pacman (Pacman_Haut, Pacman_Droit, Pacman_Gauche, Pacman_Bas) 
    -- en fonction de la direction.
    -- Si le bloc n'est pas un bloc pacman, une exception Invalid_Bloc est levée
-   procedure DessinerBloc (I,J : Integer ; TypeBloc : T_Bloc; Direction: T_Direction ) is
+   procedure DessinerBloc (L,C : Integer ; TypeBloc : T_Bloc; Direction: T_Direction ) is
    begin
       case TypeBloc is
       when Mur    => 
@@ -86,10 +86,10 @@ package body Lab is
          Raise_Exception (Invalid_Bloc'Identity, "La procedure DessineBloc avec parametre de direction n'accepte que des blocs PACMAN (appel avec bloc 'Cerise')");
       when Pacman =>
          case Direction is
-         when Nord => DrawImage(Lab_Image(I,J), Sprites.Pacman_Haut'Access);
-         when Sud => DrawImage(Lab_Image(I,J), Sprites.Pacman_Bas'Access);
-         when Est => DrawImage(Lab_Image(I,J), Sprites.Pacman_Droit'Access);
-         when Ouest => DrawImage(Lab_Image(I,J), Sprites.Pacman_Gauche'Access);
+         when Haut => DrawImage(Lab_Image(L,C), Sprites.Pacman_Haut'Access);
+         when Bas => DrawImage(Lab_Image(L,C), Sprites.Pacman_Bas'Access);
+         when Droite => DrawImage(Lab_Image(L,C), Sprites.Pacman_Droit'Access);
+         when Gauche => DrawImage(Lab_Image(L,C), Sprites.Pacman_Gauche'Access);
          when others => null;
          end case;
       end case;
@@ -98,18 +98,20 @@ package body Lab is
    -- Dessine un labyrinthe T_Lab defini par L
    procedure DessinerLabyrinthe (L : T_Lab) is
    begin
-      for I in L'Range(1) loop
-         for J in L'Range(2) loop
-            DessinerBloc(I,J,L(I,J)) ; 
+      for Lig in L'Range(1) loop
+         for Col in L'Range(2) loop
+            DessinerBloc(Lig,Col,L(Lig,Col)) ; 
          end loop;
       end loop;
    end DessinerLabyrinthe ;
 
 begin
-   for Y in Lab_Image'Range(2) loop
-      for X in Lab_Image'Range(1) loop
-         Lab_Image(X,Y):= CreateImage(-200+(X*SPRITE_WIDTH), -120 +(Y*SPRITE_HEIGHT), ALIGNEMENT_CENTER);
-         DrawImage(Lab_Image(X,Y),Sprites.Vide'Access);
+   -- attention le tableau est en (ligne,colonne),donc (Y,X) mais 
+   -- CreateImage est en X,Y, d'où l'inversion des indices col et lig
+   for Lig in Lab_Image'Range(1) loop
+      for Col in Lab_Image'Range(1) loop
+         Lab_Image(Lig,Col):= CreateImage(-200+(Col*SPRITE_WIDTH), -120+(Lig*SPRITE_HEIGHT), ALIGNEMENT_CENTER);
+         DrawImage(Lab_Image(Lig,Col),Sprites.Vide'Access);
       end loop;
    end loop;
 end Lab;  

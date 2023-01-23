@@ -21,7 +21,7 @@ package Carte is
    -- EcrireInformation("Ma premiere ligne" & NewLine & "Ma deuxieme ligne");
    Newline: constant Character := Ada.Characters.Latin_1.LF;
    
-   type T_Direction is (Nord,Sud,Est,Ouest,Immobile) ;
+   type T_Direction is (Haut,Bas,Gauche,Droite,Immobile) ;
    
    -- fonction devant etre appelee imperativement 
    -- au debut de votre programme

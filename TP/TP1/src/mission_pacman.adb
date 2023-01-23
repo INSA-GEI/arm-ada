@@ -26,7 +26,7 @@ procedure Mission_Pacman is
    begin
       SuspendreTimer ;
       AfficheMessage("PERDU","Plus que " & Integer'Image(P.Nbrevies)&" vie(s)" & Newline & "Appuyez sur OK pour recommencer");
-      DessinerLabyrinthe(L);
+      --DessinerLabyrinthe(L);
       ReprendreTimer ;
    end AfficherNombreVies ;
 
@@ -59,26 +59,26 @@ procedure Mission_Pacman is
 
    procedure GererDeplacement( P : in out T_Pacman ; L : in out T_Lab ; D : in T_Direction ; NbrC : in out Integer ) is
    begin
-      DessinerBloc(P.PosX,P.PosY,Vide);
-      L(P.PosX,P.PosY):=Vide;
+      DessinerBloc(P.PosLigne,P.PosColonne,Vide);
+      L(P.PosLigne,P.PosColonne):=Vide;
       case D is
-      when Sud =>
-         P := (P.PosX,P.PosY+1,P.NbreVies);
-      when Nord =>
-         P := (P.PosX,P.PosY-1,P.NbreVies);
-      when Est =>
-         P := (P.PosX+1,P.PosY,P.NbreVies);
-      when Ouest =>
-         P := (P.PosX-1,P.PosY,P.NbreVies);
+      when Bas =>
+         P := (P.PosLigne+1,P.PosColonne,P.NbreVies);
+      when Haut =>
+         P := (P.PosLigne-1,P.PosColonne,P.NbreVies);
+      when Droite =>
+         P := (P.PosLigne,P.PosColonne+1,P.NbreVies);
+      when Gauche =>
+         P := (P.PosLigne,P.PosColonne-1,P.NbreVies);
       when others =>
          null;
       end case ;
-      if  L(P.PosX,P.PosY) = Cerise then
+      if  L(P.PosLigne,P.PosColonne) = Cerise then
          NbrC := NbrC +1 ;
          AfficherCerisesRestantes(NbrC);
       end if;
-      L(P.PosX,P.PosY):=Pacman;
-      DessinerBloc(P.PosX,P.PosY,Pacman, D);
+      L(P.PosLigne,P.PosColonne):=Pacman;
+      DessinerBloc(P.PosLigne,P.PosColonne,Pacman, D);
    end GererDeplacement ;
 
    procedure AfficherTemps is
@@ -94,10 +94,10 @@ procedure Mission_Pacman is
    function TesterMur (D: T_Direction ; L : T_Lab ; P : T_Pacman ) return Boolean is
       CestMur : Boolean := False ;
    begin
-      if (D = Sud and L(P.PosX,P.PosY+1) = Mur) or
-        (D = Nord and L(P.PosX,P.PosY-1) = Mur) or
-        (D = Ouest and L(P.PosX-1,P.PosY) = Mur) or
-        (D = Est and  L(P.PosX+1,P.PosY) = Mur) then
+      if (D = Bas and L(P.PosLigne+1,P.PosColonne) = Mur) or
+        (D = Haut and L(P.PosLigne-1,P.PosColonne) = Mur) or
+        (D = Gauche and L(P.PosLigne,P.PosColonne-1) = Mur) or
+        (D = Droite and  L(P.PosLigne,P.PosColonne+1) = Mur) then
          CestMur := True ;
       end if;
       return CestMur ;
@@ -110,7 +110,7 @@ procedure Mission_Pacman is
 
 begin
    Lab.InitialiserJeu(Mon_PacMan,Mon_Lab);
-   Carte.InitialiserCarte ;
+   --Carte.InitialiserCarte ;
    Mon_Nbre_Cerises_Depart := CompterCerise(Mon_Lab);
    EcrireInformation("Appuyez sur A" & Newline & "pour commencer");
 
@@ -121,10 +121,12 @@ begin
       while (GetTempsEcoule <= DureeJeu) and (Mon_Nbre_Cerises_Mangees < Mon_Nbre_Cerises_Depart) and  (Mon_PacMan.NbreVies > 0) loop
          AfficherTemps ;
          Ma_Direction := Carte.DetecterDirection ;
-         if TesterMur(Ma_Direction,Mon_Lab,Mon_PacMan) then
-            GererContactMur(Mon_PacMan,Mon_Lab);
-         elsif Ma_Direction /= Immobile then
-            GererDeplacement(Mon_PacMan,Mon_Lab,Ma_Direction,Mon_Nbre_Cerises_Mangees);
+         if Ma_Direction /= Immobile then
+            if TesterMur(Ma_Direction,Mon_Lab,Mon_PacMan) then
+               GererContactMur(Mon_PacMan,Mon_Lab);
+            else
+               GererDeplacement(Mon_PacMan,Mon_Lab,Ma_Direction,Mon_Nbre_Cerises_Mangees);
+            end if;
          end if;
       end loop;
       if (GetTempsEcoule > DureeJeu) or (Mon_PacMan.NbreVies <= 0) then

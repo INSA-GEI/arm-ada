@@ -67,20 +67,22 @@ package body Carte is
       Compteurtemps := GetTempsEcoule;
 
       if GetKeyState(Key_Down) = Key_Pressed then
-         Resultat := Sud ;
+         Resultat := Bas ;
       end if ; 
       if GetKeyState(Key_Up) = Key_Pressed then
-         Resultat := Nord ;
+         Resultat := Haut ;
       end if ;
       if GetKeyState(Key_Left) = Key_Pressed then
-         Resultat := Ouest ;
+         Resultat := Gauche ;
       end if ;
       if GetKeyState(Key_Right) = Key_Pressed then
-         Resultat := Est ;
+         Resultat := Droite ;
       end if ;
       
-      if Resultat /= Immobile then Compteurtemps := Compteurtemps+2;
-      else Compteurtemps := Compteurtemps+1;
+      if Resultat /= Immobile then 
+	 Compteurtemps := Compteurtemps+2;
+      else 
+	 Compteurtemps := Compteurtemps+1;
       end if;
 
       while Compteurtemps > GetTempsEcoule loop
@@ -99,5 +101,7 @@ package body Carte is
    begin 
       TempsEcoule := TempsEcoule + 1 ;
    end TraiterPeriodique ;
+begin
+   InitialiserCarte ;
    
 end Carte ;
