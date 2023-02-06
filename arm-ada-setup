@@ -58,7 +58,7 @@ fi
 
 echo "Creation de l'arborescence des TPs"
 pathList=( "TP1" "TP2" "TP3.1" "TP3.2" "TP4.1" "TP4.2" )
-missionNames=( "mission_pacman" "mission_simon" "mission_dicho" "mission_koch" "mission_capteurs" "mission_snake" )
+missionNames=( "mission_pacman" "mission_simon" "mission_dicho" "mission_koch" "mission_snake" "mission_morse" )
 length=${#pathList[@]}
 
 if [ ! -e ~/TPADA2IMACS ]; then
