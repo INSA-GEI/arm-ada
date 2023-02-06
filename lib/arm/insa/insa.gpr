@@ -6,7 +6,7 @@ project Insa is
    for Object_Dir use "obj";
    for Languages use ("Ada");
    for Target use "arm-eabi";
-   for Runtime ("ada") use "ravenscar-full-armada";
+   for Runtime ("ada") use "/mnt/commetud/2eme Annee IMACS/ADA/lib/arm/ravenscar-full-armada";
 
    package Compiler is
       -- for Switches ("c") use ("-mlittle-endian", "-mhard-float", "-mcpu=cortex-m7", "-mfpu=fpv5-sp-d16", "-mthumb", "-g", "-ffunction-sections", "-fdata-sections", "-O0", "-DSTM32F746xx", "-DUSE_HAL_DRIVER");
