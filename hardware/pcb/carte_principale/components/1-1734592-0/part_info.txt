@@ -1,0 +1,9 @@
+Manufacturer=TE Connectivity
+PartNumber=1-1734592-0
+PartCategory=Connector
+PackageCategory=Other
+PinCount=12
+Version=2.4
+Released=2018-03-01 21:30:34
+Downloaded=2025-01-15 13:03:27
+3D=Y

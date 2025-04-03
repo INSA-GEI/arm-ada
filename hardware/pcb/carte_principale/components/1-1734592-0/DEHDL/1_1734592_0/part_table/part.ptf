@@ -1,0 +1,11 @@
+FILE_TYPE = MULTI_PHYS_TABLE;
+
+PART '1_1734592_0'
+CLASS = IO
+{========================================================================================}
+:"MANUFACTURER_NAME", "MANUFACTURER_PART_NUMBER"= "PART_NUMBER", "JEDEC_TYPE", "PACK_TYPE", "MOUSER_PART_NUMBER", "MOUSER_PRICE/STOCK", "DESCRIPTION", "DATASHEET", "HEIGHT";
+{========================================================================================}
+ "TE Connectivity", "1-1734592-0" (!) = "", "117345920", "Other", "571-1-1734592-0", "https://www.mouser.co.uk/ProductDetail/TE-Connectivity/1-1734592-0?qs=sXy4Dx%2FMQpOH8ogf8%2FvwBg%3D%3D", "TE Connectivity FPC 0.5mm Pitch 10 Way Right Angle SMT Female FPC Connector, ZIF Bottom Contact", "https://www.te.com/commerce/DocumentDelivery/DDEController?Action=showdoc&DocId=Customer+Drawing%7F1734592%7FC%7Fpdf%7FEnglish%7FENG_CD_1734592_C_C_1734592.pdf%7F1-1734592-8", "2.3 mm"
+END_PART
+
+END.
