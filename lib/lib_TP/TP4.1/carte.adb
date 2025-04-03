@@ -53,8 +53,8 @@ package body Carte is
       GaucheDroite : Integer ;
       HautBas : Integer ;
    begin
-      GaucheDroite := Integer(GetAccelerometerValues.X);
-      HautBas := Integer(-GetAccelerometerValues.Y);
+      GaucheDroite := Integer(-GetAccelerometerValues.Y);
+      HautBas := Integer(GetAccelerometerValues.X);
 
       if abs(GaucheDroite) > abs(HautBas) then
          if GaucheDroite > SeuilGaucheDroite then

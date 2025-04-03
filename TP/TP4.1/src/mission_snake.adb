@@ -57,13 +57,13 @@ procedure Mission_Snake is
       NouvelleTete : T_Snake ;
    begin
       case D is
-         when Bas =>
-            Nouvelletete :=((S.Serpent.PosX+1) mod PLATEAU_LARGEUR, S.Serpent.PosY);
-         when Haut =>
-            Nouvelletete :=((S.Serpent.PosX-1) mod PLATEAU_LARGEUR,S.Serpent.PosY);
          when Droite =>
-            Nouvelletete :=(S.Serpent.PosX,(S.Serpent.PosY+1) mod PLATEAU_HAUTEUR);
+            Nouvelletete :=((S.Serpent.PosX+1) mod PLATEAU_LARGEUR, S.Serpent.PosY);
          when Gauche =>
+            Nouvelletete :=((S.Serpent.PosX-1) mod PLATEAU_LARGEUR,S.Serpent.PosY);
+         when Bas =>
+            Nouvelletete :=(S.Serpent.PosX,(S.Serpent.PosY+1) mod PLATEAU_HAUTEUR);
+         when Haut =>
             Nouvelletete :=(S.Serpent.PosX,(S.Serpent.PosY-1) mod PLATEAU_HAUTEUR);
          when others =>
             null;
