@@ -53,6 +53,7 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include "stm32746g_discovery.h"
 #include "../Components/bmp280/bmp280.h"
+#include "../Components/lps22df/driver/lps22df_reg.h"
 #include <string.h>
 /** @addtogroup STM32746G_DISCOVERY_PRESSURE
  * @{
@@ -91,6 +92,30 @@ extern "C" {
 
 #define PRESSURE_CS_ENABLE(dev) 	   BMP280_CS_ENABLE(dev)
 #define PRESSURE_CS_DISABLE(dev)	   BMP280_CS_DISABLE(dev)
+
+/* Definition for I2C peripheral */
+#define PRESSURE_I2Cx 					DISCOVERY_EXT_I2Cx
+
+/* Definition for SPI clock resources */
+#define PRESSURE_I2Cx_CLK_ENABLE()            __HAL_RCC_I2C1_CLK_ENABLE()
+#define PRESSURE_I2Cx_CLK_DISABLE()           __HAL_RCC_I2C1_CLK_DISABLE()
+#define PRESSURE_I2Cx_SDA_GPIO_CLK_ENABLE()   __HAL_RCC_GPIOG_CLK_ENABLE()
+#define PRESSURE_I2Cx_SCL_GPIO_CLK_DISABLE()  __HAL_RCC_GPIOI_CLK_DISABLE()
+
+/* Definition for I2C Pins */
+#define PRESSURE_I2Cx_SCL_PIN               GPIO_PIN_1
+#define PRESSURE_I2Cx_SCL_GPIO_PORT         GPIOI
+#define PRESSURE_I2Cx_SDA_PIN              	GPIO_PIN_14
+#define PRESSURE_I2Cx_SDA_GPIO_PORT        	GPIOB
+
+#define PRESSURE_I2Cx_FORCE_RESET()         __HAL_RCC_I2C1_FORCE_RESET()
+#define PRESSURE_I2Cx_RELEASE_RESET()       __HAL_RCC_I2C1_RELEASE_RESET()
+#define PRESSURE_I2Cx_SCL_SDA_AF            GPIO_AF4_I2C1
+
+#define PRESSURE_RCC_PERIPHCLK_I2Cx         RCC_PERIPHCLK_I2C1
+#define PRESSURE_RCC_I2CxCLKSOURCE_SYSCLK   RCC_I2C1CLKSOURCE_PCLK1
+
+#define PRESSURE_I2C_TIMING 				DISCOVERY_I2Cx_TIMING
 /**
  * @}
  */

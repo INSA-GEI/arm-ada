@@ -30,7 +30,12 @@
 		<link>
 			<name>bsp</name>
 			<type>2</type>
-			<location>/home/dimercur/Travail/git/arm-ada/lib/arm/ravenscar-full-armada/bsp</location>
+			<location>/home-local/dimercur/Documents/Travail/Depots-Git/arm-ada/lib/arm/ravenscar-full-armada/bsp</location>
+		</link>
+		<link>
+			<name>common-ROM.ld</name>
+			<type>1</type>
+			<location>/home-local/dimercur/Documents/Travail/Depots-Git/arm-ada/lib/arm/ravenscar-full-armada/ld/common-ROM.ld</location>
 		</link>
 	</linkedResources>
 </projectDescription>

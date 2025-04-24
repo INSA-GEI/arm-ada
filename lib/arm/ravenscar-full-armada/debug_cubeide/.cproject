@@ -81,7 +81,7 @@
 								<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.cpp.compiler.option.nortti.211626272" name="Disable generation of information about every class with virtual functions (-fno-rtti)" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.cpp.compiler.option.nortti" useByScannerDiscovery="false" value="true" valueType="boolean"/>
 							</tool>
 							<tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.522512025" name="MCU GCC Linker" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker">
-								<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.option.script.1554117413" name="Linker Script (-T)" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.option.script" useByScannerDiscovery="false" value="/home/dimercur/Travail/git/arm-ada/lib/arm/ravenscar-full-armada/ld/common-ROM.ld" valueType="string"/>
+								<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.option.script.1554117413" name="Linker Script (-T)" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.option.script" useByScannerDiscovery="false" value="/home-local/dimercur/Documents/Travail/Depots-Git/arm-ada/lib/arm/ravenscar-full-armada/ld/common-ROM.ld" valueType="string"/>
 								<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.option.gcsections.891300967" name="Discard unused sections (-Wl,--gc-sections)" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.option.gcsections" useByScannerDiscovery="false" value="true" valueType="boolean"/>
 								<inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.input.272907861" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -102,11 +102,30 @@
 							<tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.objcopy.symbolsrec.647252077" name="MCU Output Converter Motorola S-rec with symbols" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.objcopy.symbolsrec"/>
 						</toolChain>
 					</folderInfo>
+					<fileInfo id="com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.debug.1033316828.256328320" name="lsm6ds3_reg.c" rcbsApplicability="disable" resourcePath="bsp/BSP/Components/lsm6ds3/lsm6ds3_reg.c" toolsToInvoke="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.309496850.429487793">
+						<tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.309496850.429487793" name="MCU GCC Compiler" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.309496850">
+							<inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c.212590029" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c"/>
+						</tool>
+						<tool customBuildStep="true" id="org.eclipse.cdt.managedbuilder.ui.rcbs.939413181" name="Resource Custom Build Step">
+							<inputType id="org.eclipse.cdt.managedbuilder.ui.rcbs.inputtype.1651093122" name="Resource Custom Build Step Input Type">
+								<additionalInput kind="additionalinputdependency"/>
+							</inputType>
+							<outputType id="org.eclipse.cdt.managedbuilder.ui.rcbs.outputtype.736744730" name="Resource Custom Build Step Output Type"/>
+						</tool>
+					</fileInfo>
 					<sourceEntries>
-						<entry excluding="bsp/Utilities|bsp/wrapper/trash|bsp/BSP/STM32746G-Discovery/trash|bsp/BSP/STM32746G-Discovery/stm32746g_discovery_lcd.c|bsp/BSP/STM32746G-Discovery/stm32746g_discovery_lcd_dma2d.c|bsp/BSP/STM32746G-Discovery/wifi.c|bsp/Utilities/Log|bsp/Utilities/CPU|bsp/BSP/STM32746G-Discovery/src|bsp/BSP/Components|bsp/Middlewares|BSP|STM32F7xx_HAL_Driver|res|wrapper|bsp/DoNotUse|../CMSIS|../STM32F7xx_HAL_Driver|../BSP|../hal_stm_lvgl|../res|../lvgl|../wrapper|lv_conf.h.old|CMSIS|Utilities|HAL_Driver|hal_stm_lvgl|inc|lv_examples|lvgl|src|startup" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="bsp/Middlewares|bsp/DoNotUse|lv_conf.h.old|../BSP|bsp/Utilities/Log|../res|bsp/BSP/Components|STM32F7xx_HAL_Driver|wrapper|inc|res|BSP|lvgl|hal_stm_lvgl|src|startup|bsp/wrapper/trash|HAL_Driver|CMSIS|bsp/Utilities|../STM32F7xx_HAL_Driver|lv_examples|bsp/BSP/STM32746G-Discovery/trash|../wrapper|Utilities|bsp/BSP/STM32746G-Discovery/src|../CMSIS|bsp/BSP/STM32746G-Discovery/stm32746g_discovery_lcd.c|../hal_stm_lvgl|../lvgl|bsp/Utilities/CPU|bsp/BSP/STM32746G-Discovery/stm32746g_discovery_lcd_dma2d.c|bsp/BSP/STM32746G-Discovery/wifi.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="BSP"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="CMSIS"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="STM32F7xx_HAL_Driver"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="bsp/BSP/Components/bmp280"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="bsp/BSP/Components/ft5336"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="bsp/BSP/Components/lis2mdl"/>
+						<entry excluding="examples" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="bsp/BSP/Components/lps22df"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="bsp/BSP/Components/lsm6ds3"/>
+						<entry excluding="examples" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="bsp/BSP/Components/lsm6ds3tr-c"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="bsp/BSP/Components/rk043fn48h"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="bsp/BSP/Components/wm8994"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="hal_stm_lvgl"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="lvgl"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="res"/>

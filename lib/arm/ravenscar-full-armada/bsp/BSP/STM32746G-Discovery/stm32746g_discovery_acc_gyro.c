@@ -165,11 +165,11 @@ uint8_t BSP_ACC_GYRO_Init(void)
 	/*
 	 *  Check device ID
 	 */
-	lsm6ds3_device_id_get(&sensorCtx, &whoamI);
-	if (whoamI != LSM6DS3_ID)
-	{
+	if (lsm6ds3_device_id_get(&sensorCtx, &whoamI) != HAL_OK)
 		return ACC_ERROR;
-	}
+
+	if ((whoamI != LSM6DS3_ID) && (whoamI != LSM6DS3TR_C_ID))
+		return ACC_ERROR;
 
 	/*
 	 * Restore default configuration

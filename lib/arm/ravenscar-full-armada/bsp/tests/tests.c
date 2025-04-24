@@ -413,7 +413,7 @@ static void animate_data_cb(lv_task_t * task) {
 		else if (angular_rate.z<-50000.0) angular_rate.z=-50000.0;
 		lv_chart_set_next(chart_gyr, s_gyr_z,50 + (int)(angular_rate.z*50.0/50000.0));
 	} else {
-		lv_obj_set_style_local_value_str(chart_acc, LV_CONT_PART_MAIN, LV_STATE_DEFAULT, "Gyroscope (Not present)");
+		lv_obj_set_style_local_value_str(chart_gyr, LV_CONT_PART_MAIN, LV_STATE_DEFAULT, "Gyroscope (Not present)");
 	}
 
 	if (BSP_MAG_ReadValues(&magnetic)== MAG_OK) {
@@ -429,7 +429,7 @@ static void animate_data_cb(lv_task_t * task) {
 		else if (magnetic.z<-1000.0) magnetic.z=-1000.0;
 		lv_chart_set_next(chart_mag, s_mag_z,50 + (int)(magnetic.z*50.0/1000.0));
 	} else {
-		lv_obj_set_style_local_value_str(chart_acc, LV_CONT_PART_MAIN, LV_STATE_DEFAULT, "Magnetometer (Not present)");
+		lv_obj_set_style_local_value_str(chart_mag, LV_CONT_PART_MAIN, LV_STATE_DEFAULT, "Magnetometer (Not present)");
 	}
 
 	if (BSP_PRESSURE_ReadCompensatedValues(&pressure, &temperature)==PRESSURE_OK) {
@@ -446,7 +446,7 @@ static void animate_data_cb(lv_task_t * task) {
 		else if (pressure < -500.0) pressure = -500.0;
 		lv_chart_set_next(chart_pres, s_pres,50 + (int)(pressure*50.0/500.0));
 	} else {
-		lv_obj_set_style_local_value_str(chart_acc, LV_CONT_PART_MAIN, LV_STATE_DEFAULT, "Pressure (Not present)");
+		lv_obj_set_style_local_value_str(chart_pres, LV_CONT_PART_MAIN, LV_STATE_DEFAULT, "Pressure (Not present)");
 	}
 
 	tab_id = lv_tabview_get_tab_act(tv);
