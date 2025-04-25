@@ -19,6 +19,6 @@
 #define __VERSION_H__
 
 #define BL_MAJOR_VERSION	3
-#define BL_MINOR_VERSION	3
+#define BL_MINOR_VERSION	4
 
 #endif /* __VERSION_H__ */

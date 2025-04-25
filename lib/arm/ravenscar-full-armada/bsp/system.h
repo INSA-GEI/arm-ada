@@ -31,6 +31,7 @@
 #include "stm32746g_discovery_acc_gyro.h"
 #include "stm32746g_discovery_pressure.h"
 #include "stm32746g_discovery_stdio.h"
+#include "stm32746g_discovery_i2c.h"
 
 #include "version.h"
 #include "panic.h"

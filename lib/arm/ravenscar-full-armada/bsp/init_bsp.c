@@ -152,6 +152,9 @@ void MAIN_SystemInit(void)
 	/* Init Keys */
 	BSP_KEYS_Init();
 
+	/* Init I2c for MEMS */
+	BSP_I2C_MEMS_Init();
+
 	/* Init magnetic sensor */
 	BSP_MAG_Init();
 
@@ -375,7 +378,7 @@ void init_bsp(void)
 
 	lv_obj_clean(lv_scr_act());
 	lv_task_handler();
-    HAL_Delay(200);
+    //HAL_Delay(200);
   
 	if (*rebootFlag != 0xDEADBEEF) {
 		*rebootFlag = 0xDEADBEEF;

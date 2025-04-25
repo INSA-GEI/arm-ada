@@ -1,6 +1,6 @@
 /**
  ******************************************************************************
- * @file    stm32746g_discovery_mag.h
+ * @file    stm32746g_discovery_acc_gyro.h
  * @author  dimercur
  * @brief   This file contains the common defines and functions prototypes for
  *          the stm32746g_discovery_mag.c driver.

@@ -322,6 +322,7 @@ typedef enum
 /* Definition for external, camera and Arduino connector I2Cx resources */
 #define DISCOVERY_EXT_I2Cx                               I2C1
 #define DISCOVERY_EXT_I2Cx_CLK_ENABLE()                  __HAL_RCC_I2C1_CLK_ENABLE()
+#define DISCOVERY_EXT_I2Cx_CLK_DISABLE()                  __HAL_RCC_I2C1_CLK_DISABLE()
 #define DISCOVERY_EXT_DMAx_CLK_ENABLE()                  __HAL_RCC_DMA1_CLK_ENABLE()
 #define DISCOVERY_EXT_I2Cx_SCL_SDA_GPIO_CLK_ENABLE()     __HAL_RCC_GPIOB_CLK_ENABLE()
 
@@ -343,7 +344,10 @@ typedef enum
 /* Due to the big MOFSET capacity for adapting the camera level the rising time is very large (>1us) */
 /* 0x40912732 takes in account the big rising and aims a clock of 100khz */
 #ifndef DISCOVERY_I2Cx_TIMING  
-#define DISCOVERY_I2Cx_TIMING                      ((uint32_t)0x40912732)  
+//#define DISCOVERY_I2Cx_TIMING                      ((uint32_t)0x40912732) // 100Khz ultra lent (origine)
+//#define DISCOVERY_I2Cx_TIMING                      ((uint32_t)0x00501958) // 400Khz, 10ns de montée et de descente
+//#define DISCOVERY_I2Cx_TIMING                      ((uint32_t)0x00501D55) // 400Khz, 1ns de montée et de descente
+#define DISCOVERY_I2Cx_TIMING                      ((uint32_t)0x0020081F) // 1000Khz, 1ns de montée et de descente
 #endif /* DISCOVERY_I2Cx_TIMING */
 
 #define DISCOVERY_SPIx 							SPI2

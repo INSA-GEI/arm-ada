@@ -70,6 +70,7 @@ EndDependencies */
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32746g_discovery_acc_gyro.h"
+#include "stm32746g_discovery_i2c.h"
 //#include "stm32746g_discovery_acc_gyro_conf.h"
 
 /** @addtogroup BSP
@@ -90,7 +91,7 @@ EndDependencies */
 /** @defgroup STM32746G_DISCOVERY_ACC_GYRO_Private_Variables STM32746G_DISCOVERY ACC_GYRO Private Variables
  * @{
  */
-static I2C_HandleTypeDef I2CHandle;
+//static I2C_HandleTypeDef I2CHandle;
 
 static int32_t platform_write(void *handle, uint8_t reg, uint8_t *bufp,
 		uint16_t len);
@@ -131,36 +132,37 @@ uint8_t BSP_ACC_GYRO_Init(void)
 	//lsm6ds3_int1_route_t int_1_reg;
 
 	/* I2C Configuration */
-	I2CHandle.Instance = ACC_GYRO_I2Cx;
-
-	/* Call the DeInit function to reset the driver */
-	if (HAL_I2C_DeInit(&I2CHandle) != HAL_OK)
-	{
-		return ACC_ERROR;
-	}
+//	I2CHandle.Instance = ACC_GYRO_I2Cx;
+//
+//	/* Call the DeInit function to reset the driver */
+//	if (HAL_I2C_DeInit(&I2CHandle) != HAL_OK)
+//	{
+//		return ACC_ERROR;
+//	}
 
 	/* System level initialization */
 	BSP_ACC_GYRO_MspInit();
 
-	I2CHandle.Init.Timing          = ACC_GYRO_I2C_TIMING;
-	I2CHandle.Init.OwnAddress1     = 0xFF;
-	I2CHandle.Init.AddressingMode  = I2C_ADDRESSINGMODE_7BIT;
-	I2CHandle.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
-	I2CHandle.Init.OwnAddress2     = 0xFF;
-	I2CHandle.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
-	I2CHandle.Init.NoStretchMode   = I2C_NOSTRETCH_DISABLE;
-
-	if (HAL_I2C_Init(&I2CHandle) != HAL_OK)
-	{
-		return ACC_ERROR;
-	}
-
-	/* Enable the Analog I2C Filter */
-	HAL_I2CEx_ConfigAnalogFilter(&I2CHandle,I2C_ANALOGFILTER_ENABLE);
+//	I2CHandle.Init.Timing          = ACC_GYRO_I2C_TIMING;
+//	I2CHandle.Init.OwnAddress1     = 0xFF;
+//	I2CHandle.Init.AddressingMode  = I2C_ADDRESSINGMODE_7BIT;
+//	I2CHandle.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+//	I2CHandle.Init.OwnAddress2     = 0xFF;
+//	I2CHandle.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+//	I2CHandle.Init.NoStretchMode   = I2C_NOSTRETCH_DISABLE;
+//
+//	if (HAL_I2C_Init(&I2CHandle) != HAL_OK)
+//	{
+//		return ACC_ERROR;
+//	}
+//
+//	/* Enable the Analog I2C Filter */
+//	HAL_I2CEx_ConfigAnalogFilter(&I2CHandle,I2C_ANALOGFILTER_ENABLE);
 
 	sensorCtx.write_reg = platform_write;
 	sensorCtx.read_reg = platform_read;
-	sensorCtx.handle = &I2CHandle;
+	sensorCtx.handle = BSP_I2C_MEMS_GetHandle();
+	//sensorCtx.handle = &I2CHandle;
 
 	/*
 	 *  Check device ID
@@ -443,21 +445,21 @@ static int32_t platform_read(void *handle, uint8_t reg, uint8_t *bufp,
  */
 __weak void BSP_ACC_GYRO_MspInit(void)
 {
-	GPIO_InitTypeDef gpio_init_structure;
-	DISCOVERY_EXT_I2Cx_SCL_SDA_GPIO_CLK_ENABLE();
-
-	/*##-2- Configure peripheral GPIO ##########################################*/
-	/* KEYS CS GPIO pin configuration  */
-	gpio_init_structure.Pin = DISCOVERY_EXT_I2Cx_SCL_PIN;
-	gpio_init_structure.Mode = GPIO_MODE_AF_OD;
-	gpio_init_structure.Pull = GPIO_PULLUP;
-	gpio_init_structure.Speed = GPIO_SPEED_FAST;
-	gpio_init_structure.Alternate = DISCOVERY_EXT_I2Cx_SCL_SDA_AF;
-	HAL_GPIO_Init(DISCOVERY_EXT_I2Cx_SCL_SDA_GPIO_PORT, &gpio_init_structure);
-
-	/* Configure I2C Rx as alternate function */
-	gpio_init_structure.Pin = DISCOVERY_EXT_I2Cx_SDA_PIN;
-	HAL_GPIO_Init(DISCOVERY_EXT_I2Cx_SCL_SDA_GPIO_PORT, &gpio_init_structure);
+//	GPIO_InitTypeDef gpio_init_structure;
+//	DISCOVERY_EXT_I2Cx_SCL_SDA_GPIO_CLK_ENABLE();
+//
+//	/*##-2- Configure peripheral GPIO ##########################################*/
+//	/* KEYS CS GPIO pin configuration  */
+//	gpio_init_structure.Pin = DISCOVERY_EXT_I2Cx_SCL_PIN;
+//	gpio_init_structure.Mode = GPIO_MODE_AF_OD;
+//	gpio_init_structure.Pull = GPIO_PULLUP;
+//	gpio_init_structure.Speed = GPIO_SPEED_FAST;
+//	gpio_init_structure.Alternate = DISCOVERY_EXT_I2Cx_SCL_SDA_AF;
+//	HAL_GPIO_Init(DISCOVERY_EXT_I2Cx_SCL_SDA_GPIO_PORT, &gpio_init_structure);
+//
+//	/* Configure I2C Rx as alternate function */
+//	gpio_init_structure.Pin = DISCOVERY_EXT_I2Cx_SDA_PIN;
+//	HAL_GPIO_Init(DISCOVERY_EXT_I2Cx_SCL_SDA_GPIO_PORT, &gpio_init_structure);
 
 	//	/* IT DRDY GPIO pin configuration  */
 	//	gpio_init_structure.Pin       = ACC_GYRO_DRDY_PIN;
@@ -474,21 +476,21 @@ __weak void BSP_ACC_GYRO_MspInit(void)
 
 	/*** Configure the I2C peripheral ***/
 	/* Enable I2C clock */
-	DISCOVERY_EXT_I2Cx_CLK_ENABLE();
-
-	/* Force the I2C peripheral clock reset */
-	DISCOVERY_EXT_I2Cx_FORCE_RESET();
-
-	/* Release the I2C peripheral clock reset */
-	DISCOVERY_EXT_I2Cx_RELEASE_RESET();
-
-	/* Enable and set I2Cx Interrupt to a lower priority */
-	HAL_NVIC_SetPriority(DISCOVERY_EXT_I2Cx_EV_IRQn, 0x0D, 0);
-	HAL_NVIC_EnableIRQ(DISCOVERY_EXT_I2Cx_EV_IRQn);
-
-	/* Enable and set I2Cx Interrupt to a lower priority */
-	HAL_NVIC_SetPriority(DISCOVERY_EXT_I2Cx_ER_IRQn, 0x0D, 0);
-	HAL_NVIC_EnableIRQ(DISCOVERY_EXT_I2Cx_ER_IRQn);
+//	DISCOVERY_EXT_I2Cx_CLK_ENABLE();
+//
+//	/* Force the I2C peripheral clock reset */
+//	DISCOVERY_EXT_I2Cx_FORCE_RESET();
+//
+//	/* Release the I2C peripheral clock reset */
+//	DISCOVERY_EXT_I2Cx_RELEASE_RESET();
+//
+//	/* Enable and set I2Cx Interrupt to a lower priority */
+//	HAL_NVIC_SetPriority(DISCOVERY_EXT_I2Cx_EV_IRQn, 0x0D, 0);
+//	HAL_NVIC_EnableIRQ(DISCOVERY_EXT_I2Cx_EV_IRQn);
+//
+//	/* Enable and set I2Cx Interrupt to a lower priority */
+//	HAL_NVIC_SetPriority(DISCOVERY_EXT_I2Cx_ER_IRQn, 0x0D, 0);
+//	HAL_NVIC_EnableIRQ(DISCOVERY_EXT_I2Cx_ER_IRQn);
 
 	//	/* Enable and set EXTI9-5 Interrupt to the lowest priority */
 	//	HAL_NVIC_SetPriority(ACC_GYRO_DRDY_EXTI_IRQn, 0xFF, 0);
@@ -506,17 +508,17 @@ __weak void BSP_ACC_GYRO_MspDeInit(void)
 {
 	/*##-1- Disable NVIC for IT_LIS2MDL ###########################################*/
 	//	HAL_NVIC_DisableIRQ(SPI2_IRQn);
-	ACC_GYRO_I2Cx_FORCE_RESET();
-	ACC_GYRO_I2Cx_RELEASE_RESET();
-
-	/*##-2- Disable peripherals and GPIO Clocks ################################*/
-	/* De-Configure QSPI pins */
-	HAL_GPIO_DeInit(ACC_GYRO_I2Cx_SDA_GPIO_PORT, ACC_GYRO_I2Cx_SDA_PIN);
-	HAL_GPIO_DeInit(ACC_GYRO_I2Cx_SCL_GPIO_PORT, ACC_GYRO_I2Cx_SCL_PIN);
+//	ACC_GYRO_I2Cx_FORCE_RESET();
+//	ACC_GYRO_I2Cx_RELEASE_RESET();
+//
+//	/*##-2- Disable peripherals and GPIO Clocks ################################*/
+//	/* De-Configure QSPI pins */
+//	HAL_GPIO_DeInit(ACC_GYRO_I2Cx_SDA_GPIO_PORT, ACC_GYRO_I2Cx_SDA_PIN);
+//	HAL_GPIO_DeInit(ACC_GYRO_I2Cx_SCL_GPIO_PORT, ACC_GYRO_I2Cx_SCL_PIN);
 
 	HAL_NVIC_DisableIRQ(ACC_GYRO_DRDY_EXTI_IRQn);
 
-	ACC_GYRO_I2Cx_CLK_DISABLE();
+//	ACC_GYRO_I2Cx_CLK_DISABLE();
 }
 
 /**
