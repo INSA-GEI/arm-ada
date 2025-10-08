@@ -1,0 +1,70 @@
+diff -cr /usr/local/insa/GNAT-2021-dnu/2021/arm-elf/arm-eabi/lib/gnat/ravenscar-full-stm32f746disco/gnarl/s-bbcppr.adb ./gnarl/s-bbcppr.adb
+*** /usr/local/insa/GNAT-2021-dnu/2021/arm-elf/arm-eabi/lib/gnat/ravenscar-full-stm32f746disco/gnarl/s-bbcppr.adb	2025-04-03 17:37:13.470868161 +0200
+--- ./gnarl/s-bbcppr.adb	2023-02-06 10:54:45.000000000 +0100
+***************
+*** 118,123 ****
+--- 118,132 ----
+     procedure Set_Selected_Priority_Group;
+     --  assign the priority group specified by BB.Parameters
+  
++    ---------------------
++    -- Init fct of BSP --
++    ---------------------
++    procedure BSPInit;
++    pragma Import (C, BSPInit, "init_bsp");
++ 
++    --  procedure BSPInit_Misc;
++    --  pragma Import (C, BSPInit_Misc, "RUNTIME_Main");
++ 
+     -----------------------
+     -- Context Switching --
+     -----------------------
+***************
+*** 297,302 ****
+--- 306,315 ----
+  
+        if not Is_ARMv6m then
+           Set_Selected_Priority_Group;
++ 
++          --  Write the required key (16#05FA#) and desired PRIGROUP value. We
++          --  configure this to 3, to have 16 group priorities
++ 
+        end if;
+  
+        --  Enable usage, bus and memory management fault
+***************
+*** 310,315 ****
+--- 323,334 ----
+  
+        Asm ("cpsie f", Volatile => True);
+  
++       --  TODO: Initialiser la HAL et le BSP ici
++       BSPInit;
++ 
++       --  BSPInit_HAL;
++       --  BSPInit_Misc;
++ 
+     end Initialize_CPU;
+  
+     ----------------------
+diff -cr /usr/local/insa/GNAT-2021-dnu/2021/arm-elf/arm-eabi/lib/gnat/ravenscar-full-stm32f746disco/gnarl/s-bbcppr.ads ./gnarl/s-bbcppr.ads
+*** /usr/local/insa/GNAT-2021-dnu/2021/arm-elf/arm-eabi/lib/gnat/ravenscar-full-stm32f746disco/gnarl/s-bbcppr.ads	2025-04-03 17:37:20.513887330 +0200
+--- ./gnarl/s-bbcppr.ads	2023-02-06 10:54:45.000000000 +0100
+***************
+*** 130,136 ****
+     --  Interrupts are enabled if they are above the value given by Level
+  
+     procedure Initialize_CPU;
+!    pragma Inline (Initialize_CPU);
+     --  Set the CPU up to use the proper stack for interrupts, initialize and
+     --  enable system trap handlers.
+  
+--- 130,136 ----
+     --  Interrupts are enabled if they are above the value given by Level
+  
+     procedure Initialize_CPU;
+!    --  pragma Inline (Initialize_CPU);
+     --  Set the CPU up to use the proper stack for interrupts, initialize and
+     --  enable system trap handlers.
+  
+Seulement dans ./gnarl: vectortable.c

@@ -1,0 +1,56 @@
+n May 2022 AdaCore announced the end of the GNAT Community release. This document provides instructions on how to continue Ada/SPARK programming without the GNAT Community release.
+
+https://alire.ada.dev/transition_from_gnat_community.html
+
+Using individual packages
+
+This solution is the closest to the GNAT Community workflow. As part of the Alire project a few tools are pre-built from the FSF sources and available for download. When using Alire these tools are automatically downloaded for you, but you can also decide not to use Alire and install them by hand.
+
+Other than manual installation of the components, the main drawback of this solution is that you do not have access to all the libraries of the Alire ecosystem.
+
+How to install
+Extract all the archives listed below under the same root directory.
+
+If you only want to use the tools from GNAT Studio, you should just have to run GNAT Studio executable from bin/ directory.
+
+If you want to use the command line, add the bin/ directory from your root installation to the PATH environment variable.
+
+Compiler, GPRbuild, and debugger
+Builds of GNAT FSF, GPRbuild, and GDB are available in the Alire GNAT-FSF-builds repository: github.com/alire-project/GNAT-FSF-builds/releases
+
+IDE
+For GNAT Studio, you can download a binary public release from the repository: github.com/AdaCore/gnatstudio/releases. You can also consider using Visual Studio Code with the Ada extension.
+
+SPARK
+Builds of GNATprove for SPARK are also available from the Alire GNAT-FSF-builds repository: github.com/alire-project/GNAT-FSF-builds/releases
+
+Libraries
+With this solution, you have to build libraries from sources in dedicated AdaCore GitHub repositories: github.com/AdaCore/
+
+Using distribution package managers
+Some Linux/BSD distributions or msys2 for Windows provide builds of GNAT FSF.
+
+Debian/ubuntu: $ sudo apt install gnat-12 gnat-12-arm-linux-gnueabihf gprbuild gcc-arm-linux-gnueabihf
+
+######################################################
+# reprise le 2 /07/2025
+######################################################
+
+#1 Installation de gnatstudio
+Recuperer l'IDE ici: github.com/AdaCore/gnatstudio/releases
+Lien: https://github.com/AdaCore/gnatstudio/releases/download/gnatstudio-cr-20250417/gnatstudio-26.0w-20250417-x86_64-linux-bin.tar.gz
+
+Decompresser et installer dans /mnt/commetud/2eme Annee IMACS/ADA/
+
+#2 Installation de la toolchain arm-elf
+Recuperer l'ensemble ici : https://github.com/alire-project/GNAT-FSF-builds/releases
+Lien : https://github.com/alire-project/GNAT-FSF-builds/releases/download/gnat-15.1.0-2/gnat-arm-elf-linux64-x86_64-15.1.0-2.tar.gz
+
+Decompresser et installer dans /mnt/commetud/2eme Annee IMACS/ADA/
+
+#3 Installation de gprbuild
+Recuperer l'ensemble ici : https://github.com/alire-project/GNAT-FSF-builds/releases
+Lien: https://github.com/alire-project/GNAT-FSF-builds/releases/download/gprbuild-25.0.0-1/gprbuild-x86_64-linux-25.0.0-1.tar.gz
+
+Decompresser et installer dans /mnt/commetud/2eme Annee IMACS/ADA/
+
