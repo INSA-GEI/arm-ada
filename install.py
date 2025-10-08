@@ -17,14 +17,25 @@ directories_to_archive  = ["./tools",
                            "./lib",
                            "./TP_templates"]
 
-libs_to_rebuild         = ["gprbuild ./lib/arm/insa/insa.gpr",
-                           "gprbuild ./lib/arm/ravenscar-full-armada/ravenscar_build.gpr",
-                           "gprbuild ./TP/TP1/mission_pacman.gpr",
-                           "gprbuild ./TP/TP2/mission_simon.gpr",
-                           "gprbuild ./TP/TP3.1/mission_dicho.gpr",
-                           "gprbuild ./TP/TP3.2/mission_koch.gpr",
-                           "gprbuild ./TP/TP4.1/mission_snake.gpr",
-                           "gprbuild ./TP/TP4.2/mission_morse.gpr"]
+# applis_to_rebuild         = ["gprbuild ./TP/TP1/mission_pacman.gpr",
+#                            "gprbuild ./TP/TP2/mission_simon.gpr",
+#                            "gprbuild ./TP/TP3.1/mission_dicho.gpr",
+#                            "gprbuild ./TP/TP3.2/mission_koch.gpr",
+#                            "gprbuild ./TP/TP4.1/mission_snake.gpr",
+#                            "gprbuild ./TP/TP4.2/mission_morse.gpr"]
+
+applis_to_rebuild         = ["gprbuild ./TP/TP1/mission_pacman.gpr"
+                           ]
+
+runtime_to_rebuild         = ["gprclean ./lib/arm/runtime/libgnat_build.gpr",
+                           "gprclean ./lib/arm/runtime/libgnarl_build.gpr",
+                           "gprbuild ./lib/arm/runtime/libgnat_build.gpr",
+                           "gprbuild ./lib/arm/runtime/libgnarl_build.gpr"
+                           ]
+
+libs_to_rebuild         = ["gprclean ./lib/arm/insa/insa.gpr",
+                           "gprbuild ./lib/arm/insa/insa.gpr"
+                           ]
 
 preparation_commands    = ["unzip -fq %s/tools/bin/ST-LINK_gdbserver.zip",
                            "rm %s/tools/bin/ST-LINK_gdbserver.zip",
@@ -41,7 +52,7 @@ preparation_commands    = ["unzip -fq %s/tools/bin/ST-LINK_gdbserver.zip",
 
 server_name             = "srv-ens-calcul"
 
-deploy_path_on_server   = "/mnt/commetud/2eme\\ Annee\\ IMACS/ADA/"
+deploy_path_on_server   = "/mnt/commetud/2emeAnneeIMACS/ADA/"
 
 download_path_on_server = "/home_pers/"
 
@@ -51,11 +62,20 @@ temp_archive            = "armada.zip"
 # Nothing to configure or modify under this line
 #
 
+def run_commands(commands):
+    for command in commands:
+        print ("Command = " + command)
+        os.system (command)
+
 def rebuildlibs(commands):
     for command in commands:
         print ("Command = " + command)
         os.system (command)
 
+def rebuildruntime(commands):
+    for command in commands:
+        print ("Command = " + command)
+        os.system (command)
 
 def copyfilestoarchive(treetocopy, tempdir):
     for treetocopy in treetocopy:
@@ -73,15 +93,12 @@ def preparearchive(tempdir,temparchive,cmdlist):
     os.system ("zip -qr " + temparchive + " *")
     os.chdir(currentdir)
 
-
 def removetempdir(tempdir):
     print ("Remove " + tempdir)
     rmtree (tempdir)
 
-
 def transferprogress(transferred, tobetransfered):
     print("Upload: " + str(int(transferred*100/tobetransfered))+"%", end = "\r")
-
 
 def deploy(servername, deploydir, downloaddir, tempdir, temparchive):
     print ("Connection to " + server_name)
@@ -122,8 +139,9 @@ def deploy(servername, deploydir, downloaddir, tempdir, temparchive):
 
     ssh_client.close()
 
-
 def main():
+    print ("Start installation procedure")
+
     now = datetime.now()
     temp_dir = os.path.expanduser ("~/tmp/armada-" + now.strftime("%Y%m%d-%H%M%S") + "/")
     #temp_dir = "/home/dimercur/tmp/armada-20211124-170312/"
@@ -131,8 +149,31 @@ def main():
     print ("Temp directory : " + temp_dir)
     print ("Install directory : " + deploy_path_on_server)
 
+    print ("\nArchive old ADA directory to ADA_" + datetime.now().strftime("%Y%m%d-%H%M%S"))
+    run_commands (["mv "+ deploy_path_on_server + " " + deploy_path_on_server + "../ADA_" + datetime.now().strftime("%Y%m%d-%H%M%S")])
+    time.sleep(1) # wait 1 second in order for "mv" command to complete
+    run_commands (["mkdir " + deploy_path_on_server])
+
+    print ("\nBuild runtime")
+    run_commands(runtime_to_rebuild)
+    run_commands (["mkdir -p " + deploy_path_on_server + "/lib/arm"])
+    run_commands (["cp -r ./lib/arm/embedded-stm32f746disco-armada " + deploy_path_on_server + "lib/arm/"])
+    run_commands (["ln -s " + deploy_path_on_server + "lib/arm/embedded-stm32f746disco-armada " + deploy_path_on_server + "lib/arm/runtime"])
+    run_commands (["ln -s " + deploy_path_on_server + "lib/arm/embedded-stm32f746disco-armada " + deploy_path_on_server + "lib/arm/runtime-3.5"])
+
+    print ("\nBuild support libraries")
+    run_commands(libs_to_rebuild)
+    run_commands (["cp -r ./lib/arm/insa " + deploy_path_on_server + "lib/arm/"])
+    run_commands (["cp -r ./lib/lib_TP " + deploy_path_on_server + "lib/"])
+
+    print ("\nBuild applications")
+    run_commands(applis_to_rebuild)
+    run_commands (["mkdir -p " + deploy_path_on_server + "TP/"])
+    run_commands (["cp -r ./TP/TP* " + deploy_path_on_server + "TP/"])
+
+    exit()
     print ("\nPrepare archive")
-    rebuildlibs (libs_to_rebuild)
+    run_commands (applis_to_rebuild)
     copyfilestoarchive (directories_to_archive, temp_dir)
     preparearchive (temp_dir, temp_archive, preparation_commands)
 
