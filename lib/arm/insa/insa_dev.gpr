@@ -1,14 +1,14 @@
-project Insa is
+project Insa_dev is
 
    for Languages use ("Ada");
    for Source_Dirs use ("src");
-   --  for Object_Dir use "obj";
+   for Object_Dir use "obj";
    for Target use "arm-eabi";
    for Runtime ("ada") use "/mnt/commetud/2emeAnneeIMACS/ADA/lib/arm/runtime";
-   for Externally_Built use "true";
-   for Excluded_Source_Files use ("insa.adb", "insa-audio-synthesizer.adb", "insa-graphics.adb",
-                                   "insa-keys.adb", "insa-random_number.adb", "insa-sensors.adb",
-                                   "insa-timer.adb");
+   --  for Externally_Built use "true";
+   --  for Excluded_Source_Files use ("insa.adb", "insa-audio-synthesizer.adb", "insa-graphics.adb",
+   --                                "insa-keys.adb", "insa-random_number.adb", "insa-sensors.adb",
+   --                                "insa-timer.adb");
 
    package Compiler is
       for Switches ("ada") use ("-g", "-gnatQ", "-ffunction-sections", "-fdata-sections", "-gnatwa");
@@ -22,5 +22,5 @@ project Insa is
    for Library_Dir use "lib";
    for Library_Version use "3.0";
 
-end Insa;
+end Insa_dev;
 
