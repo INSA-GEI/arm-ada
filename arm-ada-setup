@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "arm-ada-setup v6"
+echo "arm-ada-setup v7 (2025-10-10)"
 echo "Mise a jour du path dans .bashrc"
 fichier=~/.bashrc
 
@@ -10,15 +10,12 @@ else
     cp "$fichier" "$fichier".armada-bak
 fi
 
-var1=$(cat $fichier | grep "GNAT/2021")
+#var1=$(cat $fichier | grep "GNAT/2021")
+var1=$(grep ". /mnt/commetud/2emeAnneeIMACS/ADA/settings-armada.sh" "$fichier")
 
 if [ "$var1" = "" ]; then
     echo " " >> "$fichier"
-    echo "var1=\$(echo \$PATH | grep \"GNAT/2021\")"  >> "$fichier"
-    echo " " >> "$fichier"
-    echo "if [ \"\$var1\" = \"\" ]; then" >> "$fichier"
-    echo "   PATH=\$PATH:/usr/local/insa/GNAT/2021/arm-elf/bin:/usr/local/insa/GNAT/2021/x86_64/bin:/usr/local/insa/STM32CubeProgrammer/bin:/mnt/commetud/2eme\\ Annee\\ IMACS/ADA/tools/bin" >> "$fichier"
-    echo "fi" >> "$fichier"
+    echo ". /mnt/commetud/2emeAnneeIMACS/ADA/settings-armada.sh"  >> "$fichier"
 
     echo "$fichier mis à jour"
 else
@@ -27,17 +24,13 @@ fi
 
 echo ""
 echo "Recopie de la configuration de gnatstudio dans ~/.gnatstudio"
-if [ ! -e ~/.gnatstudio ]; then
-    mkdir ~/.gnatstudio
+if [ -e ~/.gnatstudio ]; then
+    mv ~/.gnatstudio ~/.gnatstudio.bak
 fi
 
-if [ ! -e ~/.gnatstudio/plug-ins ]; then
-    ln -s /mnt/commetud/2eme\ Annee\ IMACS/ADA/tools/gnatstudio/plug-ins ~/.gnatstudio/plug-ins
-fi
-
-if [ ! -e ~/.gnatstudio/icons ]; then
-    ln -s /mnt/commetud/2eme\ Annee\ IMACS/ADA/tools/gnatstudio/icons ~/.gnatstudio/icons
-fi
+mkdir -p ~/.gnatstudio
+ln -s /mnt/commetud/2emeAnneeIMACS/ADA/tools/gnatstudio/plug-ins ~/.gnatstudio/plug-ins
+ln -s /mnt/commetud/2emeAnneeIMACS/ADA/tools/gnatstudio/icons ~/.gnatstudio/icons
 
 echo ""
 echo "Rajoute les racourcies des applications et les associations de fichier"
@@ -47,41 +40,60 @@ if [ ! -e ~/.local/share/applications ]; then
 fi
 
 if [ ! -e ~/.local/share/applications/gnatstudio.desktop ]; then
-    ln -s /mnt/commetud/2eme\ Annee\ IMACS/ADA/tools/gnome/applications/gnatstudio.desktop ~/.local/share/applications/gnatstudio.desktop
+    ln -s /mnt/commetud/2emeAnneeIMACS/ADA/tools/gnome/applications/gnatstudio.desktop ~/.local/share/applications/gnatstudio.desktop
 fi
 
 if [ ! -e ~/.local/share/applications/st-gdbserver.desktop ]; then
-    ln -s /mnt/commetud/2eme\ Annee\ IMACS/ADA/tools/gnome/applications/st-gdbserver.desktop ~/.local/share/applications/st-gdbserver.desktop
+    ln -s /mnt/commetud/2emeAnneeIMACS/ADA/tools/gnome/applications/st-gdbserver.desktop ~/.local/share/applications/st-gdbserver.desktop
 fi
 
 #update-desktop-database ~/.local/share/applications
 
-echo "Creation de l'arborescence des TPs"
-pathList=( "TP1" "TP2" "TP3.1" "TP3.2" "TP4.1" "TP4.2" )
-missionNames=( "mission_pacman" "mission_simon" "mission_dicho" "mission_koch" "mission_snake" "mission_morse" )
-length=${#pathList[@]}
+if [ -e ~/TPADA2IMACS ]; then
+    echo ""
+    read -p "Le repertoire ~/TPADA2IMACS existe deja. Voulez-vous le supprimer et recopier les TPs Ada ? (o/N) " -n 1 -r
+    echo ""
 
-if [ ! -e ~/TPADA2IMACS ]; then
-    mkdir -p ~/TPADA2IMACS
-    cp -r /mnt/commetud/2eme\ Annee\ IMACS/ADA/TP_templates/* ~/TPADA2IMACS/
-    rm -rf ~/TPADA2IMACS/Generic
+    if [[ $REPLY =~ ^[Oo]$ ]]; then
+        mv ~/TPADA2IMACS ~/TPADA2IMACS.bak
 
-    # Et maintenant, on fait le boulot de Gnatstudio quand on créé un nouveau projet
-    for (( j=0; j<${length}; j++ ));
-    do
-        TPPath=${pathList[$j]}
-        TPName=${missionNames[$j]}
-
-        #echo "Repertoire = $TPPath"
-        #echo "Nom = $TPName"
-	    rm ~/TPADA2IMACS/$TPPath/*.gpt
-        mv ~/TPADA2IMACS/$TPPath/@_project_name_@.gpr ~/TPADA2IMACS/$TPPath/$TPName.gpr
-        mv ~/TPADA2IMACS/$TPPath/src/@_main_name_@.adb ~/TPADA2IMACS/$TPPath/src/$TPName.adb
-        sed -i 's/@_project_name_@/'$TPName'/g' ~/TPADA2IMACS/$TPPath/$TPName.gpr
-        sed -i 's/@_main_name_@/'$TPName'/g' ~/TPADA2IMACS/$TPPath/$TPName.gpr
-        sed -i 's/@_Main_Name_@/'$TPName'/g' ~/TPADA2IMACS/$TPPath/src/$TPName.adb
-    done
+        echo "Copie des TPs Ada dans ~/TPADA2IMACS"
+        mkdir -p ~/TPADA2IMACS
+        cp -r /mnt/commetud/2emeAnneeIMACS/ADA/TP/* ~/TPADA2IMACS/
+        rm -rf ~/TPADA2IMACS/Generic
+        rm -rf ~/TPADA2IMACS/Tests_runtime
+        rm -rf ~/TPADA2IMACS/TP5
+    else
+        echo "Repertoire ~/TPADA2IMACS conservé, TPs Ada non recopiés."
+    fi
 fi
+
+# echo "Creation de l'arborescence des TPs"
+# pathList=( "TP1" "TP2" "TP3.1" "TP3.2" "TP4.1" "TP4.2" )
+# missionNames=( "mission_pacman" "mission_simon" "mission_dicho" "mission_koch" "mission_snake" "mission_morse" )
+# length=${#pathList[@]}
+
+# if [ ! -e ~/TPADA2IMACS ]; then
+#     mkdir -p ~/TPADA2IMACS
+#     cp -r /mnt/commetud/2eme\ Annee\ IMACS/ADA/TP_templates/* ~/TPADA2IMACS/
+#     rm -rf ~/TPADA2IMACS/Generic
+
+#     # Et maintenant, on fait le boulot de Gnatstudio quand on créé un nouveau projet
+#     for (( j=0; j<${length}; j++ ));
+#     do
+#         TPPath=${pathList[$j]}
+#         TPName=${missionNames[$j]}
+
+#         #echo "Repertoire = $TPPath"
+#         #echo "Nom = $TPName"
+# 	    rm ~/TPADA2IMACS/$TPPath/*.gpt
+#         mv ~/TPADA2IMACS/$TPPath/@_project_name_@.gpr ~/TPADA2IMACS/$TPPath/$TPName.gpr
+#         mv ~/TPADA2IMACS/$TPPath/src/@_main_name_@.adb ~/TPADA2IMACS/$TPPath/src/$TPName.adb
+#         sed -i 's/@_project_name_@/'$TPName'/g' ~/TPADA2IMACS/$TPPath/$TPName.gpr
+#         sed -i 's/@_main_name_@/'$TPName'/g' ~/TPADA2IMACS/$TPPath/$TPName.gpr
+#         sed -i 's/@_Main_Name_@/'$TPName'/g' ~/TPADA2IMACS/$TPPath/src/$TPName.adb
+#     done
+# fi
 
 echo ""
 echo "Fini"
