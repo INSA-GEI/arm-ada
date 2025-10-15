@@ -53,7 +53,8 @@ package body Plateau is
    -- Retourne T de type T_Table avec toutes les case vides
    -- et la position du serpent S au milieu
    -- affiche ce serpent
-   procedure InitialiserJeu (T: out T_Table ; S: out T_Snake) is 
+   --  procedure InitialiserJeu (T: out T_Table ; S: out T_Pos) is 
+   procedure InitialiserJeu (S: out T_Pos) is
       COIN_X: constant Integer:=-190;
       COIN_Y: constant Integer:=-100;
    begin 
@@ -64,11 +65,11 @@ package body Plateau is
          end loop;
       end loop;
       
-      T:= (others => (others => Vide));
+      --  T:= (others => (others => Vide));
       
-      S.Posx := T'First(1)+T'Length(1)/2 ;
-      S.PosY := T'First(2)+T'Length(2)/2 ;
-      T(S.Posx,S.PosY) := Snake ;
+      S.Posx := PLATEAU_LARGEUR/2 ;
+      S.PosY := PLATEAU_HAUTEUR/2 ;
+      --  T(S.Posx,S.PosY) := Snake ;
    end InitialiserJeu ;
    
    -- Libere l'espace memoire reserve a un pointeur L
@@ -77,31 +78,56 @@ package body Plateau is
    -- pour ne pas saturer la memoire de la carte 
    procedure EffacerMemoireElement (L : in out P_Element) is
       procedure Liberer_Element is 
-        new Ada.Unchecked_Deallocation(Element,P_Element);
+        new Ada.Unchecked_Deallocation(Element, P_Element);
    begin
       Liberer_Element(L);
    end EffacerMemoireElement ;
    
+   -- Libere l'espace memoire reserve a un pointeur L
+   -- Attention il est indispensable d'appeler cette procedure
+   -- Pour faire une desallocation "propre" de pointeur 
+   -- pour ne pas saturer la memoire de la carte 
+   procedure EffacerMemoireElementCerise (L_Cerises : in out P_Element_Cerise) is
+      procedure Liberer_Element is 
+        new Ada.Unchecked_Deallocation(Element_Cerise, P_Element_Cerise);
+   begin
+      Liberer_Element(L_Cerises);
+   end EffacerMemoireElementCerise ;
+   
+   function RechercheCerise(L_Cerises: in P_Element_Cerise; Coords: T_Pos) return Boolean is
+   begin
+      if L_Cerises = null then
+         return False;
+      elsif L_Cerises.all.Cerise = Coords then
+         return True;
+      else
+         return RechercheCerise(L_Cerises.all.Suiv, Coords);
+      end if;
+   end RechercheCerise;
+   
    -- placer une cerise aleatoirement
    -- dans la table T et a l'ecran
-   procedure PlacerCerise (T:in out T_Table) is
-      LocalX,LocalY : Integer ;
+   -- procedure PlacerCerise (T:in out T_Table) is
+   procedure PlacerCerise (L_Cerises:in out P_Element_Cerise) is
+      --  LocalX,LocalY : Integer ;
+      Coords : T_Pos;
    begin
       if Carte.TempsEcoule mod 50 = 0 then
 
-         Localx := Insa.Random_Number.GetValue;      
-         Localx := (Localx*(T'Last(1)+1))/65536;
-         if Localx > T'Last(1) then Localx :=T'Last(1);
+         Coords.PosX := Insa.Random_Number.GetValue;      
+         Coords.PosX := (Coords.PosX*(PLATEAU_LARGEUR))/65536;
+         if Coords.PosX > (PLATEAU_LARGEUR-1) then Coords.PosX := (PLATEAU_LARGEUR-1);
          end if;
  
-         Localy := Insa.Random_Number.GetValue; 
-         Localy := (Localy*(T'Last(2)+1))/65536;
-         if Localy > T'Last(2) then Localy :=T'Last(2);
+         Coords.PosY := Insa.Random_Number.GetValue; 
+         Coords.PosY := (Coords.PosY*(PLATEAU_HAUTEUR))/65536;
+         if Coords.PosY > (PLATEAU_HAUTEUR-1) then Coords.PosY := (PLATEAU_HAUTEUR-1);
          end if;
 
-         if T(LocalX,LocalY) = Vide then 
-            T(LocalX,LocalY) := Cerise ;	    
-            DessinerBloc(LocalX,LocalY,Cerise) ;
+         if RechercheCerise(L_Cerises, Coords) = False then 
+            L_Cerises := new Element_Cerise'(Coords, L_Cerises);
+            --  T(LocalX,LocalY) := Cerise ;	    
+            DessinerBloc(Coords.PosX,Coords.PosY,Cerise) ;
          end if;
       end if;
    end PlacerCerise ;
