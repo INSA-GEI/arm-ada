@@ -87,11 +87,13 @@ procedure Ada.Exceptions.Last_Chance_Handler (Except : Exception_Occurrence) is
       Mbx := Wrp_UI_MESSAGEBOX_Create (Msg_C, Button_Txt_Array,
                                        ExceptionMessageBoxCallback'Access);
 
-      --  while ExceptionMessageBoxFlag = False loop
-      --     null;
-      --  end loop;
+      while ExceptionMessageBoxFlag = False loop
+         null;
+      end loop;
 
       --  Wrp_Lv_Msgbox_Close(Mbx, 50);
+
+      Reboot;
    end CreateExceptionMessageBox;
 
    --  messagebox callback
@@ -101,7 +103,8 @@ procedure Ada.Exceptions.Last_Chance_Handler (Except : Exception_Occurrence) is
       pragma Unreferenced (Obj, Event);
 
    begin
-      Reboot;
+      --  null;
+      ExceptionMessageBoxFlag := True;
    end ExceptionMessageBoxCallback;
 
 begin
