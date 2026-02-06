@@ -45,27 +45,39 @@ with Interfaces.C.Strings;
 --  point where the exception was triggered.
 
 procedure Ada.Exceptions.Last_Chance_Handler (Except : Exception_Occurrence) is
-   type Pobj is access Integer;
+   --  procedure Reboot;
+   --  pragma Import (C, Reboot, "Reboot_System");
 
-   type ExceptionMessageBoxCallbackType is access
-     procedure (Obj : Pobj; Event : Interfaces.Unsigned_8);
-   pragma Convention (C, ExceptionMessageBoxCallbackType);
+   --  ExceptionMessageBox
+   --  Open a messagebox for information
+   --  Function call is blocking until user clicks the button,
+   --  then the system will reboot
+   procedure ExceptionMessageBox (Msg : String; Button_Txt : String);
 
-   ExceptionMessageBoxFlag : aliased Boolean := False;
-   pragma Volatile (ExceptionMessageBoxFlag);
+   procedure ExceptionMessageBox (Msg : String; Button_Txt : String) is
 
-   procedure ExceptionMessageBoxCallback (Obj : Pobj;
+      type Pobj is access Integer;
+
+      type ExceptionMessageBoxCallbackType is access
+         procedure (Obj : Pobj; Event : Interfaces.Unsigned_8);
+      pragma Convention (C, ExceptionMessageBoxCallbackType);
+
+      ExceptionMessageBoxFlag : aliased Boolean := False;
+      pragma Volatile (ExceptionMessageBoxFlag);
+
+      procedure ExceptionMessageBoxCallback (Obj : Pobj;
                                           Event : Interfaces.Unsigned_8);
-   pragma Convention (C, ExceptionMessageBoxCallback);
+      pragma Convention (C, ExceptionMessageBoxCallback);
 
-   procedure Reboot;
-   pragma Import (C, Reboot, "Reboot_System");
+      --  Messagebox callback. Called when user clicks the button.
+      --  Set the flag to true to exit the loop and reboot the system
+      procedure ExceptionMessageBoxCallback (Obj : Pobj;
+                                          Event : Interfaces.Unsigned_8) is
 
-   --  CreateExceptionMessageBox
-   --  Create a messagebox for information
-   procedure CreateExceptionMessageBox (Msg : String; Button_Txt : String);
-
-   procedure CreateExceptionMessageBox (Msg : String; Button_Txt : String) is
+         pragma Unreferenced (Obj, Event);
+      begin
+         ExceptionMessageBoxFlag := True;
+      end ExceptionMessageBoxCallback;
 
       function Wrp_UI_MESSAGEBOX_Create
         (Msg : Interfaces.C.Strings.chars_ptr;
@@ -84,31 +96,18 @@ procedure Ada.Exceptions.Last_Chance_Handler (Except : Exception_Occurrence) is
    begin
       ExceptionMessageBoxFlag := False;
 
+      --  Create and show the messagebox
       Mbx := Wrp_UI_MESSAGEBOX_Create (Msg_C, Button_Txt_Array,
                                        ExceptionMessageBoxCallback'Access);
 
+      --  Wait until user clicks the button
       while ExceptionMessageBoxFlag = False loop
          null;
       end loop;
-
-      --  Wrp_Lv_Msgbox_Close(Mbx, 50);
-
-      Reboot;
-   end CreateExceptionMessageBox;
-
-   --  messagebox callback
-   procedure ExceptionMessageBoxCallback (Obj : Pobj;
-                                          Event : Interfaces.Unsigned_8) is
-
-      pragma Unreferenced (Obj, Event);
-
-   begin
-      --  null;
-      ExceptionMessageBoxFlag := True;
-   end ExceptionMessageBoxCallback;
+   end ExceptionMessageBox;
 
 begin
-   CreateExceptionMessageBox ("Unhandled Ada Exception: " & ASCII.LF &
+   ExceptionMessageBox ("Unhandled Ada Exception: " & ASCII.LF &
                                 Exception_Name (Except) &
                                 ASCII.LF & ASCII.LF &
                                 Exception_Message (Except),

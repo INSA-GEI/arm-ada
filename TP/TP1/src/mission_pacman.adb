@@ -65,29 +65,41 @@ procedure mission_pacman is
    termine : Boolean := false ;
    dir : T_Direction ;
    NbreCerises : Integer ;
+   TempsRestant : Integer ;
    
 begin
    InitialiserJeu(MonP,MonLab);
    NbreCerises := nombreCerises(MonLab);
    while not termine loop      
-      EcrireTempsRestant(DureeJeu-GetTempsEcoule);
-      dir := DetecterDirection ;
-      if dir /= Immobile then
-         CalculerPFutur(MonP,dir,MonPFutur);
-         if not estMur(MonLab,MonPFutur) then
-            DeplacerPac(MonLab,MonP,MonPFutur,NbreCerises,dir);
-         else
-            MonP.NbreVies := MonP.NbreVies -1 ;
-            AfficheMessage("Bing le mur","reste "&integer'image(MonP.NbreVies)&" vie(s)");
+      TempsRestant := DureeJeu-GetTempsEcoule;
+      EcrireTempsRestant(TempsRestant);
+      
+      if TempsRestant<=0 then
+         termine := true ;
+         AfficheMessage("Perdu","Trop lent");
+      else      
+         dir := DetecterDirection ;
+         if dir /= Immobile then
+            CalculerPFutur(MonP,dir,MonPFutur);
+            
+            if not estMur(MonLab,MonPFutur) then
+               DeplacerPac(MonLab,MonP,MonPFutur,NbreCerises,dir);
+            else
+               MonP.NbreVies := MonP.NbreVies -1 ;
+               AfficheMessage("Bing le mur","reste "&integer'image(MonP.NbreVies)&" vie(s)");
+            end if;
+         
+            if MonP.NbreVies <= 0 then
+               termine := true ;
+               AfficheMessage("Perdu","Essaye encore");
+            elsif NbreCerises <=0 then
+               termine := true ;
+               AfficheMessage("Victoire","Score :"&integer'image((DureeJeu-GetTempsEcoule)*10));         
+            end if;
+            
          end if;
-         if ((DureeJeu-GetTempsEcoule)<=0) or (MonP.NbreVies <= 0) then
-            termine := true ;
-            AfficheMessage("Perdu"," essaye encore");
-         elsif NbreCerises <=0 then
-            termine := true ;
-            AfficheMessage("Victoire"," score :"&integer'image((DureeJeu-GetTempsEcoule)*10));         
-         end if ;
       end if;
+      
       EcrireNbCerises(NbreCerises);
    end loop;
 end mission_pacman;
