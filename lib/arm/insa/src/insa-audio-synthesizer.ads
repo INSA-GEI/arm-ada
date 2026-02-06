@@ -2,8 +2,6 @@
 -- High level note and music generation (synthetiser)
 --
 
--- pragma Ada_95;
-
 package Insa.Audio.Synthesizer is
    pragma Warnings (Off);
 
@@ -27,10 +25,10 @@ package Insa.Audio.Synthesizer is
          Release_Increment:  FLOAT;
          Wavetable:          SYNTH_WAVE_ACCESS;
       end record;
-   --pragma Pack (SYNTH_INSTRUMENT);
-   --pragma Convention   (Convention => C, 
-   --                    Entity      => SYNTH_INSTRUMENT);
-
+   --  pragma Pack (SYNTH_INSTRUMENT);
+   --  pragma Convention   (Convention => C, 
+   --                     Entity      => SYNTH_INSTRUMENT);
+   
    type SYNTH_INSTRUMENT_ACCESS is access constant SYNTH_INSTRUMENT;
    type SYNTH_INSTRUMENT_ARRAY is array(NATURAL range <>) of SYNTH_INSTRUMENT;
    type SYNTH_INSTRUMENT_ARRAY_ACCESS is access constant SYNTH_INSTRUMENT_ARRAY;
@@ -41,9 +39,9 @@ package Insa.Audio.Synthesizer is
          Channel:    BYTE;
          Duration:   WORD;
       end record;
-   --pragma Pack (MELODY_NOTES_ELEMENT);
-   pragma Convention   (Convention => C, 
-                        Entity      => MELODY_NOTES_ELEMENT);
+   --  pragma Pack (MELODY_NOTES_ELEMENT);
+   --  pragma Convention   (Convention => C, 
+   --                     Entity      => MELODY_NOTES_ELEMENT);
 
    type MELODY_NOTES is array(NATURAL range <>) of MELODY_NOTES_ELEMENT;
    type MELODY_NOTES_ACCESS is access constant MELODY_NOTES;
@@ -60,9 +58,9 @@ package Insa.Audio.Synthesizer is
          --channels_volume:    CHANNEL_VOLUME_ARRAY_ACCESS;
          Notes:              MELODY_NOTES_ACCESS;
       end record;
-   pragma Pack (MELODY_MUSIC);
-   pragma Convention   (Convention => C, 
-                        Entity      => MELODY_MUSIC);
+   --  pragma Pack (MELODY_MUSIC);
+   --  pragma Convention   (Convention => C, 
+   --                       Entity      => MELODY_MUSIC);
 
    type MELODY_MUSIC_ACCESS is access constant MELODY_MUSIC;
 

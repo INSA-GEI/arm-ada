@@ -3,7 +3,7 @@
 --
 
 with System;
-with Insa.Graphics;
+--  with Insa.Graphics;
 
 with Interfaces.C;
 
