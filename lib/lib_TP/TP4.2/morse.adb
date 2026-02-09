@@ -7,7 +7,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 --
--- Cet acteur fourni les routines et ressources necessaires à la saisie
+-- Cet acteur fourni les routines et ressources necessaires ï¿½ la saisie
 -- et l'affichage des elements de morse.
 --
 
@@ -66,13 +66,13 @@ package body Morse is
          Symbole:=Long;
       elsif GetButtonState(BoutonFinLettre) then
          Symbole:=FinLettre;
-      end if; -- Si ce n'est aucun de ces 3 cas, c'est donc le bouton finmot, déja selectionné dans Symbole
+      end if; -- Si ce n'est aucun de ces 3 cas, c'est donc le bouton finmot, dï¿½ja selectionnï¿½ dans Symbole
       
       while GetButtonState(BoutonCourt) 
         or GetButtonState(BoutonLong) 
         or GetButtonState(BoutonFinLettre)
         or GetButtonState(BoutonFinMot) loop
-         null; -- Attente que tous les boutons soient relachés
+         null; -- Attente que tous les boutons soient relachï¿½s
       end loop;
             
       return Symbole;
@@ -148,11 +148,11 @@ package body Morse is
             AudioBuffer(I).Left:= 0;
             AudioBuffer(I).Right:= 0;
          elsif I<AudioBuffer'Last/2 then
-            AudioBuffer(I).Left:= SIGNED_WORD'First;
-            AudioBuffer(I).Right:= SIGNED_WORD'First;
+            AudioBuffer(I).Left:= SIGNED_WORD'First/8;
+            AudioBuffer(I).Right:= SIGNED_WORD'First/8;
          else
-            AudioBuffer(I).Left:= SIGNED_WORD'Last;
-            AudioBuffer(I).Right:= SIGNED_WORD'Last;
+            AudioBuffer(I).Left:= SIGNED_WORD'Last/8;
+            AudioBuffer(I).Right:= SIGNED_WORD'Last/8;
          end if;
       end loop;
       

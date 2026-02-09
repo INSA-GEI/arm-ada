@@ -16,11 +16,18 @@ use Insa, Insa.Graphics, Insa.Keys, Insa.Timer ,Insa.Random_Number;
 with Insa.Graphics.Images;
 use Insa.Graphics.Images;
 
-with Insa.Audio.Synthesizer;
-use Insa.Audio.Synthesizer;
+--  with Insa.Audio.Synthesizer, Insa.Audio;
+--  use Insa.Audio.Synthesizer, Insa.Audio;
 
-with Sprites_Firework, Sprites_Graveyard, Sprites_Simon, Music;
-use Sprites_Firework, Sprites_Graveyard, Sprites_Simon, Music;
+
+--  with Sprites_Firework, Sprites_Graveyard, Sprites_Simon, Music;
+--  use Sprites_Firework, Sprites_Graveyard, Sprites_Simon, Music;
+
+with Insa.Audio;
+use Insa.Audio;
+
+with Sprites_Firework, Sprites_Graveyard, Sprites_Simon;
+use Sprites_Firework, Sprites_Graveyard, Sprites_Simon;
 
 package body Simon is
    
@@ -45,6 +52,16 @@ package body Simon is
       Vert=>(-55,47),
       Immobile=>(0,0));
    
+   AudioBuffer: AUDIO_BUFFER;
+   GenererSon:Boolean:=False;
+   IncrementSon:float:=0.0;
+   PositionWavetable:float:=0.0;
+   DureeSon:INteger:=0;
+   
+   Wavetable: constant array (0..54) of SIGNED_WORD :=
+     (0..27=>(SIGNED_WORD'Last/6),
+      28..54=>(SIGNED_WORD'first/6));
+   
    procedure AfficherSimon;
    procedure InitialiserSon;
    procedure DessinerBlocBleu (Efface : Boolean);
@@ -59,7 +76,7 @@ package body Simon is
    procedure Mettreazerotimer;
    
    -- Ecrit la chaine S dans le champ "Information"
-   -- Pensez à inserer des newline pour eviter que les chaines soient trop longues
+   -- Pensez ï¿½ inserer des newline pour eviter que les chaines soient trop longues
    procedure EcrireInfos(S: String) is
    begin
       SetLabelText(LabelInfo, S);
@@ -186,6 +203,77 @@ package body Simon is
       return Resultat ;
    end DetecterDirection ;
       
+   procedure AudioCallback (Buffer_Nbr: BUFFER_NUMBER) is
+   begin
+      for I in AudioBuffer'Range loop
+         if not GenererSon then
+            AudioBuffer(I).Left:= 0;
+            AudioBuffer(I).Right:= 0;
+         else
+            AudioBuffer(I).Left:=Wavetable(integer(PositionWavetable));
+            AudioBuffer(I).Right:=AudioBuffer(I).Left;
+            
+            PositionWavetable:=PositionWavetable+IncrementSon;
+            if Integer(PositionWavetable) > Wavetable'last then
+               PositionWavetable := PositionWavetable - float(Wavetable'last);
+            end if;
+            if integer(PositionWavetable) < Wavetable'First then
+               PositionWavetable:=float(Wavetable'First);
+            end if;
+         end if;
+      end loop;
+      
+      if Buffer_Nbr =2 then
+         FillAudioBuffer(1,AudioBuffer);
+      else 
+         FillAudioBuffer(2,AudioBuffer);
+      end if;
+      
+      DureeSon:= DureeSon-1;
+      if DureeSon <=0 then
+         GenererSon:=False;
+      end if;
+      
+   end AudioCallback;
+   
+   procedure JouerBruitTouche(T:T_Direction) is
+      IncrementBleu:constant float := 0.4;
+      IncrementVert:constant float := 0.5;
+      IncrementJaune:constant float := 0.6;
+      IncrementRouge:constant float := 0.7;
+        
+      DureeMaxSon: constant integer := 300;
+   begin
+      case T is
+         when Bleu => 
+            DureeSon:=DureeMaxSon;
+            PositionWavetable:=0.0;
+            IncrementSon:=IncrementBleu;
+         
+            GenererSon:=True;
+         when Vert => 
+            DureeSon:=DureeMaxSon;
+            PositionWavetable:=0.0;
+            IncrementSon:=IncrementVert;
+         
+            GenererSon:=True;
+         when Rouge => 
+            DureeSon:=DureeMaxSon;
+            PositionWavetable:=0.0;
+            IncrementSon:=IncrementRouge;
+         
+            GenererSon:=True;
+         when Jaune => 
+            DureeSon:=DureeMaxSon;
+            PositionWavetable:=0.0;
+            IncrementSon:=IncrementJaune;
+         
+            GenererSon:=True;
+         when others => null;
+      end case;
+      
+   end JouerBruitTouche;
+   
    -- Dessine ou Efface un pave 
    procedure DessinerPave (P: T_Direction; Efface : Boolean) is
    begin
@@ -231,7 +319,7 @@ package body Simon is
       end loop;
    end AfficherSequence ;
    
-   -- Faire une petite pause entre 2 séquences (par ex.)
+   -- Faire une petite pause entre 2 sï¿½quences (par ex.)
    procedure PetitePause is
    begin
       Mettreazerotimer;
@@ -242,7 +330,7 @@ package body Simon is
    
    -- Affiche l'ecran "perdu"
    procedure AfficherGameOver is
-      I: INTEGER;
+      --  I: INTEGER;
       
       GraveYard: Pwidget;
       Label, ButtonLabel: Pwidget;
@@ -261,23 +349,23 @@ package body Simon is
       DrawImage(GraveYard, Sprites_Graveyard.GameOver'Access);
       RealignWidget(GraveYard);
       
-      SYNTH_Start;
-      SYNTH_SetMainVolume(200);
-
-      I:=0;
-      while (I<4) loop
-         SYNTH_SetVolume(I, 255);               -- Reglage du volume par canal
-         SYNTH_SetInstrument(I, Guitar_Access);	-- Parametrage de l'instrument Ã  utiliser par canal
-
-         I:=I+1;
-      end loop;
-
-      MELODY_Start(Rip_Melody,Rip.Music_Length);   -- Demarrage de la musique
-
+      --  SYNTH_Start;
+      --  SYNTH_SetMainVolume(200);
+      --  
+      --  I:=0;
+      --  while (I<4) loop
+      --     SYNTH_SetVolume(I, 255);               -- Reglage du volume par canal
+      --     SYNTH_SetInstrument(I, Guitar_Access);	-- Parametrage de l'instrument Ã  utiliser par canal
+      --  
+      --     I:=I+1;
+      --  end loop;
+      --  
+      --  MELODY_Start(Rip_Melody,Rip.Music_Length);   -- Demarrage de la musique
+      --  
       while GetKeyState(Key_A) /= Key_Pressed and GetButtonState(Button) = False loop
          null ;
       end loop ;
-            
+      
       while GetKeyState(Key_A) = Key_Pressed or GetButtonState(Button) = True loop
          null ;
       end loop;
@@ -285,13 +373,13 @@ package body Simon is
       DestroyWidget(ButtonLabel);
       DestroyWidget(Window);
       
-      MELODY_Stop;
+      --  MELODY_Stop;
       
       -- Laisser le temps a l'oeil de voir disparaitre la fenetre
       PetitePause;
    end  AfficherGameOver;
 
-   -- Affiche l'ecran "gagné"
+   -- Affiche l'ecran "gagnï¿½"
    procedure AfficherGagne is
       I: Natural;
       Temps: Integer;
@@ -314,18 +402,18 @@ package body Simon is
       Mettreazerotimer;
       ReprendreTimer;
 
-      SYNTH_Start;
-      SYNTH_SetMainVolume(200);
-      
-      I:=0;
-      while (I<4) loop
-         SYNTH_SetVolume(I, 255);               -- Reglage du volume par canal
-         SYNTH_SetInstrument(I, Guitar_Access);	-- Parametrage de l'instrument Ã  utiliser par canal
-      
-         I:=I+1;
-      end loop;
-      
-      MELODY_Start(Ymca_Melody,Ymca.Music_Length);   -- Demarrage de la musique
+      --  SYNTH_Start;
+      --  SYNTH_SetMainVolume(200);
+      --  
+      --  I:=0;
+      --  while (I<4) loop
+      --     SYNTH_SetVolume(I, 255);               -- Reglage du volume par canal
+      --     SYNTH_SetInstrument(I, Guitar_Access);	-- Parametrage de l'instrument Ã  utiliser par canal
+      --  
+      --     I:=I+1;
+      --  end loop;
+      --  
+      --  MELODY_Start(Ymca_Melody,Ymca.Music_Length);   -- Demarrage de la musique
      
       I:=1;
       while (GetKeyState(Key_A) /= Key_Pressed) and GetButtonState(Button) = False loop
@@ -366,15 +454,15 @@ package body Simon is
 
       DestroyWidget(ButtonLabel);
       DestroyWidget(Window);
-      MELODY_Stop;
+      --  MELODY_Stop;
       
       -- Laisser le temps a l'oeil de voir disparaitre la fenetre
       PetitePause;
    end AfficherGagne;
 
    --------------------------------------------------------------------
-   -- Partie privée
-   -- Routine de support, ne doivent pas etre appelée directement
+   -- Partie privï¿½e
+   -- Routine de support, ne doivent pas etre appelï¿½e directement
    --------------------------------------------------------------------
    
    -- Affiche l'ecran de jeu et cree les label info et longueursequence
@@ -399,22 +487,32 @@ package body Simon is
    
    -- Initialise le synthetiseur
    procedure InitialiserSon is
-      I: INTEGER;
+      --  I: INTEGER;
    begin 
       -- Demarrage du synthe
-      SYNTH_Start;
-
-      SYNTH_SetMainVolume(200);
-      I:=0;
-
-      while I<4 loop
-         SYNTH_SetVolume(I, 255);
-         SYNTH_SetInstrument(I, Guitar_Access);
-         I:=I+1;
-      end loop;
+      --  SYNTH_Start;
+      --  
+      --  SYNTH_SetMainVolume(200);
+      --  I:=0;
+      --  
+      --  while I<4 loop
+      --     SYNTH_SetVolume(I, 255);
+      --     SYNTH_SetInstrument(I, Guitar_Access);
+      --     I:=I+1;
+      --  end loop;
+      
+      StopAudio;
+      SetAudioCallback(AudioCallback'Access);
+   
+      GenererSon:=False;
+      PositionWavetable:=0.0;
+      IncrementSon:= 0.0;
+      DureeSon:=0;
+      
+      StartAudio;
    end InitialiserSon;
    
-   -- Affiche ou efface la touche bleu eclairée
+   -- Affiche ou efface la touche bleu eclairï¿½e
    procedure DessinerBlocBleu (Efface : Boolean) is
    begin
       if Efface then
@@ -425,12 +523,13 @@ package body Simon is
          end if;
       else	 
          if SpritesTouches(Bleu)=null then
-            SYNTH_SetInstrument(0, Guitar_Access);
-            SYNTH_NoteOn(0, C3);
+            --  SYNTH_SetInstrument(0, Guitar_Access);
+            --  SYNTH_NoteOn(0, C3);
+            JouerBruitTouche(Bleu);
         
             SpritesTouches(Bleu):=CreateImage(SpritesTouchesCoord(Bleu).X,
                                               SpritesTouchesCoord(Bleu).Y,
-                                              ALIGNEMENT_CENTER); -- TODO revoir les coordonnées
+                                              ALIGNEMENT_CENTER); -- TODO revoir les coordonnï¿½es
             DrawImage(SpritesTouches(Bleu),Sprites_Simon.Touche_Bleue'Access);
             RealignWidget(SpritesTouches(Bleu));
          end if;
@@ -438,7 +537,7 @@ package body Simon is
       end if;
    end DessinerBlocBleu ;
    
-   -- Affiche ou efface la touche rouge eclairée
+   -- Affiche ou efface la touche rouge eclairï¿½e
    procedure DessinerBlocRouge (Efface : Boolean) is
    begin
       if Efface then
@@ -448,19 +547,20 @@ package body Simon is
          end if;
       else	 
          if SpritesTouches(Rouge)=null then
-            SYNTH_SetInstrument(0, Guitar_Access);
-            SYNTH_NoteOn(0, A3);
+            --  SYNTH_SetInstrument(0, Guitar_Access);
+            --  SYNTH_NoteOn(0, A3);
+            JouerBruitTouche(Rouge);
          
             SpritesTouches(Rouge):=CreateImage(SpritesTouchesCoord(Rouge).X,
                                                SpritesTouchesCoord(Rouge).Y,
-                                               ALIGNEMENT_CENTER); -- TODO revoir les coordonnées
+                                               ALIGNEMENT_CENTER); -- TODO revoir les coordonnï¿½es
             DrawImage(SpritesTouches(Rouge),Sprites_Simon.Touche_Rouge'Access);
             RealignWidget(SpritesTouches(Rouge)); 
          end if;
       end if;
    end DessinerBlocRouge ;
    
-   -- Affiche ou efface la touche verte eclairée
+   -- Affiche ou efface la touche verte eclairï¿½e
    procedure DessinerBlocVert (Efface : Boolean) is
    begin
       if Efface then
@@ -470,19 +570,20 @@ package body Simon is
          end if;
       else	 
          if SpritesTouches(Vert)=null then
-            SYNTH_SetInstrument(0, Guitar_Access);
-            SYNTH_NoteOn(0, C4);
+            --  SYNTH_SetInstrument(0, Guitar_Access);
+            --  SYNTH_NoteOn(0, C4);
+            JouerBruitTouche(Vert);
         
             SpritesTouches(Vert):=CreateImage(SpritesTouchesCoord(Vert).X,
                                               SpritesTouchesCoord(Vert).Y,
-                                              ALIGNEMENT_CENTER); -- TODO revoir les coordonnées
+                                              ALIGNEMENT_CENTER); -- TODO revoir les coordonnï¿½es
             DrawImage(SpritesTouches(Vert),Sprites_Simon.Touche_Verte'Access);
             RealignWidget(SpritesTouches(Vert));  
          end if;
       end if;
    end DessinerBlocVert ;
    
-   -- Affiche ou efface la touche jaune eclairée
+   -- Affiche ou efface la touche jaune eclairï¿½e
    procedure DessinerBlocJaune (Efface : Boolean) is
    begin
       if Efface then
@@ -492,19 +593,20 @@ package body Simon is
          end if;
       else	 
          if SpritesTouches(Jaune)=null then
-            SYNTH_SetInstrument(0, Guitar_Access);
-            SYNTH_NoteOn(0, A4);
+            --  SYNTH_SetInstrument(0, Guitar_Access);
+            --  SYNTH_NoteOn(0, A4);
+            JouerBruitTouche(Jaune);
          
             SpritesTouches(Jaune):=CreateImage(SpritesTouchesCoord(Jaune).X,
                                                SpritesTouchesCoord(Jaune).Y,
-                                               ALIGNEMENT_CENTER); -- TODO revoir les coordonnées
+                                               ALIGNEMENT_CENTER); -- TODO revoir les coordonnï¿½es
             DrawImage(SpritesTouches(Jaune),Sprites_Simon.Touche_Jaune'Access);
             RealignWidget(SpritesTouches(Jaune));
          end if;
       end if;
    end DessinerBlocJaune;
    
-   -- Retourne le temps ecoulé (en 100 ms)
+   -- Retourne le temps ecoulï¿½ (en 100 ms)
    function GetTempsEcoule return Integer is
    begin
       return TempsEcoule;
